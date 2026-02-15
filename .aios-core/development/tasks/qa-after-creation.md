@@ -1,0 +1,1 @@
+/Users/gustavo/documents/aios/squad-creator/tasks/qa-after-creation.md
