@@ -1,0 +1,1 @@
+/Users/gustavo/Documents/AIOS/squads/squad-creator/tasks/an-clone-review.md

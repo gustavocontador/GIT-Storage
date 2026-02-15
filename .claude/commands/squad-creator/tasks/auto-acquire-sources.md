@@ -1,0 +1,1 @@
+/Users/gustavo/Documents/AIOS/squads/squad-creator/tasks/auto-acquire-sources.md

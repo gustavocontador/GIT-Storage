@@ -1,0 +1,1 @@
+/Users/gustavo/Documents/AIOS/squads/squad-creator/tasks/find-0.8.md

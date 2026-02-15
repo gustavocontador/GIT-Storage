@@ -1,0 +1,1 @@
+/Users/gustavo/Documents/AIOS/squads/squad-creator/tasks/create-pipeline.md
