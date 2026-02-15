@@ -1,1 +1,0 @@
-/Users/gustavo/documents/aios/squad-creator/agents/sop-extractor.md
