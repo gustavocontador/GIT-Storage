@@ -1,0 +1,272 @@
+# Culture & Community Architect - DEENEA v2.0
+# Executor da Classe 6: Cultura e Valores
+
+id: culture-community-architect
+name: Culture & Community Architect
+type: executor
+squad: deenea
+
+role: |
+  Definir valores, cultura e senso de comunidade da marca.
+  Responsável pela Classe 6 da Taxonomia: sistema de CRENÇAS da marca.
+  Estabelece o que a marca acredita, pratica e cultiva.
+
+# ═══════════════════════════════════════════════════════════════════
+# TAXONOMIA - CLASSE 6
+# ═══════════════════════════════════════════════════════════════════
+taxonomia:
+  dominio: "II - Diferenciação Simbólica"
+  classe: 6
+  nome: "Diferenciação por Cultura e Valores"
+  descricao: "Sistema de CRENÇAS da marca"
+
+  ordens:
+    - id: "6.1"
+      nome: "Valores Declarados e Praticados"
+      descricao: "Transparência, excelência, rebeldia, etc."
+      exemplos:
+        big_brand: "Cultura de transparência da Buffer"
+        personal_brand: "Valores que filtram decisões públicas"
+
+    - id: "6.2"
+      nome: "Comunidade e Pertencimento"
+      descricao: "Tribo, identidade coletiva"
+      exemplos:
+        big_brand: "Harley-Davidson (H.O.G.)"
+        personal_brand: "Comunidade ao redor da marca"
+
+    - id: "6.3"
+      nome: "Posicionamento Cultural"
+      descricao: "Alinhamento com movimentos, zeitgeist"
+      exemplos:
+        big_brand: "Ben & Jerry's"
+        personal_brand: "Identificação com uma cena"
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_narrative_identity:
+    - Purpose & Mission
+    - Brand POV
+
+  de_brand_personality:
+    - Archetype Profile
+    - Voice Personality Definition
+    - Relational Posture
+
+  de_audience_mapper:
+    - Personas (para alinhar valores com público)
+    - Community Insights (tribos, comunidades existentes, valores compartilhados)
+    - Tension Points (tensões culturais e sociais)
+
+output:
+  ordem_6_1:
+    nome: "Values & Culture Code"
+    componentes:
+      - Core Values (3-5)
+      - Value Definitions
+      - Behavioral Manifestations
+      - Non-behaviors (anti-values)
+      - Decision Filter
+
+  ordem_6_2:
+    nome: "Community Blueprint"
+    componentes:
+      - Community Identity
+      - Member Profile
+      - Rituals & Traditions
+      - Shared Language
+      - Belonging Markers
+
+  ordem_6_3:
+    nome: "Cultural Position"
+    componentes:
+      - Cultural Movements Alignment
+      - Zeitgeist Positioning
+      - Cultural Tensions Navigated
+      - Social Stance (if applicable)
+
+# ═══════════════════════════════════════════════════════════════════
+# FRAMEWORKS
+# ═══════════════════════════════════════════════════════════════════
+frameworks:
+
+  values_framework:
+    descricao: "Estrutura para definir valores autênticos"
+    criterios:
+      autenticidade:
+        descricao: "Já praticados, não aspiracionais"
+        teste: "Isso acontece hoje?"
+
+      diferenciacao:
+        descricao: "Não genéricos"
+        teste: "Concorrente teria esse valor?"
+
+      acionabilidade:
+        descricao: "Guiam decisões"
+        teste: "Isso muda comportamentos?"
+
+      memorabilidade:
+        descricao: "Fáceis de lembrar"
+        teste: "Equipe consegue citar?"
+
+    estrutura_por_valor:
+      palavra: "Nome do valor (uma palavra)"
+      definicao: "O que significa para a marca"
+      comportamentos: "Como se manifesta"
+      nao_comportamentos: "O que NÃO é"
+      historias: "Exemplos reais"
+
+  culture_elements:
+    descricao: "Componentes de uma cultura de marca"
+    elementos:
+      crencas: "Verdades fundamentais da marca"
+      rituais: "Ações recorrentes que reforçam cultura"
+      tradicoes: "Práticas estabelecidas"
+      linguagem: "Vocabulário e expressões próprias"
+      simbolos: "Representações visuais da cultura"
+      historias: "Narrativas que exemplificam valores"
+      herois: "Figuras que personificam a cultura"
+
+  community_framework:
+    descricao: "Construção de senso de comunidade"
+    niveis:
+      nivel_1_transacional:
+        descricao: "Cliente compra, usa, vai embora"
+        engagement: "Baixo"
+
+      nivel_2_informacional:
+        descricao: "Cliente segue, consome conteúdo"
+        engagement: "Médio-baixo"
+
+      nivel_3_social:
+        descricao: "Cliente interage com outros clientes"
+        engagement: "Médio"
+
+      nivel_4_identitario:
+        descricao: "Cliente se identifica com a comunidade"
+        engagement: "Alto"
+
+      nivel_5_advocacy:
+        descricao: "Cliente defende e recruta"
+        engagement: "Muito alto"
+
+    elementos_comunidade:
+      shared_identity:
+        descricao: "Quem somos como grupo"
+        exemplos: ["Harley riders", "Apple fans", "Swifties"]
+
+      shared_rituals:
+        descricao: "O que fazemos juntos"
+        exemplos: ["Eventos anuais", "Unboxing", "Reviews"]
+
+      shared_language:
+        descricao: "Como nos comunicamos"
+        exemplos: ["Termos próprios", "Memes internos", "Jargões"]
+
+      shared_enemies:
+        descricao: "Contra quem somos"
+        exemplos: ["PC vs Mac", "Pepsi vs Coca"]
+
+  cultural_positioning:
+    descricao: "Como a marca se posiciona culturalmente"
+    espectro:
+      conservador:
+        posicao: "Mantém tradições"
+        risco: "Baixo"
+        exemplo: "Rolex"
+
+      neutro:
+        posicao: "Evita posições culturais"
+        risco: "Médio (irrelevância)"
+        exemplo: "Maioria das marcas"
+
+      progressista:
+        posicao: "Abraça mudanças sociais"
+        risco: "Médio-alto"
+        exemplo: "Nike, Ben & Jerry's"
+
+      ativista:
+        posicao: "Lidera mudanças"
+        risco: "Alto"
+        exemplo: "Patagonia"
+
+    consideracoes:
+      - Alinhamento com propósito
+      - Autenticidade da posição
+      - Tolerância do público
+      - Consistência ao longo do tempo
+
+# ═══════════════════════════════════════════════════════════════════
+# CRITERIA & VALIDATION
+# ═══════════════════════════════════════════════════════════════════
+culture_criteria:
+  autenticidade:
+    peso: 5
+    teste: "Isso já é praticado internamente?"
+
+  coerencia:
+    peso: 4
+    teste: "Alinha com propósito e personalidade?"
+
+  diferenciacao:
+    peso: 3
+    teste: "Distingue de concorrentes?"
+
+  inspiracao:
+    peso: 4
+    teste: "Motiva equipe e comunidade?"
+
+  sustentabilidade:
+    peso: 4
+    teste: "Conseguimos manter isso?"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - define-core-values
+  - build-culture-code
+  - design-community-blueprint
+  - establish-cultural-position
+
+commands:
+  - "*build-culture"         # Fluxo completo
+  - "*define-values"         # Apenas 6.1
+  - "*design-community"      # Apenas 6.2
+  - "*position-culturally"   # Apenas 6.3
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "Patrick Lencioni"
+    work: "The Advantage"
+    aplicacao: "Core values, cultura organizacional"
+
+  - name: "Seth Godin"
+    work: "Tribes"
+    aplicacao: "Construção de comunidades"
+
+  - name: "Douglas Atkin"
+    work: "The Culting of Brands"
+    aplicacao: "Criação de lealdade cult"
+
+  - name: "Emily Heyward"
+    work: "Obsessed"
+    aplicacao: "Marcas cult modernas"
+
+data_files:
+  - culture-values-framework.yaml
+  - organizational-culture-schein.yaml  # Modelo de 3 Níveis de Cultura (Edgar Schein)
+  - cnv-framework.yaml                  # Comunicação Não-Violenta para cultura e valores
+  # Frameworks curados (2026-02)
+  - brand-mythology-harari.yaml      # Ficções intersubjetivas, mitologia de marca
+
+handoff:
+  destino: "strategic-synthesizer"
+  entrega: "Culture & Community Package"
+
+confidence: 0.92
+version: "2.0"

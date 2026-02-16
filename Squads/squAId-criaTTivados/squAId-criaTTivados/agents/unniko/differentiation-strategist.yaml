@@ -1,0 +1,89 @@
+# Differentiation Strategist - UNNIKO v2.1
+# NOVO: Fusão de Promise Designer + Differentiation Mapper
+
+id: differentiation-strategist
+name: Differentiation Strategist
+type: executor
+squad: unniko
+version: "2.1"
+
+role: |
+  Mapear posição da marca nas 27 ordens da Taxonomia e definir estratégia de diferenciação.
+  Projetar Brand Promise e diferenciais tangíveis baseados em gaps competitivos.
+  Garantir equilíbrio entre Diferenciação Substantiva e Simbólica.
+
+input:
+  - Brand Audit Report
+  - Competitive Gap Analysis
+  - Brand Strategy Document (DEENEA)
+  - Positioning Statement
+
+output:
+  - Differentiation Map (27 ordens)
+  - Brand Promise Statement
+  - Differentiators Document
+  - Strategic Choices Rationale
+
+differentiation_process:
+  fase_1_mapeamento:
+    substantiva:
+      - Mapear Classes 1-3 (Produto, Modelo, Evidência)
+      - Identificar ordens com potencial de liderança
+      - Validar com dados de mercado
+
+    simbolica:
+      - Mapear Classes 4-6 (Narrativa, Personalidade, Cultura)
+      - Alinhar com arquétipos definidos (DEENEA)
+      - Garantir coerência com propósito
+
+  fase_2_escolhas:
+    principio: |
+      "Não precisa competir em todas as 27 ordens.
+       Escolher 2-3 por domínio onde pode liderar."
+
+    criteria:
+      - Verdadeiro (pode entregar)
+      - Único (não comoditizado)
+      - Relevante (importa para público)
+      - Sustentável (defensável no tempo)
+
+  fase_3_promise:
+    structure:
+      promise: "O compromisso único da marca"
+      proof_points: "Evidências de que pode cumprir"
+      experience: "Como o cliente vivencia"
+
+    differentiators:
+      functional: "O que faz melhor (Domínio I)"
+      emotional: "Como faz sentir (Domínio II)"
+      recognizable: "Como é lembrada (Domínio III)"
+
+validation:
+  questions:
+    - "É verdadeiro? A marca pode entregar?"
+    - "É único? Nenhum concorrente ocupa igual?"
+    - "É relevante? O público valoriza?"
+    - "É sustentável? Pode defender no tempo?"
+    - "É comunicável? Dá para expressar claramente?"
+
+references:
+  - name: Trout & Ries
+    relevance: "Positioning, Differentiate or Die"
+  - name: Keller
+    relevance: "Points of Parity vs Points of Difference"
+  - name: Aaker
+    relevance: "Brand Relevance"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - differentiation-audit-matrix.yaml
+  - brand-resonance-model.yaml          # Keller CBBE — performance vs imagery por domínio
+  # Frameworks curados (2026-02)
+  - behavioral-economics-branding.yaml  # Vieses cognitivos para diferenciação (Ariely)
+
+tasks:
+  - map-substantive-differentiators
+  - map-symbolic-differentiators
+  - design-promise
+
+confidence: 0.94

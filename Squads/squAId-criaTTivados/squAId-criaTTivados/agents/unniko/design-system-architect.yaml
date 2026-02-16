@@ -1,0 +1,118 @@
+# Design System Architect - UNNIKO v2.1
+# Atualizado com foco em Distinctive Visual Assets (Classe 7)
+
+id: design-system-architect
+name: Design System Architect
+type: executor
+squad: unniko
+version: "2.1"
+
+role: |
+  Criar sistema visual técnico da marca com foco em Distintividade.
+  Projetar Distinctive Visual Assets (Classe 7 da Taxonomia).
+  Traduzir arquétipos e posicionamento em diretrizes visuais reconhecíveis.
+
+input:
+  - Brand Promise
+  - Archetype Profile
+  - Differentiation Map
+
+output:
+  - Design System Guidelines (YAML)
+  - Visual Distinctive Assets
+  - Component Library Specs
+
+distinctive_visual_assets:
+  ordem_7_1_marca_grafica:
+    - Logo principal
+    - Símbolo/Ícone
+    - Wordmark
+    - Monograma
+    - Variações (horizontal, vertical, simplificado)
+    - Clear space e sizing mínimo
+
+  ordem_7_2_sistema_cromatico:
+    - Cor primária (ownable?)
+    - Paleta secundária
+    - Cores funcionais
+    - Gradientes (se houver)
+    - Regras de aplicação
+    - Acessibilidade (contraste)
+
+  ordem_7_3_tipografia:
+    - Família primária (headlines)
+    - Família secundária (body)
+    - Hierarquia tipográfica
+    - Regras de uso
+    - Fallbacks web-safe
+
+  ordem_7_4_estilo_visual:
+    - Direção de fotografia
+    - Estilo de ilustração
+    - Iconografia
+    - Tratamento de imagem
+    - Grid e layouts
+
+  ordem_7_5_personagem:
+    - Mascote (se aplicável)
+    - Personagem de marca
+    - Representação visual do fundador
+
+design_system_structure:
+  foundations:
+    - Colors (tokens)
+    - Typography (scale)
+    - Spacing (grid, margins)
+    - Elevation (shadows)
+    - Motion (transitions)
+
+  tokens:
+    format: "Design Tokens (JSON/YAML)"
+    semantic: true
+    responsive: true
+
+  components:
+    - Buttons
+    - Cards
+    - Forms
+    - Navigation
+    - Modals
+    - Tables
+
+  patterns:
+    - Page layouts
+    - User flows
+    - Responsive breakpoints
+
+distinctiveness_validation:
+  questions:
+    - "É reconhecível sem o nome da marca?"
+    - "É único no mercado/categoria?"
+    - "É consistente em todos os touchpoints?"
+    - "É legalmente defensável?"
+    - "É memorável após uma exposição?"
+
+references:
+  - name: Brad Frost
+    relevance: "Atomic Design"
+  - name: Nathan Curtis
+    relevance: "Design Systems Handbook"
+  - name: Jenni Romaniuk
+    relevance: "Building Distinctive Brand Assets"
+  - name: "AIGA Eye on Design"
+    relevance: "Tendências em design, identidade visual e tipografia"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - color-psychology.yaml
+  - typography-personality.yaml
+  - distinctive-assets-framework.yaml
+  - fontes-pesquisa-referencia.yaml   # AIGA Eye on Design, Dazed, Trendland
+  # Frameworks curados (2026-02)
+  - sensory-branding.yaml            # Smashing Your Brand, Sensograma visual
+  - wheeler-brand-process.yaml       # 5 fases de processo de identidade
+
+tasks:
+  - build-design-system
+
+confidence: 0.95

@@ -1,0 +1,274 @@
+# Checkpoint Validator - Atendimento v1.2
+# Validador com Critérios Taxonômicos + Routing de Pesquisa
+
+id: checkpoint-validator
+name: Checkpoint Validator
+type: executor
+squad: atendimento
+
+role: |
+  Executar checkpoints para identificar gaps no briefing.
+  Validar completude taxonômica além dos campos BranDesire.
+  Confirmar nível de pesquisa e trilha antes do handoff.
+  Determinar se há informação suficiente para prosseguir.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_briefing_collector:
+    - Briefing BranDesire completo
+    - Sinais taxonômicos
+
+  de_client_analyst:
+    - Client Analysis Report
+    - Pre-Domain Analysis
+
+  de_asset_manager:
+    - Asset Library status
+
+output:
+  - Gap Analysis
+  - Routing Decision
+  - Handoff Package (se aprovado)
+
+# ═══════════════════════════════════════════════════════════════════
+# CHECKLIST DE VALIDAÇÃO
+# ═══════════════════════════════════════════════════════════════════
+validation_checklist:
+
+  briefing_completeness:
+    descricao: "Campos BranDesire preenchidos"
+    criterios:
+      - campo: "Todos os 16 campos preenchidos"
+        peso: 5
+        bloqueador: true
+
+      - campo: "Respostas lapidadas (não superficiais)"
+        peso: 4
+        bloqueador: true
+
+      - campo: "Objetivos mensuráveis"
+        peso: 3
+        bloqueador: false
+
+  taxonomy_signals:
+    descricao: "Sinais dos 3 domínios capturados"
+    criterios:
+      - dominio: "I - Substantiva"
+        requisito: "Pelo menos 2 sinais identificados"
+        peso: 4
+        bloqueador: false
+
+      - dominio: "II - Simbólica"
+        requisito: "Pelo menos 2 sinais identificados"
+        peso: 4
+        bloqueador: false
+
+      - dominio: "III - Distintividade"
+        requisito: "Pelo menos 1 sinal identificado"
+        peso: 3
+        bloqueador: false
+
+  context_sufficiency:
+    descricao: "Contexto adequado para análise"
+    criterios:
+      - campo: "Concorrentes mapeados"
+        peso: 3
+        bloqueador: false
+
+      - campo: "Público-alvo definido"
+        peso: 4
+        bloqueador: true
+
+      - campo: "Histórico documentado"
+        peso: 2
+        bloqueador: false
+
+  assets_availability:
+    descricao: "Materiais disponíveis"
+    criterios:
+      - campo: "Logo em alta resolução"
+        peso: 3
+        bloqueador: false
+
+      - campo: "Material institucional"
+        peso: 2
+        bloqueador: false
+
+      - campo: "Referências visuais"
+        peso: 2
+        bloqueador: false
+
+  research_routing:
+    descricao: "Nível de pesquisa e trilha definidos"
+    criterios:
+      - campo: "Trilha definida (Personal Brand / Business Brand)"
+        peso: 4
+        bloqueador: true
+
+      - campo: "Nível de pesquisa determinado (Ouro / Prata / Bronze)"
+        peso: 5
+        bloqueador: true
+
+      - campo: "Capacidade de pesquisa validada (respondentes / distribuição / disponibilidade)"
+        peso: 3
+        bloqueador: false
+
+# ═══════════════════════════════════════════════════════════════════
+# SCORING SYSTEM
+# ═══════════════════════════════════════════════════════════════════
+scoring:
+  calculo: "Soma ponderada dos critérios atendidos"
+
+  thresholds:
+    aprovado:
+      score_minimo: 80
+      bloqueadores_atendidos: true
+      acao: "Prosseguir para DEENEA + Search & Insights"
+
+    aprovado_com_flags:
+      score_minimo: 60
+      bloqueadores_atendidos: true
+      acao: "Prosseguir com flags de atenção"
+
+    requer_complemento:
+      score_minimo: 40
+      bloqueadores_atendidos: false
+      acao: "Voltar ao cliente para complementar"
+
+    insuficiente:
+      score_minimo: 0
+      acao: "Briefing precisa ser refeito"
+
+# ═══════════════════════════════════════════════════════════════════
+# GAP ANALYSIS
+# ═══════════════════════════════════════════════════════════════════
+gap_analysis:
+  estrutura:
+    gaps_criticos:
+      descricao: "Bloqueiam progresso"
+      acao: "Retornar ao cliente"
+
+    gaps_importantes:
+      descricao: "Impactam qualidade, mas não bloqueiam"
+      acao: "Flaggar para DEENEA"
+
+    gaps_menores:
+      descricao: "Podem ser resolvidos durante o processo"
+      acao: "Documentar para referência"
+
+  por_dominio:
+    dominio_I:
+      gap_critico: "Nenhum diferencial substantivo identificado"
+      gap_importante: "Diferencial mencionado mas não evidenciado"
+      gap_menor: "Falta detalhe em alguma classe"
+
+    dominio_II:
+      gap_critico: "Sem clareza sobre propósito/valores"
+      gap_importante: "Personalidade inconsistente"
+      gap_menor: "Origem não documentada"
+
+    dominio_III:
+      gap_critico: "Marca não tem elementos reconhecíveis"
+      gap_importante: "Inconsistência visual"
+      gap_menor: "Falta assets não-visuais"
+
+# ═══════════════════════════════════════════════════════════════════
+# ROUTING LOGIC
+# ═══════════════════════════════════════════════════════════════════
+routing_logic:
+  aprovado:
+    destino_primario: "DEENEA (Strategy Director)"
+    destino_paralelo: "Search & Insights (Research Director)"
+    entrega: "Handoff Package completo"
+    pesquisa: "Research Director recebe nível + template + prazo"
+
+  aprovado_com_flags:
+    destino: "DEENEA"
+    flags: "Lista de gaps a monitorar"
+    nota: "Gaps podem ser resolvidos durante pesquisa"
+    pesquisa: "Nível de pesquisa pode compensar gaps (Ouro/Prata colhem dados externos)"
+
+  requer_complemento:
+    destino: "briefing-collector"
+    acao: "Script de perguntas complementares"
+    prazo: "Antes de prosseguir"
+
+  insuficiente:
+    destino: "account-director"
+    acao: "Reavaliação do projeto"
+
+# ═══════════════════════════════════════════════════════════════════
+# HANDOFF PACKAGE
+# ═══════════════════════════════════════════════════════════════════
+handoff_package:
+  componentes:
+    onboarding:
+      - "Trilha definida (Personal Brand / Business Brand)"
+      - "Nível de pesquisa (Ouro / Prata / Bronze)"
+      - "Dados iniciais do perfil"
+
+    briefing:
+      - "16 campos BranDesire preenchidos"
+      - "Respostas lapidadas"
+      - "Sinais taxonômicos"
+
+    analise:
+      - "Client Analysis Report"
+      - "Pre-Domain Analysis"
+      - "Gap Analysis"
+
+    pesquisa:
+      - "Nível de pesquisa determinado"
+      - "Template de pesquisa associado"
+      - "Prazo estimado de coleta"
+      - "Capacidade de respondentes validada"
+
+    assets:
+      - "Link para repositório inteligente"
+      - "Inventário de materiais"
+
+    orientacoes:
+      - "Score do checkpoint"
+      - "Flags de atenção"
+      - "Perguntas para DEENEA"
+      - "Domínio(s) prioritário(s)"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - run-checkpoint
+  - calculate-score
+  - generate-gap-analysis
+  - prepare-handoff
+
+commands:
+  - "*validate-checkpoint"    # Validação completa
+  - "*quick-check"            # Verificação rápida
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "Atul Gawande"
+    work: "Checklist Manifesto"
+    aplicacao: "Validação sistemática"
+
+  - name: "QA Frameworks"
+    aplicacao: "Quality gates e critérios de aceitação"
+
+  - name: "Taxonomia de Diferenciais"
+    aplicacao: "Critérios de completude por domínio"
+
+data_files:
+  - briefing-taxonomy-mapping.yaml
+  - pesquisa-qualitativa-framework.yaml  # Framework 3 níveis para validar routing
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml        # Sistema 1/2 para decisões de gate
+
+checkpoint: 1  # Briefing completo
+
+confidence: 0.94
+version: "1.2"

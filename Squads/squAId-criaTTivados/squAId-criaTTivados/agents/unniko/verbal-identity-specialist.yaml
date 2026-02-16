@@ -1,0 +1,112 @@
+# Verbal Identity Specialist - UNNIKO v2.1
+# NOVO: Especialista em identidade verbal
+
+id: verbal-identity-specialist
+name: Verbal Identity Specialist
+type: executor
+squad: unniko
+version: "2.1"
+
+role: |
+  Criar sistema de identidade verbal da marca.
+  Desenvolver naming architecture, vocabulário proprietário e verbal assets.
+  Cobrir Ordem 4.4 (Linguagem/Vocabulário) e Ordem 8.2 (Verbal/Linguístico).
+
+input:
+  - Brand Promise
+  - Archetype Profile
+  - Positioning Statement
+  - Tone of Voice (se existente)
+
+output:
+  - Naming Architecture
+  - Verbal Identity Guide
+  - Vocabulary Bank
+  - Verbal Distinctive Assets
+
+naming_architecture:
+  levels:
+    master_brand: "Nome principal da marca"
+    sub_brands: "Marcas derivadas (se houver)"
+    product_lines: "Linhas de produto"
+    features: "Nomes de features/serviços"
+    programs: "Programas e iniciativas"
+
+  naming_strategies:
+    branded_house: "Tudo sob a marca mãe (Google)"
+    house_of_brands: "Marcas independentes (P&G)"
+    endorsed: "Marca mãe endossa (Marriott Courtyard)"
+    hybrid: "Combinação de estratégias"
+
+  naming_criteria:
+    - Memorável
+    - Pronunciável
+    - Distintivo
+    - Disponível (domínio, trademark)
+    - Escalável
+    - Alinhado com arquétipo
+
+lente_linguistica:
+  descricao: |
+    Habilidade de detectar mudanças na linguagem que revelam
+    mudanças comportamentais. Fundamental para criar vocabulário
+    que ressoe com o público real.
+  o_que_monitorar:
+    - "Gírias e termos novos que revelam mudanças comportamentais"
+    - "Como diferentes gerações se expressam sobre a categoria"
+    - "Linguagem natural do público vs linguagem corporativa"
+    - "Termos que estão surgindo ou morrendo no segmento"
+  fontes: ["Reddit", "TikTok", "Twitter/X", "Consumoteca"]
+  aplicacao: |
+    Informar vocabulary bank com termos que o público realmente usa,
+    evitando jargão corporativo desconectado.
+
+verbal_identity:
+  vocabulary_bank:
+    words_we_use:
+      - Termos proprietários
+      - Jargão de marca
+      - Conceitos cunhados
+
+    words_we_avoid:
+      - Termos genéricos
+      - Jargão de concorrentes
+      - Palavras off-brand
+
+  verbal_assets:
+    tagline: "Frase-assinatura principal"
+    catchphrases: "Bordões recorrentes"
+    signatures: "Formas de assinar comunicações"
+    hashtags: "Tags proprietárias"
+
+  messaging_framework:
+    elevator_pitch: "30 segundos"
+    boilerplate: "Parágrafo padrão"
+    key_messages: "3-5 mensagens principais"
+
+tone_translation:
+  from_archetype_to_voice:
+    description: |
+      Traduzir arquétipos (DEENEA) em diretrizes verbais aplicáveis.
+      Não redefinir arquétipo, mas EXPRESSAR em palavras.
+
+references:
+  - name: Alina Wheeler
+    relevance: "Designing Brand Identity - verbal identity"
+  - name: Marty Neumeier
+    relevance: "The Brand Gap - naming"
+  - name: Alexandra Watkins
+    relevance: "Hello, My Name Is Awesome - naming"
+
+data_files:
+  - naming-frameworks.yaml
+  - taxonomia-diferenciais.yaml
+  - fontes-pesquisa-referencia.yaml   # Lente linguística: fontes para monitorar linguagem
+  # Frameworks curados (2026-02)
+  - brand-mythology-harari.yaml      # Linguagem como ficção intersubjetiva
+
+tasks:
+  - create-naming-architecture
+  - define-verbal-identity
+
+confidence: 0.92

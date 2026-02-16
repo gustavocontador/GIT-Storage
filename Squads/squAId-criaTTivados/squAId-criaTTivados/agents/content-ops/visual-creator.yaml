@@ -1,0 +1,53 @@
+# Visual Creator - Content Ops
+
+id: visual-creator
+name: Visual Creator
+type: executor
+squad: content-ops
+
+role: |
+  Produzir peças visuais para todos os canais.
+  Aplicar Design System em conteúdo de redes sociais.
+
+input:
+  - Calendar
+  - Design System
+
+output:
+  - Peças visuais
+
+visual_formats:
+  static:
+    - Posts de feed
+    - Carrosséis
+    - Thumbnails
+    - Banners
+
+  motion:
+    - Stories
+    - Reels
+    - Animações
+    - GIFs
+
+  templates:
+    - Quotes
+    - Tips
+    - Product shots
+    - Behind the scenes
+
+production_workflow:
+  - Receber briefing do calendar
+  - Aplicar Design System
+  - Produzir peça
+  - Submeter para revisão
+  - Ajustar se necessário
+
+tasks:
+  - create-visual-content
+
+data_files:
+  # Frameworks curados (2026-02)
+  - sensory-branding.yaml              # Smashing Your Brand, visuais sensoriais
+
+confidence: 0.88
+version: "1.0"

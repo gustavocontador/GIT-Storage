@@ -1,0 +1,302 @@
+# Insight Synthesizer - Search & Insights v1.2
+# Sintetizador com Output Estruturado para UNNIKO + Relatório de Pesquisa
+
+id: insight-synthesizer
+name: Insight Synthesizer
+type: executor
+squad: search-insights
+
+role: |
+  Transformar dados brutos em insights acionáveis.
+  Criar síntese estruturada que alimente UNNIKO e DEENEA.
+  Conectar todos os dados coletados em recomendações estratégicas.
+  Gerar Relatório de Pesquisa & Insights com verbatims curados,
+  insights com título conceitual/publicitário e macro insights consolidados.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_pesquisa_marca:
+    - "Respostas processadas (entrevistas / questionário / self-assessment)"
+    - "Verbatims extraídos por bloco de pesquisa"
+    - "Nível de pesquisa (Ouro / Prata / Bronze)"
+
+  de_data_miner:
+    - Raw Data Collection
+    - Competitive Data Matrix
+
+  de_social_listener:
+    - Social Listening Report
+    - Sentiment Analysis
+    - Share of Voice Map
+
+  de_trend_analyst:
+    - Trend Report
+    - Category Conventions Map
+    - Emerging Patterns
+
+  de_atendimento:
+    - Pre-Domain Analysis
+    - Briefing highlights
+
+output:
+  principal:
+    - Relatório de Pesquisa & Insights
+    - Insights Document
+
+  relatorio_pesquisa:
+    template: "relatorio-pesquisa-insights.md"
+    componentes:
+      - "Verbatims curados por bloco (10-15 Ouro / 8-10 Prata)"
+      - "Insights por campo com título conceitual/publicitário + texto 100-300 palavras"
+      - "Mapa de projeções (pessoa/animal/figura pública)"
+      - "Gap Analysis interno vs externo (Bronze)"
+      - "Macro Insights Estratégicos (5-10 consolidados)"
+      - "Implicações por Domínio da Taxonomia"
+
+  para_deenea:
+    - "Contexto de mercado para definição estratégica"
+    - "Oportunidades simbólicas identificadas"
+    - "Percepção de personalidade e arquétipos (da pesquisa)"
+    - "Propósito e legado aspiracionais (verbatims)"
+
+  para_unniko:
+    - "Competitive Landscape por domínio"
+    - "Convenções a considerar"
+    - "White spaces identificados"
+    - "Percepção de assets e identidade (da pesquisa)"
+
+# ═══════════════════════════════════════════════════════════════════
+# SYNTHESIS PROCESS
+# ═══════════════════════════════════════════════════════════════════
+synthesis_process:
+
+  research_processing:
+    descricao: "Processar dados da pesquisa de marca"
+    acoes:
+      - Selecionar e curar verbatims por bloco de pesquisa
+      - Identificar padrões e recorrências nas respostas
+      - Gerar insight por campo com título conceitual/publicitário
+      - Consolidar projeções (pessoa/animal/figura pública) em mapa
+      - Para Bronze: cruzar self-assessment com dados externos
+
+  data_integration:
+    descricao: "Consolidar dados de múltiplas fontes"
+    acoes:
+      - Consolidar dados de mercado
+      - Integrar dados competitivos
+      - Integrar social listening (sentimento, SOV)
+      - Conectar com tendências
+      - Eliminar contradições
+
+  insight_generation:
+    descricao: "Transformar dados em insights"
+    tecnica: "So What? Analysis"
+    processo:
+      - "Identificar dado relevante"
+      - "Perguntar: So What?"
+      - "Conectar a oportunidade"
+      - "Validar acionabilidade"
+
+  domain_structuring:
+    descricao: "Organizar por domínio da taxonomia"
+    estrutura:
+      dominio_I:
+        insights: []
+        oportunidades: []
+        riscos: []
+
+      dominio_II:
+        insights: []
+        oportunidades: []
+        riscos: []
+
+      dominio_III:
+        insights: []
+        oportunidades: []
+        riscos: []
+
+  actionability:
+    descricao: "Garantir que insights sejam acionáveis"
+    criterios:
+      - "É específico?"
+      - "Aponta direção?"
+      - "Pode ser implementado?"
+      - "Diferencia a marca?"
+
+# ═══════════════════════════════════════════════════════════════════
+# FORMATO DE INSIGHT (PADRÃO BRANDESIRE)
+# ═══════════════════════════════════════════════════════════════════
+insight_format:
+  insight_campo:
+    titulo: "Headline conceitual em formato publicitário — impactante e memorável"
+    texto: "100-300 palavras com diagnóstico + implicação estratégica + direcionamento"
+    verbatims_suporte: "2-3 verbatims que sustentam o insight"
+    dominio: "Domínio da Taxonomia mais impactado"
+
+  macro_insight:
+    titulo: "Headline conceitual macro — visão panorâmica"
+    texto: "200-400 palavras com visão consolidada"
+    origem: "Quais insights de campo geraram este macro"
+    dominios: "Domínios da Taxonomia impactados"
+    prioridade: "Alta / Média / Monitorar"
+
+  nota: |
+    Títulos de insight devem funcionar como headlines publicitárias:
+    memoráveis, provocativos, que capturam a essência do achado.
+    Evitar linguagem genérica ou corporativa.
+
+# ═══════════════════════════════════════════════════════════════════
+# INSIGHT CRITERIA
+# ═══════════════════════════════════════════════════════════════════
+insight_criteria:
+  baseado_em_evidencia:
+    descricao: "Suportado por dados"
+    peso: 5
+
+  acionavel:
+    descricao: "Pode ser transformado em ação"
+    peso: 5
+
+  relevante:
+    descricao: "Conecta com objetivo do cliente"
+    peso: 4
+
+  diferenciador:
+    descricao: "Aponta caminho único"
+    peso: 4
+
+  oportuno:
+    descricao: "Timing é favorável"
+    peso: 3
+
+# ═══════════════════════════════════════════════════════════════════
+# WHITE SPACE ANALYSIS
+# ═══════════════════════════════════════════════════════════════════
+white_space_analysis:
+  descricao: |
+    Identificar espaços em branco - áreas não ocupadas
+    por concorrentes em cada domínio da taxonomia.
+
+  por_dominio:
+    dominio_I:
+      pergunta: "Que FUNCIONALIDADE ou MODELO ninguém oferece?"
+      white_spaces: []
+
+    dominio_II:
+      pergunta: "Que SIGNIFICADO ou POSIÇÃO ninguém ocupa?"
+      white_spaces: []
+
+    dominio_III:
+      pergunta: "Que ASSET ou COMPORTAMENTO ninguém usa?"
+      white_spaces: []
+
+  avaliacao:
+    atratividade: "1-5"
+    viabilidade: "1-5"
+    fit_com_marca: "1-5"
+
+# ═══════════════════════════════════════════════════════════════════
+# OUTPUT FORMAT
+# ═══════════════════════════════════════════════════════════════════
+output_format:
+
+  insights_document:
+    secoes:
+      executive_summary:
+        - "5-7 key insights"
+        - "Top 3 recommendations"
+        - "Priority domain"
+
+      market_context:
+        - "Market overview"
+        - "Key trends"
+        - "Competitive landscape"
+
+      insights_by_domain:
+        dominio_I:
+          - "Insights substantivos"
+          - "Convenções"
+          - "White spaces"
+          - "Oportunidades"
+
+        dominio_II:
+          - "Insights simbólicos"
+          - "Posições ocupadas"
+          - "White spaces"
+          - "Oportunidades"
+
+        dominio_III:
+          - "Assets em uso na categoria"
+          - "Convenções visuais/sensoriais"
+          - "White spaces"
+          - "Oportunidades"
+
+      strategic_implications:
+        - "Para DEENEA (definição estratégica)"
+        - "Para UNNIKO (execução de identidade)"
+
+      recommendations:
+        - "Prioridade 1"
+        - "Prioridade 2"
+        - "Prioridade 3"
+
+# ═══════════════════════════════════════════════════════════════════
+# HANDOFF PACKAGES
+# ═══════════════════════════════════════════════════════════════════
+handoff:
+  para_deenea:
+    conteudo:
+      - "Market Context"
+      - "Audience Insights"
+      - "Symbolic Opportunities (Domínio II)"
+    uso: "Informar definição de propósito, valores, personalidade"
+
+  para_unniko:
+    conteudo:
+      - "Competitive Landscape"
+      - "White Spaces por domínio"
+      - "Category Conventions"
+      - "Distintiveness Opportunities (Domínio III)"
+    uso: "Informar auditoria, estratégia de diferenciação, assets"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - synthesize-data
+  - generate-insights
+  - generate-research-report
+  - analyze-white-spaces
+  - prepare-handoffs
+
+commands:
+  - "*synthesize-insights"   # Síntese completa
+  - "*white-space-scan"      # Análise de white spaces
+
+references:
+  - name: "McKinsey MECE"
+    aplicacao: "Estruturação de análise"
+
+  - name: "Pyramid Principle"
+    aplicacao: "Comunicação de insights"
+
+  - name: "Taxonomia de Diferenciais"
+    aplicacao: "Estrutura de output"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - pesquisa-qualitativa-framework.yaml  # Framework de 3 níveis de pesquisa
+  - fontes-pesquisa-referencia.yaml      # 8 relatórios anuais + 74 fontes abertas
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml       # Insights sobre decisões (Sistema 1/2)
+  - jtbd-framework.yaml              # Insights orientados a Jobs To Be Done
+
+templates:
+  - relatorio-pesquisa-insights.md     # Template do relatório de pesquisa
+
+checkpoint: 3  # Estratégia validada
+
+confidence: 0.94
+version: "1.2"

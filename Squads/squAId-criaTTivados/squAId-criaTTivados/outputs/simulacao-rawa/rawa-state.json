@@ -1,0 +1,41 @@
+{
+  "squad": "squAId-criaTTivados",
+  "run_id": "simulacao-rawa-2026-02-09",
+  "target": "RAWA (marca fictícia — café especial)",
+  "status": "completed",
+  "started_at": "2026-02-09T10:00:00-03:00",
+  "completed_at": "2026-02-09T14:30:00-03:00",
+  "stages_completed": [
+    {
+      "stage": 1,
+      "name": "Briefing & Onboarding",
+      "squad": "atendimento",
+      "status": "completed",
+      "output": "Briefing BranDesire (16 campos preenchidos)"
+    },
+    {
+      "stage": 2,
+      "name": "Pesquisa & Dados",
+      "squad": "search-insights",
+      "status": "completed",
+      "output": "Insights Document (mercado de café especial)"
+    },
+    {
+      "stage": 3,
+      "name": "Posicionamento Estratégico",
+      "squad": "deenea",
+      "status": "completed",
+      "phases": [
+        {"phase": 1, "agent": "audience-mapper", "status": "completed"},
+        {"phase": 2, "agent": "narrative-identity-architect", "status": "completed"},
+        {"phase": 3, "agent": "brand-personality-architect", "status": "completed"},
+        {"phase": 4, "agent": "culture-community-architect", "status": "completed"},
+        {"phase": 5, "agent": "strategic-synthesizer", "status": "completed"}
+      ],
+      "output": "Brand Strategy Document (RAWA)"
+    }
+  ],
+  "stages_pending": [4, 5, 6, 7, 8, 9, 10],
+  "notes": "Simulação focada nas fases DEENEA (stages 1-3). Validação completa das 5 fases sequenciais com passagem de contexto entre agentes.",
+  "validation": "docs/SIMULACAO-DEENEA-MARCA-FICTICIA.md"
+}

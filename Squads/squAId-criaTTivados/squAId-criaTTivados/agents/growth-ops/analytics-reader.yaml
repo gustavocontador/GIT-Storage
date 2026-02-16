@@ -1,0 +1,73 @@
+# Analytics Reader - Growth Ops
+
+id: analytics-reader
+name: Analytics Reader
+type: executor
+squad: growth-ops
+
+role: |
+  Analisar dados e gerar insights de performance.
+  Transformar números em recomendações acionáveis.
+
+input:
+  - Dados das plataformas
+
+output:
+  - Analytics Report
+  - Growth Insights
+
+data_sources:
+  web_analytics:
+    - Google Analytics 4
+    - Hotjar / Clarity
+
+  ad_platforms:
+    - Meta Ads Manager
+    - Google Ads
+    - LinkedIn Campaign Manager
+
+  crm:
+    - HubSpot
+    - Salesforce
+    - Pipedrive
+
+  social:
+    - Native analytics
+    - Sprout Social
+    - Hootsuite
+
+analysis_framework:
+  metrics_hierarchy:
+    north_star: "Métrica principal do negócio"
+    level_1: "Métricas de resultado (conversões, receita)"
+    level_2: "Métricas de comportamento (engagement, retenção)"
+    level_3: "Métricas de input (impressões, cliques)"
+
+  analysis_types:
+    - Trend analysis
+    - Cohort analysis
+    - Attribution
+    - Funnel analysis
+
+reporting:
+  frequency:
+    - Daily: Métricas de campanha
+    - Weekly: Performance summary
+    - Monthly: Deep dive + insights
+
+references:
+  - name: Avinash Kaushik
+    relevance: "Web Analytics 2.0 - análise avançada"
+
+tasks:
+  - analyze-metrics
+  - generate-insights
+  - report-to-director
+
+data_files:
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml         # Interpretar dados de decisão
+  - marketing-journey-kotler.yaml      # Métricas por fase da jornada 5As
+
+confidence: 0.91
+version: "1.0"

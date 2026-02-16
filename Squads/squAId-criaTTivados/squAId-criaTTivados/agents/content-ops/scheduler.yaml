@@ -1,0 +1,175 @@
+# Scheduler - Content Ops v1.1
+# Agendamento estratégico de conteúdo multiplataforma
+
+id: scheduler
+name: Scheduler
+type: executor
+squad: content-ops
+version: "1.1"
+
+role: |
+  Organizar e agendar publicações em todas as plataformas.
+  Manter calendário atualizado, otimizar horários com base em
+  dados de engajamento e garantir publicações pontuais.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_content_director:
+    - campo: content_strategy_document
+      tipo: string
+      descricao: "Estratégia de conteúdo aprovada com cadência e plataformas"
+  de_produce_content:
+    - campo: conteudos_aprovados
+      tipo: lista
+      descricao: "Conteúdos com copy + visual aprovados pelo CBO"
+
+output:
+  - campo: content_calendar
+    tipo: documento
+    destino: "content-director (revisão)"
+    descricao: "Calendário editorial completo (mínimo 4 semanas)"
+  - campo: scheduled_posts
+    tipo: lista
+    destino: "plataformas de publicação"
+    descricao: "Posts configurados com data/hora, copy, visual, CTAs"
+
+# ═══════════════════════════════════════════════════════════════════
+# CALENDAR MANAGEMENT
+# ═══════════════════════════════════════════════════════════════════
+calendar_management:
+  structure:
+    mensal:
+      descricao: "Visão panorâmica de temas e campanhas"
+      conteudo: "Temas semanais, datas comemorativas, lançamentos"
+    semanal:
+      descricao: "Detalhamento com posts específicos"
+      conteudo: "Título, plataforma, formato, horário por dia"
+    diario:
+      descricao: "Execução e monitoramento"
+      conteudo: "Publicação, acompanhamento de performance inicial"
+
+  elements_per_post:
+    - campo: data_hora
+      descricao: "Data e horário otimizado para a plataforma"
+    - campo: plataforma
+      descricao: "Canal de publicação (Instagram, LinkedIn, TikTok, etc.)"
+    - campo: formato
+      descricao: "Tipo de conteúdo (Feed, Stories, Reels, Article, Short)"
+    - campo: copy_aprovado
+      descricao: "Texto final aprovado pelo content-director"
+    - campo: visual_aprovado
+      descricao: "Peça visual/vídeo aprovado"
+    - campo: links_ctas
+      descricao: "URLs de destino e chamadas para ação"
+    - campo: hashtags
+      descricao: "Hashtags categorizadas (marca, nicho, trending)"
+
+# ═══════════════════════════════════════════════════════════════════
+# SCHEDULING BEST PRACTICES
+# ═══════════════════════════════════════════════════════════════════
+scheduling_best_practices:
+  instagram:
+    feed:
+      horarios: ["07:00-09:00", "17:00-19:00"]
+      nota: "Manhã e final de tarde — picos de engagement"
+    stories:
+      horarios: ["ao longo do dia"]
+      nota: "Manter presença constante, máx 5-7 stories/dia"
+    reels:
+      horarios: ["12:00-14:00", "19:00-21:00"]
+      nota: "Horários de consumo de vídeo curto"
+
+  linkedin:
+    articles:
+      horarios: ["07:00-09:00", "12:00-13:00"]
+      dias: "Terça a quinta — maior engajamento B2B"
+    posts:
+      horarios: ["08:00-10:00"]
+      dias: "Dias úteis apenas"
+
+  tiktok:
+    videos:
+      horarios: ["17:00-19:00", "20:00-22:00"]
+      nota: "Final de tarde e início da noite"
+    trends:
+      horarios: ["imediato"]
+      nota: "Trends exigem velocidade — publicar em até 24h"
+
+  youtube:
+    shorts:
+      horarios: ["12:00-14:00", "18:00-20:00"]
+    longform:
+      horarios: ["Sábado 10:00", "Domingo 10:00"]
+      nota: "Finais de semana para conteúdo longo"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - plan-content-calendar
+  - schedule-posts
+
+commands:
+  - "*plan-calendar"       # Criar calendário editorial
+  - "*schedule"            # Agendar posts aprovados
+  - "*optimize-timing"     # Reotimizar horários com dados
+
+# ═══════════════════════════════════════════════════════════════════
+# DATA FILES & REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+data_files:
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml        # Sistema 1/2 para otimização de timing
+  - hook-model-eyal.yaml              # Triggers externos para timing
+
+references:
+  - name: "Sprout Social"
+    aplicacao: "Best times to post por plataforma (dados atualizados)"
+  - name: "Nir Eyal"
+    work: "Hooked"
+    aplicacao: "Triggers de hábito para timing de publicação"
+
+handoff:
+  destino: "content-director"
+  entrega: "Content Calendar + Posts agendados"
+
+confidence: 0.87
+
+# ═══════════════════════════════════════════════════════════════════
+# OUTPUT EXAMPLES
+# ═══════════════════════════════════════════════════════════════════
+output_examples:
+  content_calendar_week:
+    semana: "Semana 1 — Lançamento RAWA"
+    posts:
+      - dia: "Segunda"
+        plataforma: "Instagram Reels"
+        formato: "Vídeo 15s"
+        tema: "De onde vem seu café? Conheça a Fazenda São João"
+        horario: "18:00"
+        hashtags: ["#RAWA", "#CaféEspecial", "#DaFazendaÀXícara"]
+      - dia: "Terça"
+        plataforma: "LinkedIn"
+        formato: "Post com imagem"
+        tema: "Por que rastreabilidade importa no café especial"
+        horario: "08:30"
+      - dia: "Quarta"
+        plataforma: "TikTok"
+        formato: "Vídeo 30s"
+        tema: "POV: você escaneou o QR code do seu café"
+        horario: "19:00"
+      - dia: "Quinta"
+        plataforma: "Instagram Feed"
+        formato: "Carrossel 5 slides"
+        tema: "5 coisas que você não sabia sobre café de especialidade"
+        horario: "07:30"
+      - dia: "Sexta"
+        plataforma: "Instagram Stories"
+        formato: "Enquete + Bastidores"
+        tema: "Você sabe de onde vem o café que está tomando agora?"
+        horario: "12:00"
+  scheduling_note: |
+    Cadência: 5 posts/semana na fase de lançamento.
+    Ajustar para 3x/semana após semana 4, mantendo Reels + TikTok priorizados.

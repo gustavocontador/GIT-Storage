@@ -1,0 +1,38 @@
+ID,Nome,Tipo,Squad,Layer,Reporta Para,Comandos,Referências,Confidence
+cbo,CBO - Chief Brand Officer,director_general,,top_level,Cliente,"*validate-strategy, *validate-identity, *validate-creative, *approve-delivery","David Ogilvy, Marty Neumeier, Seth Godin",0.95
+account-director,Account Director,director,Atendimento,strategic,CBO,"*collect-briefing, *validate-assets, *run-checkpoint","Jon Steel, David Maister, Atul Gawande, Michael Bungay Stanier",0.94
+briefing-collector,Briefing Collector,executor,Atendimento,strategic,Account Director,run-unniko-session,"Método unniko, Michael Bungay Stanier",0.92
+client-analyst,Client Analyst,executor,Atendimento,strategic,Account Director,analyze-client,"McKinsey Problem Solving, Barbara Minto",0.91
+asset-manager,Asset Manager,executor,Atendimento,strategic,Account Director,organize-assets,"Basecamp, GTD (David Allen)",0.90
+checkpoint-validator,Checkpoint Validator,executor,Atendimento,strategic,Account Director,validate-checkpoint,"Atul Gawande, QA frameworks",0.92
+research-director,Research Director,director,Search & Insights,strategic,CBO,"*research-market, *analyze-competition, *generate-insights","McKinsey, BCG",0.93
+data-miner,Data Miner,executor,Search & Insights,strategic,Research Director,"mine-market-data, extract-nielsen-data, extract-lca-data","Nielsen, LCA",0.91
+trend-analyst,Trend Analyst,executor,Search & Insights,strategic,Research Director,"analyze-trends, consult-euromonitor, consult-mintel, consult-wgsn","Euromonitor, Mintel, WGSN",0.90
+insight-synthesizer,Insight Synthesizer,executor,Search & Insights,strategic,Research Director,synthesize-insights,,0.91
+strategy-director,Strategy Director,director,DEENEA,strategic,CBO,"*define-purpose, *map-audience, *build-positioning","Simon Sinek, Jim Collins, Al Ries",0.95
+purpose-architect,Purpose Architect,executor,DEENEA,strategic,Strategy Director,"build-ikigai, define-purpose-mission","Simon Sinek, Ikigai",0.93
+audience-mapper,Audience Mapper,executor,DEENEA,strategic,Strategy Director,map-audience,"Clayton Christensen (JTBD), IDEO",0.94
+brand-architect,Brand Architect,executor,DEENEA,strategic,Strategy Director,"build-positioning, validate-positioning","Al Ries & Jack Trout",0.92
+culture-definer,Culture Definer,executor,DEENEA,strategic,Strategy Director,define-values-culture,,0.91
+archetype-mapper,Archetype Mapper,executor,DEENEA,strategic,Strategy Director,map-archetypes,"Carl Jung, Jennifer Aaker",0.93
+brand-director,Brand Director,director,UNNIKO,strategic,CBO,"*define-promise, *map-differentiators, *build-design-system","Michael Porter, Marty Neumeier, Wally Olins",0.94
+competitive-analyst,Competitive Analyst,executor,UNNIKO,strategic,Brand Director,analyze-competitive-gaps,Michael Porter,0.92
+promise-designer,Promise Designer,executor,UNNIKO,strategic,Brand Director,"design-promise, define-differentiators",,0.91
+design-system-architect,Design System Architect,executor,UNNIKO,strategic,Brand Director,build-design-system,"Brad Frost, Design Tokens",0.93
+identity-architect,Identity Architect,executor,UNNIKO,strategic,Brand Director,"create-brand-concept, define-sensory-artifacts, compile-identity","Wally Olins, Alina Wheeler",0.92
+creative-director,Creative Director,director,storYOURtelling,creative,CBO,"*develop-big-idea, *create-concept, *direct-creative","Lee Clow, Nizan Guanaes, David Droga",0.96
+big-idea-architect,Big Idea Architect,executor,storYOURtelling,creative,Creative Director,"develop-big-idea, select-big-idea","Luke Sullivan, James Webb Young",0.94
+concept-writer,Concept Writer,executor,storYOURtelling,creative,Creative Director,"create-core-concept, define-tone-of-voice","John Hegarty, Dave Trott",0.93
+copywriter,Copywriter,executor,storYOURtelling,creative,Creative Director,write-copy,"Gary Halbert, David Ogilvy, Eugene Schwartz",0.95
+art-director,Art Director,executor,storYOURtelling,creative,Creative Director,direct-visual,"Paula Scher, Aaron Draplin",0.94
+narrative-designer,Narrative Designer,executor,storYOURtelling,creative,Creative Director,"map-emotions, select-storytelling-framework, design-narrative","Joseph Campbell, Robert McKee",0.95
+content-director,Content Director,director,Content Ops,operations,CBO,"*plan-content, *review-content, *manage-calendar","Gary Vaynerchuk, Ann Handley",0.92
+social-media-strategist,Social Media Strategist,executor,Content Ops,operations,Content Director,"define-platform-strategy, analyze-content-performance","Matt Navarra, Social Media Examiner",0.90
+content-producer,Content Producer,executor,Content Ops,operations,Content Director,"produce-copy-content, repurpose-content",Ann Handley,0.89
+visual-creator,Visual Creator,executor,Content Ops,operations,Content Director,create-visual-content,,0.88
+scheduler,Scheduler,executor,Content Ops,operations,Content Director,"plan-content-calendar, schedule-posts",,0.87
+growth-director,Growth Director,director,Growth Ops,operations,CBO,"*analyze-funnel, *optimize-campaign, *report-metrics","Sean Ellis, Andrew Chen",0.93
+traffic-manager,Traffic Manager,executor,Growth Ops,operations,Growth Director,"setup-campaigns, manage-traffic",,0.89
+funnel-architect,Funnel Architect,executor,Growth Ops,operations,Growth Director,design-funnel,"Russell Brunson, Ryan Deiss",0.91
+campaign-optimizer,Campaign Optimizer,executor,Growth Ops,operations,Growth Director,"run-ab-tests, optimize-campaigns","CXL Institute, Peep Laja",0.90
+analytics-reader,Analytics Reader,executor,Growth Ops,operations,Growth Director,"analyze-metrics, generate-insights, report-to-director",Avinash Kaushik,0.91

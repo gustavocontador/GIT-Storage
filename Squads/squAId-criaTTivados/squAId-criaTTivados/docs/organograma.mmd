@@ -1,0 +1,86 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4F46E5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730A3', 'lineColor': '#6366F1', 'secondaryColor': '#818CF8', 'tertiaryColor': '#C7D2FE'}}}%%
+flowchart TB
+    subgraph TOP["🎯 TOP LEVEL"]
+        CBO["<b>CBO</b><br/>Chief Brand Officer<br/><i>O Maestro dos Maestros</i>"]
+    end
+
+    subgraph STRATEGIC["📊 STRATEGIC LAYER"]
+        subgraph ATD["ATENDIMENTO"]
+            AD["<b>Account Director</b>"]
+            BC["Briefing Collector"]
+            CA["Client Analyst"]
+            AM["Asset Manager"]
+            CV["Checkpoint Validator"]
+            AD --> BC & CA & AM & CV
+        end
+
+        subgraph SI["SEARCH & INSIGHTS"]
+            RD["<b>Research Director</b>"]
+            DM["Data Miner"]
+            TA["Trend Analyst"]
+            IS["Insight Synthesizer"]
+            RD --> DM & TA & IS
+        end
+
+        subgraph DEE["DEENEA"]
+            STD["<b>Strategy Director</b>"]
+            PA["Purpose Architect"]
+            AUM["Audience Mapper"]
+            BA["Brand Architect"]
+            CD["Culture Definer"]
+            ARM["Archetype Mapper"]
+            STD --> PA & AUM & BA & CD & ARM
+        end
+
+        subgraph UNN["UNNIKO"]
+            BD["<b>Brand Director</b>"]
+            CAn["Competitive Analyst"]
+            PD["Promise Designer"]
+            DSA["Design System Architect"]
+            IA["Identity Architect"]
+            BD --> CAn & PD & DSA & IA
+        end
+    end
+
+    subgraph CREATIVE["🎨 CREATIVE LAYER"]
+        subgraph SYT["storYOURtelling"]
+            CRD["<b>Creative Director</b>"]
+            BIA["Big Idea Architect"]
+            CW["Concept Writer"]
+            CPY["Copywriter"]
+            ARD["Art Director"]
+            ND["Narrative Designer"]
+            CRD --> BIA & CW & CPY & ARD & ND
+        end
+    end
+
+    subgraph OPS["⚙️ OPERATIONS LAYER"]
+        subgraph CO["CONTENT OPS"]
+            COD["<b>Content Director</b>"]
+            SMS["Social Media Strategist"]
+            CP["Content Producer"]
+            VC["Visual Creator"]
+            SCH["Scheduler"]
+            COD --> SMS & CP & VC & SCH
+        end
+
+        subgraph GO["GROWTH OPS"]
+            GD["<b>Growth Director</b>"]
+            TM["Traffic Manager"]
+            FA["Funnel Architect"]
+            CAO["Campaign Optimizer"]
+            AR["Analytics Reader"]
+            GD --> TM & FA & CAO & AR
+        end
+    end
+
+    CBO --> AD & RD & STD & BD & CRD & COD & GD
+
+    style CBO fill:#4F46E5,stroke:#3730A3,color:#fff
+    style AD fill:#10B981,stroke:#059669,color:#fff
+    style RD fill:#10B981,stroke:#059669,color:#fff
+    style STD fill:#10B981,stroke:#059669,color:#fff
+    style BD fill:#10B981,stroke:#059669,color:#fff
+    style CRD fill:#F59E0B,stroke:#D97706,color:#fff
+    style COD fill:#EF4444,stroke:#DC2626,color:#fff
+    style GD fill:#EF4444,stroke:#DC2626,color:#fff

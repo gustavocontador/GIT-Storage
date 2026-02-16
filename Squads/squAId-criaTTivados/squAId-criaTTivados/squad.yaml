@@ -1,0 +1,130 @@
+# squAId criaTTivados - AI-Native Creative Agency
+# Gerado por: @squad-creator (Craft)
+# Data: 2026-02-05
+
+name: squAId-criaTTivados
+display_name: "squAId criaTTivados"
+description: "AI-Native Creative Agency - Agência 100% IA e 100% Inteligência Humana"
+manifesto: "Somos uma agência 100% IA e 100% Inteligência Humana. Por isso, somos 200%."
+domain: Branding, Marketing & Creative
+version: "2.1"
+author: "Edu Garretano × Claude"
+entry_agent: cbo
+tested: true
+
+# Metodologia Core
+methodology:
+  name: BranDesire
+  description: "Framework de 16 campos para captura profunda de essência de marca"
+  checkpoint_system: true
+
+# Hierarquia
+hierarchy:
+  top_level: cbo
+  layers:
+    strategic:
+      - atendimento
+      - search-insights
+      - deenea
+      - unniko
+    creative:
+      - storytelling
+    operations:
+      - content-ops
+      - growth-ops
+
+# Sub-squads
+sub_squads:
+  - id: atendimento
+    name: Atendimento
+    description: "Captura e validação de briefing usando metodologia BranDesire"
+    director: account-director
+
+  - id: search-insights
+    name: Search & Insights
+    description: "Pesquisa de mercado, tendências e dados"
+    director: research-director
+
+  - id: deenea
+    name: DEENEA
+    description: "Posicionamento estratégico - propósito, valores, arquétipos"
+    director: strategy-director
+
+  - id: unniko
+    name: UNNIKO
+    description: "Diferenciação e Design System"
+    director: brand-director
+
+  - id: storytelling
+    name: storYOURtelling
+    description: "Criação - Big Idea, narrativa, tom de voz"
+    director: creative-director
+
+  - id: content-ops
+    name: Content Ops
+    description: "Produção e gestão de conteúdo"
+    director: content-director
+
+  - id: growth-ops
+    name: Growth Ops
+    description: "Performance, funis e crescimento"
+    director: growth-director
+
+# Checkpoints de validação
+checkpoints:
+  - id: 1
+    name: Pesquisa
+    verifica: "Pesquisa de marca (3 níveis), dados, insights, análise de mercado"
+    squad: search-insights
+    entregavel: Relatório de Pesquisa & Insights
+
+  - id: 2
+    name: Posicionamento
+    verifica: "Propósito, valores, personas, arquétipos"
+    squad: deenea
+    entregavel: Brand Strategy Document
+
+  - id: 3
+    name: Diferenciação
+    verifica: "Promessa, diferenciais, Design System"
+    squad: unniko
+    entregavel: Brand Identity Document
+
+  - id: 4
+    name: Big Idea
+    verifica: "Conceito criativo, narrativa, tom de voz"
+    squad: storytelling
+    entregavel: Creative Brief
+
+# Caminhos
+paths:
+  agents: ./agents/
+  tasks: ./tasks/
+  workflows: ./workflows/
+  data: ./data/
+  templates: ./templates/
+  checklists: ./checklists/
+  config: ./config/
+  scripts: ./scripts/
+  tools: ./tools/
+
+# Estatísticas (atualizado: 2026-02-08)
+stats:
+  agents: 43
+  directors: 8
+  executors: 35
+  tasks: 30
+  checklists: 8
+  data_files: 47
+  workflows: 14
+  templates: 7
+  config_files: 3
+  scripts: 2
+  tools: 2
+
+# Metadados
+metadata:
+  created_at: "2026-02-05"
+  updated_at: "2026-02-10"
+  blueprint: "../.designs/criaTTivados-squad-design.yaml"
+  confidence: 0.95

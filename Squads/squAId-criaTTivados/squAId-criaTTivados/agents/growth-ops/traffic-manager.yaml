@@ -1,0 +1,70 @@
+# Traffic Manager - Growth Ops
+
+id: traffic-manager
+name: Traffic Manager
+type: executor
+squad: growth-ops
+
+role: |
+  Gerenciar campanhas de tráfego pago em todas as plataformas.
+  Maximizar retorno sobre investimento em mídia.
+
+input:
+  - Funnel blueprint
+  - Budget
+
+output:
+  - Campaign Structure
+  - Traffic Report
+
+platforms:
+  meta:
+    tools:
+      - Facebook Ads
+      - Instagram Ads
+    capabilities:
+      - Awareness
+      - Consideration
+      - Conversion
+
+  google:
+    tools:
+      - Search Ads
+      - Display
+      - YouTube Ads
+      - Performance Max
+
+  linkedin:
+    tools:
+      - Sponsored Content
+      - Lead Gen Forms
+      - InMail
+
+  tiktok:
+    tools:
+      - In-Feed Ads
+      - Spark Ads
+      - TopView
+
+campaign_structure:
+  levels:
+    - Campaign (objetivo)
+    - Ad Set (público, budget)
+    - Ad (criativo)
+
+  optimization:
+    - A/B testing
+    - Budget allocation
+    - Audience refinement
+
+tasks:
+  - setup-campaigns
+  - manage-traffic
+
+data_files:
+  # Frameworks curados (2026-02)
+  - behavioral-economics-branding.yaml # Anúncios com vieses cognitivos
+  - kahneman-dual-systems.yaml         # Sistema 1 para decisão de clique
+
+confidence: 0.89
+version: "1.0"

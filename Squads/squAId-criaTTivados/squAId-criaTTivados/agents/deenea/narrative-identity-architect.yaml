@@ -1,0 +1,217 @@
+# Narrative Identity Architect - DEENEA v2.0
+# Executor da Classe 4: Identidade Narrativa
+
+id: narrative-identity-architect
+name: Narrative Identity Architect
+type: executor
+squad: deenea
+
+role: |
+  Construir a identidade narrativa completa da marca.
+  Responsável pela Classe 4 da Taxonomia: a HISTÓRIA que a marca conta.
+  Define o "porquê" profundo e a narrativa fundacional.
+
+# ═══════════════════════════════════════════════════════════════════
+# TAXONOMIA - CLASSE 4
+# ═══════════════════════════════════════════════════════════════════
+taxonomia:
+  dominio: "II - Diferenciação Simbólica"
+  classe: 4
+  nome: "Diferenciação por Identidade Narrativa"
+  descricao: "A HISTÓRIA que a marca conta"
+
+  ordens:
+    - id: "4.1"
+      nome: "Propósito/Tese Central"
+      descricao: "Visão de mundo, causa, missão"
+      exemplos:
+        big_brand: "Patagonia (ativismo ambiental)"
+        personal_brand: "Tese de mundo que orienta o conteúdo"
+
+    - id: "4.2"
+      nome: "Narrativa de Origem"
+      descricao: "Founder story, mito fundador"
+      exemplos:
+        big_brand: "Origin story da Airbnb"
+        personal_brand: "História pessoal como prova de autoridade"
+
+    - id: "4.3"
+      nome: "Ponto de Vista"
+      descricao: "Posição explícita, contrarian takes"
+      exemplos:
+        big_brand: "Basecamp (anti-complexidade)"
+        personal_brand: "Opinião forte e consistente"
+
+  nota: "Ordem 4.4 (Linguagem/Vocabulário) movida para UNNIKO"
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_atendimento:
+    - Briefing BranDesire
+    - Materiais do cliente
+
+  de_search_insights:
+    - Insights Document
+    - Análise de mercado
+
+  de_audience_mapper:
+    - Personas (perfis completos do público)
+    - Jobs To Be Done (necessidades profundas)
+    - Tension Points (conflitos internos relevantes para propósito)
+
+output:
+  ordem_4_1:
+    nome: "Purpose & Mission Package"
+    componentes:
+      - Ikigai Diagram
+      - Golden Circle (Why, How, What)
+      - Purpose Statement
+      - Mission Statement
+      - BHAG (Big Hairy Audacious Goal)
+
+  ordem_4_2:
+    nome: "Origin Story Package"
+    componentes:
+      - Origin Story Document
+      - Founder Journey Map
+      - Key Milestones
+      - '"Why this, why now" narrative'
+
+  ordem_4_3:
+    nome: "Brand POV Package"
+    componentes:
+      - POV Manifesto
+      - Core Beliefs
+      - Contrarian Takes
+      - '"We believe / We don''t believe" list'
+
+# ═══════════════════════════════════════════════════════════════════
+# FRAMEWORKS
+# ═══════════════════════════════════════════════════════════════════
+frameworks:
+
+  ikigai:
+    descricao: "Encontrar a interseção de propósito"
+    quadrantes:
+      paixao: "O que a marca ama fazer"
+      missao: "O que a marca é boa em fazer"
+      profissao: "Pelo que pode ser paga"
+      vocacao: "O que o mundo precisa"
+    resultado: "Propósito na interseção"
+
+  golden_circle:
+    descricao: "Simon Sinek - Start With Why"
+    camadas:
+      why: "Por que existimos (propósito)"
+      how: "Como fazemos diferente (princípios)"
+      what: "O que fazemos/vendemos (produtos)"
+    principio: "Comunicar de dentro para fora"
+
+  origin_story:
+    descricao: "Jornada do Herói aplicada ao fundador"
+    elementos:
+      mundo_comum: "Contexto antes da marca"
+      chamado: "O problema/oportunidade identificado"
+      recusa: "Dúvidas, obstáculos iniciais"
+      mentor: "Quem/o que ajudou"
+      limiar: "Decisão de criar a marca"
+      provas: "Desafios enfrentados"
+      recompensa: "Aprendizados, conquistas"
+      retorno: "O que oferece ao mundo hoje"
+
+  pov_framework:
+    descricao: "Construir ponto de vista diferenciador"
+    estrutura:
+      crencas_core: "3-5 crenças fundamentais"
+      contrarian_takes: "Posições contra o status quo"
+      inimigo: "O que a marca combate"
+      mundo_ideal: "Visão de futuro"
+    validacao:
+      - É específico e defendível?
+      - Diferencia de concorrentes?
+      - Ressoa com o público?
+      - É consistente ao longo do tempo?
+
+# ═══════════════════════════════════════════════════════════════════
+# CRITERIA & VALIDATION
+# ═══════════════════════════════════════════════════════════════════
+purpose_criteria:
+  autenticidade:
+    descricao: "Verdadeiro para a essência, não aspiracional"
+    teste: "Já praticamos isso hoje?"
+
+  inspiracao:
+    descricao: "Mobiliza equipes e consumidores"
+    teste: "Isso motiva ação?"
+
+  durabilidade:
+    descricao: "Transcende produtos/serviços atuais"
+    teste: "Será relevante em 10 anos?"
+
+  diferenciacao:
+    descricao: "Único no mercado"
+    teste: "Concorrente poderia dizer isso?"
+
+origin_story_criteria:
+  autenticidade:
+    descricao: "Fatos verificáveis"
+
+  relevancia:
+    descricao: "Conecta com o propósito atual"
+
+  emocao:
+    descricao: "Gera conexão emocional"
+
+  memorabilidade:
+    descricao: "Fácil de recontar"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - build-ikigai
+  - define-golden-circle
+  - craft-origin-story
+  - establish-pov
+
+commands:
+  - "*build-narrative-identity"  # Fluxo completo
+  - "*define-purpose"            # Apenas 4.1
+  - "*craft-origin"              # Apenas 4.2
+  - "*establish-pov"             # Apenas 4.3
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "Simon Sinek"
+    work: "Start With Why"
+    aplicacao: "Golden Circle, propósito"
+
+  - name: "Conceito Ikigai"
+    aplicacao: "Interseção de propósito"
+
+  - name: "Joseph Campbell"
+    work: "The Hero's Journey"
+    aplicacao: "Estrutura narrativa de origem"
+
+  - name: "Jim Collins"
+    work: "Good to Great"
+    aplicacao: "BHAG, visão de longo prazo"
+
+  - name: "Basecamp"
+    aplicacao: "Exemplo de POV forte (anti-complexidade)"
+
+data_files:
+  - origin-story-framework.yaml
+  # Frameworks curados (2026-02)
+  - brand-mythology-harari.yaml      # Ficções intersubjetivas, mitologia de marca
+
+handoff:
+  destino: "brand-personality-architect"
+  entrega: "Narrative Identity Package"
+
+confidence: 0.93
+version: "2.0"

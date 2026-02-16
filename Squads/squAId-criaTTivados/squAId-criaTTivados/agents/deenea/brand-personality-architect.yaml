@@ -1,0 +1,306 @@
+# Brand Personality Architect - DEENEA v2.0
+# Executor da Classe 5: Personalidade
+
+id: brand-personality-architect
+name: Brand Personality Architect
+type: executor
+squad: deenea
+
+role: |
+  Definir a personalidade completa da marca.
+  Responsável pela Classe 5 da Taxonomia: o CARÁTER que a marca projeta.
+  Estabelece arquétipo, tom e postura relacional.
+
+# ═══════════════════════════════════════════════════════════════════
+# TAXONOMIA - CLASSE 5
+# ═══════════════════════════════════════════════════════════════════
+taxonomia:
+  dominio: "II - Diferenciação Simbólica"
+  classe: 5
+  nome: "Diferenciação por Personalidade"
+  descricao: "O CARÁTER que a marca projeta"
+
+  ordens:
+    - id: "5.1"
+      nome: "Tom de Voz"
+      descricao: "Registro comunicacional, humor, provocação"
+      scope: "DEFINIÇÃO (execução em UNNIKO)"
+      exemplos:
+        big_brand: "Wendy's (sarcástico)"
+        personal_brand: "Estilo de escrita reconhecível"
+
+    - id: "5.2"
+      nome: "Arquétipo Dominante"
+      descricao: "Herói, Rebelde, Sábio, etc."
+      exemplos:
+        big_brand: "Nike (Herói)"
+        personal_brand: "Postura arquetípica coerente"
+
+    - id: "5.3"
+      nome: "Postura Relacional"
+      descricao: "Como trata o público"
+      exemplos:
+        big_brand: "Apple (guru) vs Samsung (companheiro)"
+        personal_brand: "Dinâmica com a audiência"
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_narrative_identity:
+    - Purpose & Mission
+    - Origin Story
+    - Brand POV
+
+  de_audience_mapper:
+    - Personas (para calibrar personalidade com público)
+    - Expectativas do público (dinâmicas relacionais preferidas)
+    - Audience Segmentation (clusters e padrões)
+
+  de_search_insights:
+    - Personalidade percebida (verbatims do público)
+    - Percepção de marca no mercado
+
+output:
+  ordem_5_1:
+    nome: "Voice Personality Definition"
+    componentes:
+      - Voice Attributes (3-5 adjetivos)
+      - Voice Spectrum (formal ↔ casual, etc.)
+      - Voice Examples (this vs. not this)
+    nota: "Guidelines completas em UNNIKO"
+
+  ordem_5_2:
+    nome: "Archetype Profile"
+    componentes:
+      - Primary Archetype
+      - Shadow/Secondary Archetype
+      - Archetype Manifestation Guide
+      - Character Traits
+
+  ordem_5_3:
+    nome: "Relational Posture Guide"
+    componentes:
+      - Brand-Audience Dynamic
+      - Relationship Metaphor
+      - Interaction Principles
+      - Boundaries & Taboos
+
+# ═══════════════════════════════════════════════════════════════════
+# FRAMEWORKS
+# ═══════════════════════════════════════════════════════════════════
+frameworks:
+
+  jung_archetypes:
+    descricao: "12 Arquétipos do inconsciente coletivo"
+    categorias:
+      ego:
+        innocent:
+          motivacao: "Ser feliz"
+          medo: "Ser punido"
+          estrategia: "Fazer o certo"
+          marcas: ["Dove", "Coca-Cola"]
+
+        sage:
+          motivacao: "Encontrar a verdade"
+          medo: "Ignorância"
+          estrategia: "Buscar conhecimento"
+          marcas: ["Google", "BBC"]
+
+        explorer:
+          motivacao: "Liberdade"
+          medo: "Conformidade"
+          estrategia: "Viajar, experimentar"
+          marcas: ["Jeep", "North Face"]
+
+      order:
+        ruler:
+          motivacao: "Controle"
+          medo: "Caos"
+          estrategia: "Exercer liderança"
+          marcas: ["Rolex", "Mercedes"]
+
+        creator:
+          motivacao: "Criar valor"
+          medo: "Mediocridade"
+          estrategia: "Desenvolver habilidades"
+          marcas: ["Apple", "Lego"]
+
+        caregiver:
+          motivacao: "Ajudar outros"
+          medo: "Egoísmo"
+          estrategia: "Fazer pelos outros"
+          marcas: ["Johnson's", "UNICEF"]
+
+      change:
+        magician:
+          motivacao: "Transformar"
+          medo: "Consequências negativas"
+          estrategia: "Desenvolver visão"
+          marcas: ["Disney", "Tesla"]
+
+        hero:
+          motivacao: "Provar valor"
+          medo: "Fraqueza"
+          estrategia: "Ser forte, corajoso"
+          marcas: ["Nike", "FedEx"]
+
+        outlaw:
+          motivacao: "Revolução"
+          medo: "Impotência"
+          estrategia: "Romper regras"
+          marcas: ["Harley-Davidson", "Virgin"]
+
+      belonging:
+        lover:
+          motivacao: "Intimidade"
+          medo: "Solidão"
+          estrategia: "Ser atraente"
+          marcas: ["Chanel", "Victoria's Secret"]
+
+        jester:
+          motivacao: "Prazer"
+          medo: "Tédio"
+          estrategia: "Divertir"
+          marcas: ["M&M's", "Fanta"]
+
+        everyman:
+          motivacao: "Pertencimento"
+          medo: "Ser excluído"
+          estrategia: "Ser autêntico"
+          marcas: ["IKEA", "Gap"]
+
+  aaker_dimensions:
+    descricao: "5 Dimensões de Personalidade de Marca"
+    dimensoes:
+      sincerity:
+        descricao: "Honesta, saudável, alegre, autêntica"
+        tracos: ["down-to-earth", "honest", "wholesome", "cheerful"]
+
+      excitement:
+        descricao: "Ousada, animada, imaginativa, contemporânea"
+        tracos: ["daring", "spirited", "imaginative", "up-to-date"]
+
+      competence:
+        descricao: "Confiável, inteligente, bem-sucedida"
+        tracos: ["reliable", "intelligent", "successful"]
+
+      sophistication:
+        descricao: "Classe alta, charmosa, elegante"
+        tracos: ["upper class", "charming", "glamorous"]
+
+      ruggedness:
+        descricao: "Resistente, forte, ao ar livre"
+        tracos: ["outdoorsy", "tough", "rugged"]
+
+  relational_postures:
+    descricao: "Dinâmicas relacionais marca-público"
+    posturas:
+      guru:
+        dinamica: "Marca sabe mais, ensina"
+        exemplo: "Apple, McKinsey"
+
+      companheiro:
+        dinamica: "Marca está junto, no mesmo nível"
+        exemplo: "Starbucks, Slack"
+
+      provocador:
+        dinamica: "Marca desafia, questiona"
+        exemplo: "Basecamp, Cards Against Humanity"
+
+      facilitador:
+        dinamica: "Marca capacita, dá ferramentas"
+        exemplo: "Shopify, Canva"
+
+      amigo:
+        dinamica: "Marca é íntima, próxima"
+        exemplo: "Mailchimp, Nubank"
+
+      mentor:
+        dinamica: "Marca guia a jornada"
+        exemplo: "MasterClass, HubSpot"
+
+  voice_spectrum:
+    dimensoes:
+      - eixo: "Formalidade"
+        polo_a: "Formal"
+        polo_b: "Casual"
+
+      - eixo: "Energia"
+        polo_a: "Calmo"
+        polo_b: "Energético"
+
+      - eixo: "Humor"
+        polo_a: "Sério"
+        polo_b: "Bem-humorado"
+
+      - eixo: "Posição"
+        polo_a: "Neutro"
+        polo_b: "Opinativo"
+
+      - eixo: "Técnica"
+        polo_a: "Técnico"
+        polo_b: "Acessível"
+
+# ═══════════════════════════════════════════════════════════════════
+# CRITERIA & VALIDATION
+# ═══════════════════════════════════════════════════════════════════
+personality_criteria:
+  coerencia_com_proposito:
+    descricao: "Personalidade reflete o propósito"
+    teste: "Faz sentido essa personalidade para essa missão?"
+
+  coerencia_com_publico:
+    descricao: "Personalidade ressoa com o público"
+    teste: "O público se identificaria com essa pessoa?"
+
+  diferenciacao:
+    descricao: "Personalidade distinta dos concorrentes"
+    teste: "Concorrentes poderiam ter essa mesma personalidade?"
+
+  sustentabilidade:
+    descricao: "Personalidade é mantida consistentemente"
+    teste: "Conseguimos sustentar isso em todos os contextos?"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - map-primary-archetype
+  - define-voice-personality
+  - establish-relational-posture
+
+commands:
+  - "*build-brand-personality"  # Fluxo completo
+  - "*map-archetype"            # Apenas 5.2
+  - "*define-voice"             # Apenas 5.1
+  - "*set-posture"              # Apenas 5.3
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "Carl Jung"
+    work: "Arquétipos"
+    aplicacao: "12 arquétipos de marca"
+
+  - name: "Jennifer Aaker"
+    work: "Brand Personality Scale (1997)"
+    aplicacao: "5 dimensões de personalidade"
+
+  - name: "Margaret Mark & Carol Pearson"
+    work: "The Hero and the Outlaw"
+    aplicacao: "Arquétipos em branding"
+
+data_files:
+  - brand-personality-aaker.yaml
+  - relational-posture-matrix.yaml
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml       # Sistema 1/2, vieses cognitivos (decisões emocionais)
+
+handoff:
+  destino: "culture-community-architect"
+  entrega: "Brand Personality Package"
+
+confidence: 0.93
+version: "2.0"

@@ -1,0 +1,253 @@
+# Client Analyst - Atendimento v1.1
+# Analista de Cliente com Pré-Mapeamento Taxonômico
+
+id: client-analyst
+name: Client Analyst
+type: executor
+squad: atendimento
+
+role: |
+  Analisar histórico, mercado e contexto do cliente.
+  Produzir relatório de análise que contextualiza o briefing
+  E fazer pré-mapeamento dos 3 Domínios da Taxonomia.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_briefing_collector:
+    - Briefing BranDesire completo
+    - Sinais taxonômicos identificados
+
+  de_asset_manager:
+    - Documentos organizados
+    - Materiais históricos
+
+  externo:
+    - Dados públicos do mercado
+    - Informações de concorrentes
+
+output:
+  principal:
+    - Client Analysis Report
+
+  taxonomia:
+    - Pre-Domain Analysis
+    - Hipóteses por domínio
+    - Gaps identificados
+
+# ═══════════════════════════════════════════════════════════════════
+# FRAMEWORK DE ANÁLISE
+# ═══════════════════════════════════════════════════════════════════
+analysis_framework:
+
+  business_context:
+    descricao: "Contexto do negócio"
+    elementos:
+      historico:
+        - Fundação e evolução
+        - Momentos-chave
+        - Transformações
+      posicao_atual:
+        - Tamanho e alcance
+        - Principais produtos/serviços
+        - Modelo de negócio
+      forcas_fraquezas:
+        - Recursos e capacidades
+        - Limitações conhecidas
+
+  market_context:
+    descricao: "Contexto de mercado"
+    elementos:
+      mercado:
+        - Tamanho estimado
+        - Tendências macro
+        - Disrupções potenciais
+      competicao:
+        - Players principais
+        - Posicionamentos
+        - Espaços em branco
+
+  communication_context:
+    descricao: "Contexto de comunicação"
+    elementos:
+      historico_marca:
+        - Campanhas anteriores
+        - Posicionamentos passados
+        - Resultados documentados
+      presenca_atual:
+        - Canais ativos
+        - Tom praticado
+        - Percepção pública
+
+# ═══════════════════════════════════════════════════════════════════
+# PRÉ-MAPEAMENTO TAXONÔMICO
+# ═══════════════════════════════════════════════════════════════════
+pre_domain_analysis:
+  descricao: |
+    Análise preliminar de onde a marca parece estar
+    forte ou fraca em cada domínio. NÃO é diagnóstico
+    final (isso é do Brand Auditor em UNNIKO), mas
+    hipóteses para orientar o trabalho.
+
+  dominio_I:
+    nome: "Diferenciação Substantiva"
+    pergunta: "O que a marca FAZ de diferente?"
+    analise:
+      classe_1_produto:
+        sinais_buscar:
+          - Features mencionados como únicos
+          - Qualidade citada
+          - Customização oferecida
+        evidencias: []  # Preencher na análise
+
+      classe_2_modelo:
+        sinais_buscar:
+          - Modelo de negócio diferente
+          - Canal exclusivo
+          - Processo proprietário
+        evidencias: []
+
+      classe_3_evidencia:
+        sinais_buscar:
+          - Cases e resultados
+          - Certificações e prêmios
+          - Testemunhos
+        evidencias: []
+
+    hipotese_forca: null  # 1-5
+    hipotese_gap: null
+
+  dominio_II:
+    nome: "Diferenciação Simbólica"
+    pergunta: "O que a marca SIGNIFICA?"
+    analise:
+      classe_4_narrativa:
+        sinais_buscar:
+          - Propósito declarado
+          - História de origem
+          - Ponto de vista
+        evidencias: []
+
+      classe_5_personalidade:
+        sinais_buscar:
+          - Arquétipo percebido
+          - Tom de voz
+          - Postura com público
+        evidencias: []
+
+      classe_6_cultura:
+        sinais_buscar:
+          - Valores declarados
+          - Comunidade existente
+          - Posição cultural
+        evidencias: []
+
+    hipotese_forca: null
+    hipotese_gap: null
+
+  dominio_III:
+    nome: "Distintividade"
+    pergunta: "Como a marca é RECONHECIDA?"
+    analise:
+      classe_7_visuais:
+        sinais_buscar:
+          - Logo reconhecível
+          - Cor proprietária
+          - Estilo visual
+        evidencias: []
+
+      classe_8_sensoriais:
+        sinais_buscar:
+          - Som/jingle
+          - Tagline
+          - Textura/formato
+        evidencias: []
+
+      classe_9_comportamentais:
+        sinais_buscar:
+          - Rituais
+          - Estilo de interação
+          - Cadência
+        evidencias: []
+
+    hipotese_forca: null
+    hipotese_gap: null
+
+# ═══════════════════════════════════════════════════════════════════
+# OUTPUT STRUCTURE
+# ═══════════════════════════════════════════════════════════════════
+output_structure:
+  client_analysis_report:
+    secoes:
+      - Executive Summary
+      - Business Context
+      - Market Context
+      - Communication Context
+      - Pre-Domain Analysis
+      - Recommended Focus Areas
+      - Questions for DEENEA
+
+  pre_domain_summary:
+    formato: |
+      ## Hipóteses Taxonômicas
+
+      ### Domínio I (Substantiva)
+      - Força aparente: [score 1-5]
+      - Evidências: [lista]
+      - Gap principal: [descrição]
+
+      ### Domínio II (Simbólica)
+      - Força aparente: [score 1-5]
+      - Evidências: [lista]
+      - Gap principal: [descrição]
+
+      ### Domínio III (Distintividade)
+      - Força aparente: [score 1-5]
+      - Evidências: [lista]
+      - Gap principal: [descrição]
+
+      ### Recomendação de Foco
+      [Qual domínio parece precisar de mais atenção?]
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - analyze-business-context
+  - analyze-market-context
+  - analyze-communication-context
+  - pre-map-domains
+
+commands:
+  - "*analyze-client"         # Análise completa
+  - "*pre-map-taxonomy"       # Apenas pré-mapeamento
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "McKinsey Problem Solving"
+    aplicacao: "Estruturação de análise"
+
+  - name: "Barbara Minto"
+    work: "Pyramid Principle"
+    aplicacao: "Comunicação estruturada"
+
+  - name: "Taxonomia de Diferenciais"
+    aplicacao: "Framework para pré-mapeamento"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - briefing-taxonomy-mapping.yaml
+  - fontes-pesquisa-referencia.yaml   # Catálogo de fontes para pré-mapeamento de mercado
+  # Frameworks curados (2026-02)
+  - jtbd-framework.yaml              # Análise orientada a Jobs To Be Done
+  - kahneman-dual-systems.yaml       # Sistema 1/2, entender decisões do cliente
+
+handoff:
+  destino: "checkpoint-validator"
+  entrega: "Client Analysis Report + Pre-Domain Analysis"
+
+confidence: 0.93
+version: "1.2"

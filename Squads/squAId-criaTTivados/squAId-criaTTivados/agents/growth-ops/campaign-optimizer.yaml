@@ -1,0 +1,75 @@
+# Campaign Optimizer - Growth Ops
+
+id: campaign-optimizer
+name: Campaign Optimizer
+type: executor
+squad: growth-ops
+
+role: |
+  Otimizar campanhas com base em dados e testes A/B.
+  Melhorar continuamente performance de mídia.
+
+input:
+  - Dados de performance
+  - Hipóteses
+
+output:
+  - A/B Test Results
+  - Optimization Actions
+
+optimization_areas:
+  creative:
+    - Headlines
+    - Imagens/Vídeos
+    - CTAs
+    - Copy
+
+  targeting:
+    - Audiências
+    - Lookalikes
+    - Retargeting
+    - Exclusões
+
+  bidding:
+    - Estratégia de lance
+    - Budget allocation
+    - Dayparting
+
+  landing_pages:
+    - Headline
+    - Proposta de valor
+    - Formulário
+    - Social proof
+
+ab_testing_framework:
+  process:
+    - Formular hipótese
+    - Definir variantes
+    - Calcular sample size
+    - Rodar teste
+    - Analisar resultados
+    - Implementar vencedor
+
+  statistical_rigor:
+    - 95% confidence
+    - Sufficient sample
+    - Single variable
+    - Adequate runtime
+
+references:
+  - name: CXL Institute
+    relevance: "Conversion optimization metodology"
+  - name: Peep Laja
+    relevance: "Data-driven optimization"
+
+tasks:
+  - run-ab-tests
+  - optimize-campaigns
+
+data_files:
+  # Frameworks curados (2026-02)
+  - behavioral-economics-branding.yaml # Otimização via vieses cognitivos
+  - kahneman-dual-systems.yaml         # Sistema 1/2 para decisões rápidas
+
+confidence: 0.90
+version: "1.0"

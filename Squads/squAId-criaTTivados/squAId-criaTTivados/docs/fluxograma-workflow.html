@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflow Completo — squAId criaTTivados</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 40px 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .subtitle {
+      text-align: center;
+      color: #8b949e;
+      font-size: 1rem;
+      margin-bottom: 48px;
+    }
+    .section {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 32px;
+    }
+    .section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: #58a6ff;
+    }
+    .section p {
+      color: #8b949e;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      padding: 16px 0;
+    }
+    .mermaid svg { overflow: visible; }
+    .legenda {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .legenda-item {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+    .legenda-item span:first-child {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    footer {
+      text-align: center;
+      color: #484f58;
+      font-size: 0.8rem;
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid #21262d;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>squAId criaTTivados — Workflow Completo</h1>
+  <p class="subtitle">"Somos uma agência 100% IA e 100% Inteligência Humana. Por isso, somos 200%."</p>
+
+  <!-- MACRO -->
+  <div class="section">
+    <h2>1. Visão Macro (Backbone)</h2>
+    <p>O fluxo principal com os 4 CBO Gates bloqueantes. Linhas tracejadas = rejeição (volta com feedback) ou entrada direta.</p>
+    <div class="mermaid">
+flowchart LR
+    ATD["ATENDIMENTO"]
+    SI["SEARCH &amp;<br/>INSIGHTS"]
+    DEE["DEENEA<br/>Posicionamento"]
+    G1{{"CBO GATE 1<br/>Estratégia"}}
+    UNK["UNNIKO<br/>Diferenciação"]
+    G2{{"CBO GATE 2<br/>Identidade"}}
+    STY["storYOUR<br/>telling<br/>Narrativa"]
+    G3{{"CBO GATE 3<br/>Criativo"}}
+    OPS["OPERATIONS"]
+    G4{{"CBO GATE 4<br/>Entrega"}}
+    CLI["CLIENTE"]
+
+    ATD --> SI
+    ATD --> DEE
+    SI --> DEE
+    DEE --> G1
+    G1 -->|Aprovado| UNK
+    G1 -.->|Rejeitado| DEE
+    UNK --> G2
+    G2 -->|Aprovado| STY
+    G2 -.->|Rejeitado| UNK
+    STY --> G3
+    G3 -->|Aprovado| OPS
+    G3 -.->|Rejeitado| STY
+    OPS --> G4
+    G4 -->|Aprovado| CLI
+    G4 -.->|Rejeitado| OPS
+
+    ATD -.->|"entrada direta"| STY
+    UNK -.->|"entrada direta"| STY
+
+    style G1 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style G2 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style G3 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style G4 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style ATD fill:#2c3e50,color:#fff
+    style SI fill:#2980b9,color:#fff
+    style DEE fill:#8e44ad,color:#fff
+    style UNK fill:#1a1a2e,color:#fff,stroke:#e94560
+    style STY fill:#c0392b,color:#fff
+    style OPS fill:#27ae60,color:#fff
+    style CLI fill:#27ae60,color:#fff,stroke:#1e8449
+    </div>
+  </div>
+
+  <!-- ATENDIMENTO -->
+  <div class="section">
+    <h2>2. Atendimento + Search &amp; Insights</h2>
+    <p>Onboarding com BranDesire (16 campos), lapidação pelo método unniko, diagnóstico por pilar e pesquisa de mercado.</p>
+    <div class="mermaid">
+flowchart TD
+    ATD["ATENDIMENTO"]
+
+    subgraph ONB["ONBOARDING BranDesire"]
+        BRF["Briefing<br/>16 campos"]
+        DOC["Docs do<br/>cliente"]
+        TST["Testes<br/>iniciais"]
+        LAP["Método unniko<br/>Feynman + 5 Whys"]
+        BRF --> LAP
+    end
+
+    subgraph DIAG["DIAGNÓSTICO BRANDESIRE"]
+        P1["Pilar 1<br/>POSICIONAMENTO<br/>70 pts"]
+        P2["Pilar 2<br/>DIFERENCIAÇÃO<br/>50-60 pts"]
+        P3["Pilar 3<br/>NARRATIVA<br/>20 pts"]
+        SCR["Score Total<br/>Frágil a Forte"]
+        P1 --> SCR
+        P2 --> SCR
+        P3 --> SCR
+    end
+
+    subgraph SI["SEARCH &amp; INSIGHTS"]
+        ROT["Roteiro"] --> PES["Pesquisa"] --> ANA["Análise<br/>competitiva"] --> REL["Relatório<br/>de Insights"]
+    end
+
+    ATD --> ONB
+    ATD --> SI
+    ONB --> DIAG
+
+    REL --> CP1(["Checkpoint 1<br/>Pesquisa 80%"])
+    DIAG --> HND["Handoff Package"]
+    CP1 --> HND
+    HND --> DEE["DEENEA"]
+
+    style LAP fill:#f39c12,color:#fff
+    style CP1 fill:#3498db,color:#fff
+    style SCR fill:#e74c3c,color:#fff
+    style DEE fill:#8e44ad,color:#fff
+    </div>
+  </div>
+
+  <!-- DEENEA -->
+  <div class="section">
+    <h2>3. DEENEA (Posicionamento)</h2>
+    <p>Define QUEM a marca é: propósito, arquétipos, valores, personalidade. Entrega o Brand Strategy Document.</p>
+    <div class="mermaid">
+flowchart TD
+    DEE["DEENEA<br/>POSICIONAMENTO"]
+
+    subgraph BP["BRAND POSITION"]
+        PROP["Propósito"]
+        POS["Positioning<br/>Statement"]
+    end
+
+    subgraph BC["BRAND CULTURE"]
+        PER["Personas<br/>JTBD"]
+        PUB["Público-Alvo"]
+        VAL["Valores"]
+        IKI["Ikigai"]
+    end
+
+    subgraph BPERS["BRAND PERSONALITY"]
+        ARQ["Arquétipos<br/>Jung/Pearson"]
+        PERS["Personalidade<br/>Aaker"]
+        POV["Ponto de Vista"]
+        ORI["Origin Story"]
+    end
+
+    DEE --> BP
+    DEE --> BC
+    DEE --> BPERS
+
+    BP --> SINT["Síntese Estratégica"]
+    BC --> SINT
+    BPERS --> SINT
+
+    SINT --> CP2(["Checkpoint 2<br/>Posicionamento 85%"])
+    CP2 --> BSD["Brand Strategy<br/>Document"]
+    BSD --> G1{{"CBO GATE 1<br/>ESTRATÉGIA 100%"}}
+    G1 -->|Aprovado| UNK["UNNIKO"]
+    G1 -.->|Rejeitado| DEE
+
+    style DEE fill:#8e44ad,color:#fff
+    style G1 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style CP2 fill:#3498db,color:#fff
+    style UNK fill:#1a1a2e,color:#fff,stroke:#e94560
+    </div>
+  </div>
+
+  <!-- UNNIKO -->
+  <div class="section">
+    <h2>4. UNNIKO (Diferenciação)</h2>
+    <p>Traduz estratégia em identidade tangível: Taxonomia (3D/9C/27O), Teste VURS, MIV, Naming, Design System, Sensograma.</p>
+    <div class="mermaid">
+flowchart TD
+    UNK["UNNIKO<br/>DIFERENCIAÇÃO"]
+
+    subgraph F1["FASE 1: DIAGNÓSTICO"]
+        AUD["Brand Audit<br/>27 ordens"]
+        COMP["Análise Competitiva<br/>3 domínios"]
+    end
+
+    subgraph F2["FASE 2: ESTRATÉGIA"]
+        TAX["Taxonomia de Diferenciais<br/>3D - 9C - 27O"]
+        DIF["Mapa de Diferenciais"]
+        VURS["Teste VURS<br/>V - U - R - S"]
+        PROM["Promessa de Marca"]
+        TAX --> DIF --> VURS --> PROM
+    end
+
+    subgraph F3["FASE 3: IDENTIDADE VERBAL"]
+        NAM["Naming"]
+        TOM["Tom de Voz"]
+        VOC["Vocabulário"]
+    end
+
+    subgraph F4["FASE 4: VISUAL + SENSORIAL"]
+        MIV["MIV"]
+        DS["Design System"]
+        SENS["Sensograma<br/>5 sentidos"]
+        TOUCH["Touchpoints<br/>e Rituais"]
+    end
+
+    UNK --> F1 --> F2 --> F3 --> F4
+
+    F4 --> CP3(["Checkpoint 3<br/>Diferenciação 90%"])
+
+    CP3 --> ENT["ID Marca +<br/>Diferenciais +<br/>Brand Book"]
+    ENT --> G2{{"CBO GATE 2<br/>IDENTIDADE 100%"}}
+
+    G2 -->|Aprovado| STY["storYOURtelling"]
+    G2 -.->|Rejeitado| UNK
+
+    style UNK fill:#1a1a2e,color:#fff,stroke:#e94560
+    style G2 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style CP3 fill:#3498db,color:#fff
+    style VURS fill:#f39c12,color:#fff
+    style STY fill:#c0392b,color:#fff
+    </div>
+  </div>
+
+  <!-- STORYTELLING -->
+  <div class="section">
+    <h2>5. storYOURtelling (Narrativa + Criação)</h2>
+    <p>Múltiplas entradas, Eixos de Marca, Big Idea, Core Creative Idea, 5 Caminhos Criativos, Key Visual.</p>
+    <div class="mermaid">
+flowchart TD
+    subgraph ENT["MÚLTIPLAS ENTRADAS"]
+        E1["via DEENEA"]
+        E2["via UNNIKO"]
+        E3["via Atendimento"]
+    end
+
+    STY["storYOURtelling<br/>NARRATIVA"]
+    BCR["Briefing de Criação"]
+
+    ENT --> STY --> BCR
+
+    subgraph EIXOS["EIXOS DE MARCA"]
+        MI["Institucional"]
+        MM["Mercadológica"]
+        ME["Empregadora"]
+        MP["Pessoal"]
+        MS["Sintética"]
+    end
+
+    CONN["Conectores de Marca<br/>fusão de eixos"]
+
+    BCR --> EIXOS --> CONN
+
+    BI["BIG IDEA<br/>Conceito-chave"]
+    VTAX["Validação Taxonômica<br/>3 domínios"]
+    CCI["CORE CREATIVE IDEA<br/>Derivação"]
+
+    CONN --> BI --> VTAX --> CCI
+
+    subgraph CAM["5 CAMINHOS CRIATIVOS"]
+        C1["Branding"]
+        C2["Design"]
+        C3["Advertising"]
+        C4["Presentation"]
+        C5["Cinema"]
+    end
+
+    CCI --> CAM
+
+    subgraph ART["ARTEFATOS"]
+        VIS["Visual"]
+        COP["Copy"]
+    end
+
+    CAM --> ART
+    ART --> KV["KEY VISUAL"]
+
+    KV --> CP4(["Checkpoint 4<br/>Big Idea 85%"])
+    CP4 --> G3{{"CBO GATE 3<br/>CRIATIVO 100%"}}
+
+    G3 -->|Aprovado| OPS["OPERATIONS"]
+    G3 -.->|Rejeitado| STY
+
+    style STY fill:#c0392b,color:#fff
+    style G3 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style CP4 fill:#3498db,color:#fff
+    style BI fill:#9b59b6,color:#fff
+    style CCI fill:#8e44ad,color:#fff
+    style KV fill:#f39c12,color:#fff
+    style VTAX fill:#e67e22,color:#fff
+    style OPS fill:#27ae60,color:#fff
+    </div>
+  </div>
+
+  <!-- OPERATIONS -->
+  <div class="section">
+    <h2>6. Operations (Content Ops + Growth Ops)</h2>
+    <p>Rodam em paralelo. Content produz peças por canal. Growth monta funis e otimiza campanhas.</p>
+    <div class="mermaid">
+flowchart TD
+    OPS["OPERATIONS"]
+
+    subgraph CONTENT["CONTENT OPS"]
+        PLAT["Platform Strategy<br/>5As Journey"]
+        CAL["Calendário Editorial"]
+        PROD["Produção<br/>Copy + Visual"]
+
+        subgraph CH["CANAIS"]
+            CH1["Social Media"]
+            CH2["Website / Blog"]
+            CH3["Email Marketing"]
+            CH4["Mídia Paga"]
+            CH5["Impresso"]
+            CH6["Audiovisual"]
+            CH7["Apresentações"]
+        end
+
+        PLAT --> CAL --> PROD --> CH
+    end
+
+    subgraph GROWTH["GROWTH OPS"]
+        FUN["Funnel Design<br/>AARRR"]
+        CAMP["Campanhas"]
+        OTI["Otimização<br/>A/B Testing"]
+        PERF["Performance<br/>Reports"]
+        FUN --> CAMP --> OTI --> PERF
+    end
+
+    OPS --> CONTENT
+    OPS --> GROWTH
+
+    CONTENT --> G4{{"CBO GATE 4<br/>ENTREGA FINAL 100%"}}
+    GROWTH --> G4
+
+    G4 -->|Aprovado| CLI["ENTREGA AO CLIENTE"]
+    G4 -.->|Rejeitado| OPS
+
+    style G4 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style CLI fill:#27ae60,color:#fff,stroke:#1e8449
+    style OPS fill:#27ae60,color:#fff
+    </div>
+  </div>
+
+  <!-- LEGENDA -->
+  <div class="legenda">
+    <div class="legenda-item"><span>🚦</span> CBO Gate — validação executiva bloqueante (100%)</div>
+    <div class="legenda-item"><span>✓</span> Checkpoint — validação técnica (score mínimo)</div>
+    <div class="legenda-item"><span>📦</span> Handoff — pacote de transição entre squads</div>
+    <div class="legenda-item"><span>♦</span> Método unniko — lapidação (Feynman + 5 Whys)</div>
+    <div class="legenda-item"><span>💡</span> Big Idea — conceito-chave, ideia-mãe</div>
+    <div class="legenda-item"><span>📐</span> Core Creative Idea — derivação da Big Idea</div>
+    <div class="legenda-item"><span>⭐</span> Key Visual — peça-chave, transição para Content</div>
+    <div class="legenda-item"><span>🔗</span> Conectores — integração entre eixos de marca</div>
+    <div class="legenda-item"><span>───→</span> Fluxo principal (aprovado)</div>
+    <div class="legenda-item"><span>- - →</span> Rejeição (volta com feedback) ou entrada direta</div>
+  </div>
+
+  <footer>
+    squAId criaTTivados v2.1 — AI-Native Creative Agency<br/>
+    155 componentes · 42 agentes · 7 sub-squads · 8 quality gates<br/>
+    Edu Garretano × Claude · Synkra AIOS
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#2c3e50',
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: '#30363d',
+        secondaryColor: '#161b22',
+        secondaryTextColor: '#ffffff',
+        tertiaryColor: '#21262d',
+        tertiaryTextColor: '#ffffff',
+        lineColor: '#8b949e',
+        textColor: '#ffffff',
+        mainBkg: '#2c3e50',
+        nodeBorder: '#30363d',
+        clusterBkg: '#21262d33',
+        clusterBorder: '#30363d',
+        titleColor: '#ffffff',
+        edgeLabelBackground: '#161b22',
+        nodeTextColor: '#ffffff'
+      },
+      themeCSS: `
+        * { color: #ffffff; }
+        text, tspan { fill: #ffffff !important; }
+        .nodeLabel, .label { color: #ffffff !important; }
+        .edgeLabel .label rect { fill: #161b22; }
+        .cluster-label text { fill: #58a6ff !important; }
+        foreignObject div, foreignObject span, foreignObject p { color: #ffffff !important; }
+        .node .label { color: #ffffff !important; }
+        span.nodeLabel { color: #ffffff !important; }
+        .labelText, .labelText tspan { fill: #ffffff !important; }
+      `,
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+  </script>
+</body>
+</html>

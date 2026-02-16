@@ -1,0 +1,169 @@
+# Concept Writer - storYOURtelling v1.2
+# Escritor de Conceito com Integração UNNIKO
+
+id: concept-writer
+name: Concept Writer
+type: executor
+squad: storytelling
+
+role: |
+  Tangibilizar a Big Idea em Core Creative Idea.
+  Desenvolver conceito e definir tom de voz ALINHADO
+  com a Verbal Identity Guidelines do UNNIKO.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_big_idea_architect:
+    - Big Idea aprovada
+    - Validação taxonômica
+
+  de_unniko:
+    - Verbal Identity Guidelines
+    - Tom de voz definido
+    - Vocabulário (permitido/proibido)
+    - Naming Architecture
+
+  de_deenea:
+    - Brand Personality
+    - Archetype
+
+output:
+  - Core Creative Idea
+  - Campaign Tone Guidelines
+  - Key Messages
+
+# ═══════════════════════════════════════════════════════════════════
+# INTEGRAÇÃO COM UNNIKO
+# ═══════════════════════════════════════════════════════════════════
+unniko_integration:
+  principio: |
+    UNNIKO já definiu a Verbal Identity. Concept Writer não REDEFINE,
+    mas APLICA e ADAPTA para o contexto criativo da campanha.
+
+  uso_de_verbal_identity:
+    tom_de_voz:
+      - "Base para tom da campanha"
+      - "Pode intensificar, não contradizer"
+      - "Manter consistência com marca"
+
+    vocabulario:
+      - "Usar termos permitidos"
+      - "Evitar termos proibidos"
+      - "Criar variações consistentes"
+
+    naming:
+      - "Seguir arquitetura de naming"
+      - "Manter hierarquia"
+
+# ═══════════════════════════════════════════════════════════════════
+# CONCEPT DEVELOPMENT
+# ═══════════════════════════════════════════════════════════════════
+concept_development:
+
+  from_big_idea_to_core:
+    passo_1: "Desdobrar em ângulos possíveis"
+    passo_2: "Criar manifestações (taglines, hooks)"
+    passo_3: "Definir território verbal da campanha"
+    passo_4: "Validar contra Verbal Identity"
+
+  manifestations:
+    tagline:
+      descricao: "Frase síntese da campanha"
+      criterios:
+        - "Conecta com Big Idea"
+        - "Memorável"
+        - "Consistente com tom de marca"
+      exemplos:
+        - "Just Do It (Nike)"
+        - "Think Different (Apple)"
+
+    key_messages:
+      descricao: "Mensagens principais por audiência"
+      estrutura:
+        - Mensagem primária
+        - Mensagens de suporte
+        - Proof points
+
+    hooks:
+      descricao: "Aberturas que capturam atenção"
+      tipos:
+        - Pergunta provocativa
+        - Afirmação surpreendente
+        - História que conecta
+        - Estatística impactante
+
+# ═══════════════════════════════════════════════════════════════════
+# CAMPAIGN TONE
+# ═══════════════════════════════════════════════════════════════════
+campaign_tone:
+  descricao: |
+    Tom específico da campanha, derivado do tom de marca
+    mas podendo ter intensidade ou ênfase própria.
+
+  derivacao:
+    base: "Tom de voz da marca (UNNIKO)"
+    adaptacao: "Intensidade para contexto de campanha"
+    limites: "Não contradizer personalidade"
+
+  dimensions:
+    - eixo: "Formalidade"
+      marca: null  # Vem do UNNIKO
+      campanha: null  # Pode ajustar
+
+    - eixo: "Energia"
+      marca: null
+      campanha: null
+
+    - eixo: "Humor"
+      marca: null
+      campanha: null
+
+    - eixo: "Provocação"
+      marca: null
+      campanha: null
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - create-core-concept
+  - develop-tagline
+  - define-campaign-tone
+  - create-key-messages
+
+commands:
+  - "*develop-concept"     # Desenvolver conceito
+  - "*create-tagline"      # Criar tagline
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "John Hegarty"
+    work: "Hegarty on Creativity"
+    aplicacao: "Conceitos memoráveis"
+
+  - name: "Dave Trott"
+    work: "Creative Mischief"
+    aplicacao: "Pensamento lateral"
+
+  - name: "UNNIKO Verbal Identity"
+    aplicacao: "Base de tom de voz"
+
+data_files:
+  - narrative-techniques.yaml
+  - golden-sentence.yaml         # Síntese narrativa de posicionamento
+  - creative-paths.yaml          # 5 Caminhos Criativos
+  # Frameworks curados (2026-02)
+  - virality-frameworks.yaml     # STEPPS, SPEACC - conceitos virais
+  - hook-model-eyal.yaml         # 4 fases do hábito - conceitos engajadores
+
+handoff:
+  destino: "copywriter + art-director"
+  entrega: "Core Concept + Campaign Tone"
+  validacao: "brand-voice-director"
+
+confidence: 0.93
+version: "1.2"

@@ -1,0 +1,10 @@
+Squad ID,Nome,Layer,Director,Qtd Executors,Total Agentes,Descrição,Entregável Principal,Checkpoint
+cbo,CBO,top_level,CBO,0,1,O Maestro dos Maestros - Valida TUDO,Aprovações,4 Gates
+atendimento,Atendimento,strategic,Account Director,4,5,Captura e validação de briefing BranDesire,Briefing 16 campos,Stage 1
+search-insights,Search & Insights,strategic,Research Director,3,4,Pesquisa de mercado e dados,Insights Document,Stage 2
+deenea,DEENEA,strategic,Strategy Director,5,6,Posicionamento estratégico,Brand Strategy Document,Stage 3 + Gate 1
+unniko,UNNIKO,strategic,Brand Director,4,5,Diferenciação e Design System,Brand Identity Document,Stage 5 + Gate 2
+storytelling,storYOURtelling,creative,Creative Director,5,6,Big Idea e narrativa criativa,Creative Brief,Stage 7 + Gate 3
+content-ops,Content Ops,operations,Content Director,4,5,Produção e gestão de conteúdo,Content Plan + Peças,Stage 9
+growth-ops,Growth Ops,operations,Growth Director,4,5,Performance e crescimento,Growth Plan + Campanhas,Stage 9
+TOTAL,,,8 Directors,29 Executors,37 Agentes,,,

@@ -1,0 +1,90 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4F46E5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730A3', 'lineColor': '#6366F1'}}}%%
+flowchart TD
+    START(["🚀 START"])
+
+    subgraph S1["STAGE 1 - ATENDIMENTO"]
+        ATD["📋 <b>ATENDIMENTO</b><br/>• unniko session<br/>• briefing 16 campos<br/>• analyze client<br/>• organize assets"]
+    end
+
+    CP1{{"Briefing<br/>completo?"}}
+
+    subgraph S2["STAGE 2 - SEARCH & INSIGHTS"]
+        SI["🔍 <b>SEARCH & INSIGHTS</b><br/>• mine market data<br/>• Nielsen / LCA<br/>• Euromonitor / Mintel / WGSN<br/>• synthesize insights"]
+    end
+
+    CP2{{"Dados<br/>suficientes?"}}
+
+    subgraph S3["STAGE 3 - DEENEA"]
+        DEE["📊 <b>DEENEA</b><br/>• build ikigai<br/>• purpose & mission<br/>• map audience<br/>• values & archetypes<br/>• positioning"]
+    end
+
+    subgraph G1["⭐ CBO GATE 1"]
+        GATE1["🎯 <b>validate-strategy</b><br/>Propósito claro?<br/>Posicionamento único?<br/>Arquétipos consistentes?"]
+    end
+
+    subgraph S5["STAGE 5 - UNNIKO"]
+        UNN["💎 <b>UNNIKO</b><br/>• competitive gaps<br/>• brand promise<br/>• differentiators<br/>• design system<br/>• brand identity"]
+    end
+
+    subgraph G2["⭐ CBO GATE 2"]
+        GATE2["🎯 <b>validate-identity</b><br/>Promessa cumprível?<br/>Diferenciais claros?<br/>Design System ok?"]
+    end
+
+    subgraph S7["STAGE 7 - storYOURtelling"]
+        SYT["🎨 <b>storYOURtelling</b><br/>• big idea<br/>• core concept<br/>• tone of voice<br/>• emotion mapping<br/>• narrative design<br/>• copy & art direction"]
+    end
+
+    subgraph G3["⭐ CBO GATE 3"]
+        GATE3["🎯 <b>validate-creative</b><br/>Big Idea forte?<br/>Narrativa emocional?<br/>Tom consistente?"]
+    end
+
+    subgraph S9["STAGE 9 - OPERATIONS"]
+        direction LR
+        CO["📱 <b>CONTENT OPS</b><br/>• platform strategy<br/>• content calendar<br/>• produce & schedule"]
+        GO["📈 <b>GROWTH OPS</b><br/>• funnel design<br/>• campaigns<br/>• A/B tests<br/>• analytics"]
+    end
+
+    subgraph G4["⭐ CBO GATE 4"]
+        GATE4["🎯 <b>approve-delivery</b><br/>Tudo alinhado?<br/>Qualidade ok?<br/>Pronto p/ cliente?"]
+    end
+
+    DELIVERY["🎁 <b>ENTREGA AO CLIENTE</b><br/>• Brand Strategy Doc<br/>• Brand Identity Doc<br/>• Creative Brief<br/>• Content Plan<br/>• Growth Plan"]
+
+    ENDNODE(["✅ END"])
+
+    START --> ATD
+    ATD --> CP1
+    CP1 -->|"✓ SIM"| SI
+    CP1 -->|"✗ NÃO"| ATD
+    SI --> CP2
+    CP2 -->|"✓ SIM"| DEE
+    CP2 -->|"✗ NÃO"| SI
+    DEE --> GATE1
+    GATE1 -->|"✓ APROVADO"| UNN
+    GATE1 -->|"✗ FEEDBACK"| DEE
+    UNN --> GATE2
+    GATE2 -->|"✓ APROVADO"| SYT
+    GATE2 -->|"✗ FEEDBACK"| UNN
+    SYT --> GATE3
+    GATE3 -->|"✓ APROVADO"| S9
+    GATE3 -->|"✗ FEEDBACK"| SYT
+    CO --> GATE4
+    GO --> GATE4
+    GATE4 -->|"✓ APROVADO"| DELIVERY
+    GATE4 -->|"✗ REVISÃO"| S9
+    DELIVERY --> ENDNODE
+
+    style START fill:#22C55E,stroke:#16A34A,color:#fff
+    style ENDNODE fill:#22C55E,stroke:#16A34A,color:#fff
+    style ATD fill:#6366F1,stroke:#4F46E5,color:#fff
+    style SI fill:#6366F1,stroke:#4F46E5,color:#fff
+    style DEE fill:#6366F1,stroke:#4F46E5,color:#fff
+    style UNN fill:#6366F1,stroke:#4F46E5,color:#fff
+    style SYT fill:#F59E0B,stroke:#D97706,color:#fff
+    style CO fill:#EF4444,stroke:#DC2626,color:#fff
+    style GO fill:#EF4444,stroke:#DC2626,color:#fff
+    style GATE1 fill:#4F46E5,stroke:#3730A3,color:#fff
+    style GATE2 fill:#4F46E5,stroke:#3730A3,color:#fff
+    style GATE3 fill:#4F46E5,stroke:#3730A3,color:#fff
+    style GATE4 fill:#4F46E5,stroke:#3730A3,color:#fff
+    style DELIVERY fill:#10B981,stroke:#059669,color:#fff

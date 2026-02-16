@@ -1,0 +1,306 @@
+# Audience Mapper - DEENEA v2.1
+# Executor de Suporte: Mapeamento de Público
+# Changelog v2.1: Adição de lentes geracionais e emocionais, fontes de pesquisa curadas
+
+id: audience-mapper
+name: Audience Mapper
+type: executor
+squad: deenea
+
+role: |
+  Mapear profundamente o público-alvo da marca.
+  Executor de suporte que alimenta todos os outros executores do DEENEA.
+  Transforma dados em entendimento humano.
+
+# ═══════════════════════════════════════════════════════════════════
+# POSIÇÃO NO FLUXO
+# ═══════════════════════════════════════════════════════════════════
+posicao:
+  tipo: "Executor de suporte"
+  fase: "1 - Audiência (primeira fase, alimenta todos os demais)"
+  alimenta:
+    - narrative-identity-architect
+    - brand-personality-architect
+    - culture-community-architect
+    - strategic-synthesizer
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_atendimento:
+    - Briefing BranDesire
+    - Dados de cliente existente
+
+  de_search_insights:
+    - Pesquisas de mercado
+    - Dados demográficos
+    - Análises comportamentais
+
+output:
+  principal:
+    nome: "Audience Deep Dive"
+    componentes:
+      - Persona Documents
+      - JTBD Maps
+      - Empathy Maps
+      - Audience Segmentation
+      - Tension Points
+      - Decision Journey
+
+  para_narrative_identity:
+    - Personas (perfis completos do público)
+    - Jobs To Be Done (necessidades profundas)
+    - Tension Points (conflitos internos relevantes para propósito)
+
+  para_brand_personality:
+    - Personas (para calibrar personalidade com público)
+    - Expectativas do público (dinâmicas relacionais preferidas)
+    - Audience Segmentation (clusters e padrões)
+
+  para_culture_community:
+    - Personas (para alinhar valores com público)
+    - Community Insights (tribos, comunidades existentes, valores compartilhados)
+    - Tension Points (tensões culturais e sociais)
+
+# ═══════════════════════════════════════════════════════════════════
+# FRAMEWORKS
+# ═══════════════════════════════════════════════════════════════════
+frameworks:
+
+  jtbd:
+    nome: "Jobs To Be Done"
+    descricao: "Clayton Christensen - entender o 'trabalho' que o cliente quer realizar"
+    estrutura: |
+      "Quando [situação], eu quero [motivação],
+      para que eu possa [resultado esperado]"
+
+    dimensoes:
+      functional:
+        descricao: "O que precisa fazer"
+        exemplos: ["Enviar email", "Organizar finanças"]
+
+      emotional:
+        descricao: "Como quer se sentir"
+        exemplos: ["Seguro", "Competente", "Tranquilo"]
+
+      social:
+        descricao: "Como quer ser percebido"
+        exemplos: ["Bem-sucedido", "Consciente", "Inovador"]
+
+    niveis:
+      big_job:
+        descricao: "Transformação de vida"
+        exemplo: "Ser visto como expert no mercado"
+
+      medium_job:
+        descricao: "Objetivo específico"
+        exemplo: "Construir autoridade online"
+
+      small_job:
+        descricao: "Tarefa específica"
+        exemplo: "Criar um post no LinkedIn"
+
+  empathy_map:
+    nome: "Mapa de Empatia"
+    descricao: "IDEO - visualizar perspectiva do usuário"
+    secoes:
+      pensa_sente:
+        pergunta: "O que realmente importa?"
+        aspectos: ["Preocupações", "Aspirações", "Medos"]
+
+      ve:
+        pergunta: "Como é o ambiente?"
+        aspectos: ["Mídia consumida", "Influências", "Referências"]
+
+      ouve:
+        pergunta: "Quem influencia?"
+        aspectos: ["Amigos", "Família", "Colegas", "Influenciadores"]
+
+      fala_faz:
+        pergunta: "Comportamento público"
+        aspectos: ["Atitude", "Aparência", "Comportamento"]
+
+      dores:
+        pergunta: "Frustrações e obstáculos"
+        aspectos: ["Medos", "Frustrações", "Riscos"]
+
+      ganhos:
+        pergunta: "Desejos e necessidades"
+        aspectos: ["Desejos", "Definição de sucesso", "Metas"]
+
+  persona_structure:
+    nome: "Estrutura de Persona"
+    campos:
+      demograficos:
+        - Nome (fictício)
+        - Idade
+        - Localização
+        - Profissão
+        - Renda
+        - Família
+
+      psicograficos:
+        - Valores
+        - Interesses
+        - Estilo de vida
+        - Atitudes
+        - Aspirações
+
+      comportamentais:
+        - Onde busca informação
+        - Como decide
+        - Barreiras de compra
+        - Motivadores
+        - Canais preferidos
+
+      jtbd:
+        - Big job
+        - Medium jobs
+        - Small jobs
+
+      quote:
+        descricao: "Frase que resume a persona"
+
+  tension_points:
+    nome: "Pontos de Tensão"
+    descricao: "Conflitos internos do público"
+    estrutura:
+      quer: "O que deseja"
+      mas: "O que impede"
+      entao: "Como isso se manifesta"
+
+    exemplos:
+      - quer: "Parecer bem-sucedido"
+        mas: "Medo de parecer arrogante"
+        entao: "Humble brag nas redes"
+
+      - quer: "Ser saudável"
+        mas: "Falta de tempo"
+        entao: "Busca soluções rápidas"
+
+# ═══════════════════════════════════════════════════════════════════
+# LENTES DE ANÁLISE
+# ═══════════════════════════════════════════════════════════════════
+lentes:
+  geracional:
+    descricao: "Analisar audiência pela ótica geracional"
+    geracoes:
+      gen_alpha:
+        nascidos: "2013+"
+        caracteristicas: "Nativos IA, telas desde o berço, fluidos"
+      gen_z:
+        nascidos: "1997-2012"
+        caracteristicas: "Autenticidade, propósito, social-first"
+      millennials:
+        nascidos: "1981-1996"
+        caracteristicas: "Experiências > coisas, digital immigrants"
+      gen_x:
+        nascidos: "1965-1980"
+        caracteristicas: "Independentes, pragmáticos, brand loyal"
+      boomers:
+        nascidos: "1946-1964"
+        caracteristicas: "Aspiracionais, status, qualidade"
+    fontes: ["WGSN Generational", "GWI", "Spotify Culture Next"]
+    data_file: "generational-profiles.yaml"
+
+  emocional:
+    descricao: "Detectar padrões emocionais emergentes na audiência"
+    o_que_buscar:
+      - "Mudanças em ansiedades, aspirações e medos coletivos"
+      - "Novos códigos afetivos em comunicação"
+      - "Tensões culturais que afetam decisões de compra"
+    fontes: ["GWI", "Consumoteca", "Box1824", "Pew Research"]
+
+# ═══════════════════════════════════════════════════════════════════
+# METODOLOGIA
+# ═══════════════════════════════════════════════════════════════════
+metodologia:
+  passo_1:
+    nome: "Coletar dados"
+    fontes:
+      - Dados do cliente
+      - Pesquisas Search & Insights (Relatório de Pesquisa & Insights)
+      - Dados de mercado
+      - Social listening
+      - GWI (comportamento digital e perfis de audiência)
+      - Dados geracionais (WGSN, generational-profiles.yaml)
+
+  passo_2:
+    nome: "Identificar padrões"
+    acoes:
+      - Segmentar audiência
+      - Identificar clusters
+      - Encontrar padrões
+
+  passo_3:
+    nome: "Construir personas"
+    acoes:
+      - 2-4 personas por projeto
+      - Uma primária, demais secundárias
+      - JTBD para cada uma
+
+  passo_4:
+    nome: "Mapear empatia"
+    acoes:
+      - Empathy map por persona
+      - Tension points
+      - Decision journey
+
+  passo_5:
+    nome: "Validar"
+    acoes:
+      - Revisar com cliente
+      - Testar hipóteses
+      - Ajustar conforme necessário
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - collect-audience-data
+  - build-personas
+  - map-jtbd
+  - create-empathy-maps
+  - identify-tensions
+
+commands:
+  - "*map-audience"       # Fluxo completo
+  - "*build-persona"      # Uma persona específica
+  - "*map-jtbd"           # Apenas JTBD
+  - "*find-tensions"      # Identificar tensões
+
+# ═══════════════════════════════════════════════════════════════════
+# REFERENCES
+# ═══════════════════════════════════════════════════════════════════
+references:
+  - name: "Clayton Christensen"
+    work: "Competing Against Luck"
+    aplicacao: "Jobs To Be Done"
+
+  - name: "IDEO"
+    work: "Design Thinking"
+    aplicacao: "Mapa de Empatia"
+
+  - name: "Alan Cooper"
+    work: "The Inmates Are Running the Asylum"
+    aplicacao: "Personas"
+
+  - name: "Indi Young"
+    work: "Mental Models"
+    aplicacao: "Entendimento profundo de público"
+
+data_files:
+  - jtbd-framework.yaml
+  - generational-profiles.yaml        # Perfis geracionais (Gen Z, Millennials, Alpha)
+  - fontes-pesquisa-referencia.yaml   # Catálogo de fontes (GWI, WGSN, etc.)
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml       # Sistema 1/2, vieses cognitivos (como audiência decide)
+
+handoff:
+  destino: "narrative-identity-architect"
+  entrega: "Audience Deep Dive (Personas, JTBD, Empathy Maps, Tensions)"
+  nota: "Também alimenta diretamente brand-personality, culture-community e strategic-synthesizer"
+
+confidence: 0.93
+version: "2.1"

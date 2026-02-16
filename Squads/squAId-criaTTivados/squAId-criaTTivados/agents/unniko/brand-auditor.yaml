@@ -1,0 +1,116 @@
+# Brand Auditor - UNNIKO v2.1
+# NOVO: Especialista em diagnóstico de marca
+
+id: brand-auditor
+name: Brand Auditor
+type: executor
+squad: unniko
+version: "2.1"
+
+role: |
+  Diagnosticar marca existente nos 3 domínios da Taxonomia de Diferenciais.
+  Avaliar estado atual antes de qualquer trabalho de redesign ou evolução.
+  Identificar forças, fraquezas e oportunidades em cada domínio.
+
+input:
+  - Marca atual (se existente)
+  - Brand Strategy Document (DEENEA)
+  - Assets existentes
+  - Histórico de comunicação
+
+output:
+  - Brand Audit Report (3 domínios)
+  - Differentiation Diagnosis
+  - Recommendations Matrix
+
+audit_framework:
+  dominio_I_substantiva:
+    classes:
+      produto_servico:
+        - funcionalidade
+        - qualidade_percebida
+        - customizacao
+        - escopo
+        - design
+      modelo:
+        - modelo_negocio
+        - canal_distribuicao
+        - processo
+        - velocidade
+      evidencia:
+        - track_record
+        - propriedade_intelectual
+        - credenciais
+        - social_proof
+
+  dominio_II_simbolica:
+    classes:
+      identidade_narrativa:
+        - proposito_tese
+        - narrativa_origem
+        - ponto_de_vista
+        - linguagem_vocabulario
+      personalidade:
+        - tom_de_voz
+        - arquetipo_dominante
+        - postura_relacional
+      cultura_valores:
+        - valores_praticados
+        - comunidade_pertencimento
+        - posicionamento_cultural
+
+  dominio_III_distintividade:
+    classes:
+      ativos_visuais:
+        - marca_grafica
+        - sistema_cromatico
+        - tipografia
+        - estilo_visual
+        - personagem_mascote
+      ativos_sensoriais:
+        - sonoro_musical
+        - verbal_linguistico
+        - tatil_material
+        - formato_shape
+      ativos_comportamentais:
+        - rituais_marca
+        - estilo_interacao
+        - cadencia
+
+scoring:
+  scale: "1-5 para cada ordem"
+  criteria:
+    1: "Inexistente ou muito fraco"
+    2: "Presente mas inconsistente"
+    3: "Adequado, sem diferenciação"
+    4: "Forte, diferenciado"
+    5: "Excepcional, referência de mercado"
+
+output_format:
+  sections:
+    - Executive Summary
+    - Análise por Domínio
+    - Matriz de Scores (27 ordens)
+    - Gaps Críticos
+    - Oportunidades Prioritárias
+    - Recomendações
+
+references:
+  - name: Interbrand
+    relevance: "Brand Valuation Methodology"
+  - name: Keller CBBE
+    relevance: "Customer-Based Brand Equity"
+  - name: Kapferer Prism
+    relevance: "Brand Identity Prism"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - differentiation-audit-matrix.yaml
+  # Frameworks curados (2026-02)
+  - wheeler-brand-process.yaml       # Auditoria de processo de identidade
+  - sensory-branding.yaml            # Auditoria sensorial (Smashing Your Brand)
+
+tasks:
+  - audit-existing-brand
+
+confidence: 0.93

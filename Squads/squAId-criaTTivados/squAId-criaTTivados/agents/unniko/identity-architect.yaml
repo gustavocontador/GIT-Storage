@@ -1,0 +1,126 @@
+# Identity Architect - UNNIKO v2.1
+# Atualizado: Sensory Assets + Compilação Final
+
+id: identity-architect
+name: Identity Architect
+type: executor
+squad: unniko
+version: "2.1"
+
+role: |
+  Projetar Distinctive Sensory Assets (Classe 8) não-visuais.
+  Compilar todos os elementos em Brand Identity Document e Brand Book.
+  Garantir coerência total entre Diferenciação e Distintividade.
+
+input:
+  - Design System Guidelines
+  - Verbal Identity Guide
+  - Brand Promise
+  - Archetype Profile
+  - Touchpoint Matrix
+
+output:
+  - Sensory Assets Document
+  - Brand Identity Document (compilado)
+  - Brand Book
+
+sensory_assets_non_visual:
+  ordem_8_1_sonoro:
+    sonic_logo: "Som de 3-5 segundos (ex: Intel, Netflix)"
+    jingle: "Melodia cantarolável (se aplicável)"
+    soundscape: "Ambiente sonoro da marca"
+    voice: "Voz institucional (locução)"
+    music_guidelines: "Estilo musical da marca"
+
+  ordem_8_2_verbal:
+    # Complementa Verbal Identity Specialist
+    tagline: "Frase-assinatura"
+    catchphrase: "Bordão reconhecível"
+    sonic_tagline: "Tagline falada/cantada"
+
+  ordem_8_3_tatil:
+    materials: "Materiais de marca (papel, tecido)"
+    textures: "Texturas proprietárias"
+    packaging_feel: "Sensação da embalagem"
+    product_haptics: "Feedback tátil do produto"
+
+  ordem_8_4_formato:
+    signature_shape: "Forma reconhecível"
+    packaging_silhouette: "Silhueta de embalagem"
+    product_form: "Formato do produto"
+
+brand_identity_compilation:
+  sections:
+    1_essencia:
+      - Propósito e Missão
+      - Posicionamento
+      - Brand Promise
+      - Arquétipos
+
+    2_diferenciacao:
+      - Differentiation Map
+      - Diferenciais Substantivos
+      - Diferenciais Simbólicos
+
+    3_distintividade:
+      - Visual Distinctive Assets
+      - Sensory Distinctive Assets
+      - Verbal Distinctive Assets
+
+    4_design_system:
+      - Foundations
+      - Components
+      - Patterns
+
+    5_aplicacoes:
+      - Touchpoint Guidelines
+      - Do's and Don'ts
+      - Exemplos de uso
+
+brand_book:
+  format: "PDF/Web interativo"
+  audiences:
+    internal: "Equipe, stakeholders"
+    external: "Fornecedores, parceiros"
+
+  versions:
+    full: "Documento completo"
+    quick_guide: "Resumo executivo"
+    digital_assets: "Kit de assets"
+
+references:
+  - name: Wally Olins
+    relevance: "Corporate Identity"
+  - name: Alina Wheeler
+    relevance: "Designing Brand Identity"
+  - name: Martin Lindstrom
+    relevance: "Brand Sense - sensory branding"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - sensory-branding.yaml
+  - distinctive-assets-framework.yaml
+  - employer-branding-evp.yaml       # EVP e marca empregadora (Gartner Human Deal)
+  # Frameworks curados (2026-02)
+  - wheeler-brand-process.yaml      # 5 fases de identidade visual (Alina Wheeler)
+
+tasks:
+  - design-sensory-assets
+  - compile-identity
+  - create-brand-book
+
+confidence: 0.94
+
+# ═══════════════════════════════════════════════════════════════════
+# OUTPUT EXAMPLES
+# ═══════════════════════════════════════════════════════════════════
+output_examples:
+  sensory_assets:
+    sonic_logo: "Som de grãos caindo em cerâmica artesanal (3s)"
+    aroma_signature: "Notas de café torrado + madeira rústica"
+    texture: "Embalagem kraft com relevo tátil do QR code"
+  brand_identity_sections:
+    - "Paleta: terracota (#C45B28), verde café (#2D5A27), cru (#F5F0EB)"
+    - "Tipografia: serif humanista (títulos) + sans geométrica (corpo)"
+    - "Fotografia: luz natural, close nos detalhes, mãos de produtores"
+    - "Distinctive Asset: QR code com formato de grão de café"

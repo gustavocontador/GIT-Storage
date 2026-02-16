@@ -1,0 +1,212 @@
+# Data Miner - Search & Insights v1.1
+# Coletor de Dados com Foco Taxonômico
+
+id: data-miner
+name: Data Miner
+type: executor
+squad: search-insights
+
+role: |
+  Coletar dados de mercado, concorrência e tendências.
+  Especialista em extração de dados de múltiplas fontes.
+  Coletar dados que alimentem análise taxonômica do UNNIKO.
+
+# ═══════════════════════════════════════════════════════════════════
+# INPUT & OUTPUT
+# ═══════════════════════════════════════════════════════════════════
+input:
+  de_atendimento:
+    - Briefing BranDesire
+    - Segmento/Categoria
+    - Pre-Domain Analysis
+
+  externo:
+    - Acesso às fontes de dados
+    - Relatórios disponíveis
+
+output:
+  - Raw Data Collection
+  - Competitive Data Matrix
+  - Market Data Summary
+
+# ═══════════════════════════════════════════════════════════════════
+# DATA SOURCES (Fontes Reais e Acessíveis)
+# ═══════════════════════════════════════════════════════════════════
+data_sources:
+
+  exa_web_search:
+    tipo: "Pesquisa web semântica"
+    acesso: "mcp__docker-gateway__web_search_exa"
+    capabilities:
+      - Relatórios de mercado públicos
+      - Artigos setoriais e análises
+      - Dados de associações e institutos
+      - Informações de concorrentes (sites, notícias)
+    relevancia_taxonomia:
+      dominio_I: "Market data, features, evidências de performance"
+      dominio_II: "Propósitos, narrativas, posicionamentos declarados"
+      dominio_III: "Assets visuais, comunicação, identidade"
+    task: "web-research"
+
+  apify_scraping:
+    tipo: "Extração automatizada de dados"
+    acesso: "mcp__docker-gateway__call-actor"
+    capabilities:
+      - Scraping de sites de concorrentes
+      - Extração de redes sociais
+      - Dados de reviews e avaliações
+      - Monitoramento de e-commerce
+    relevancia_taxonomia:
+      dominio_I: "Produtos, pricing, features dos concorrentes"
+      dominio_II: "Tom de voz, narrativa, valores comunicados"
+      dominio_III: "Estilo visual, assets, frequência de comunicação"
+    task: "scrape-competitors"
+
+  desk_research:
+    tipo: "Pesquisa secundária manual"
+    acesso: "Análise direta pelo agente"
+    capabilities:
+      - Informações públicas de concorrentes
+      - Materiais de comunicação
+      - Presença digital
+      - Assets visíveis
+    relevancia_taxonomia:
+      dominio_III: "Inventário de assets da categoria"
+    task: "web-research"
+
+  fontes_premium:
+    tipo: "Fontes pagas (quando cliente possui acesso)"
+    nota: "Usar SOMENTE se o cliente fornecer acesso ou dados"
+    exemplos:
+      - nome: "Nielsen"
+        dados: ["Market share", "Distribuição", "Vendas"]
+      - nome: "Euromonitor"
+        dados: ["Análise de indústria", "Projeções"]
+      - nome: "Mintel"
+        dados: ["Inovações", "Tendências de consumo"]
+
+# ═══════════════════════════════════════════════════════════════════
+# COLETA POR DOMÍNIO
+# ═══════════════════════════════════════════════════════════════════
+coleta_taxonomica:
+
+  dominio_I:
+    nome: "Dados de Diferenciação Substantiva"
+    o_que_coletar:
+      classe_1_produto:
+        - "Features e funcionalidades de cada player"
+        - "Qualidade percebida (pesquisas)"
+        - "Inovações recentes"
+        - "Preços praticados"
+
+      classe_2_modelo:
+        - "Modelos de negócio dos players"
+        - "Canais de distribuição"
+        - "Processos conhecidos"
+        - "Velocidade de entrega"
+
+      classe_3_evidencia:
+        - "Market share por player"
+        - "Prêmios e certificações"
+        - "Cases públicos"
+        - "NPS se disponível"
+
+  dominio_II:
+    nome: "Dados de Diferenciação Simbólica"
+    o_que_coletar:
+      classe_4_narrativa:
+        - "Propósitos declarados (sites, manifestos)"
+        - "Histórias de origem conhecidas"
+        - "POVs e posicionamentos"
+
+      classe_5_personalidade:
+        - "Tom de voz praticado"
+        - "Arquétipos aparentes"
+        - "Estilo de comunicação"
+
+      classe_6_cultura:
+        - "Valores declarados"
+        - "Comunidades existentes"
+        - "Posições culturais/políticas"
+
+  dominio_III:
+    nome: "Dados de Distintividade"
+    o_que_coletar:
+      classe_7_visuais:
+        - "Logos e variações"
+        - "Cores dominantes"
+        - "Estilos visuais"
+        - "Tipografias"
+
+      classe_8_sensoriais:
+        - "Jingles e sons"
+        - "Taglines e slogans"
+        - "Formatos de embalagem"
+
+      classe_9_comportamentais:
+        - "Rituais conhecidos"
+        - "Frequência de comunicação"
+        - "Estilo de atendimento"
+
+# ═══════════════════════════════════════════════════════════════════
+# COMPETITIVE DATA MATRIX
+# ═══════════════════════════════════════════════════════════════════
+competitive_matrix:
+  descricao: |
+    Matriz que organiza dados de cada concorrente
+    pelos 3 domínios da taxonomia.
+
+  estrutura:
+    por_concorrente:
+      nome: null
+      dominio_I:
+        diferenciais_produto: []
+        diferenciais_modelo: []
+        evidencias: []
+      dominio_II:
+        proposito: null
+        personalidade: null
+        valores: []
+      dominio_III:
+        assets_visuais: []
+        assets_sensoriais: []
+        rituais: []
+
+# ═══════════════════════════════════════════════════════════════════
+# COLLECTION PROCESS
+# ═══════════════════════════════════════════════════════════════════
+collection_process:
+  passo_1: "Definir queries de pesquisa baseadas no briefing e segmento"
+  passo_2: "Pesquisa web via EXA (relatórios, artigos, dados públicos)"
+  passo_3: "Scraping de concorrentes via Apify (sites, redes sociais)"
+  passo_4: "Desk research qualitativo (análise manual de materiais)"
+  passo_5: "Organizar por domínio da taxonomia"
+  passo_6: "Validar qualidade, completude e documentar fontes com URLs"
+  passo_7: "Estruturar para Trend Analyst, Social Listener e Insight Synthesizer"
+
+# ═══════════════════════════════════════════════════════════════════
+# TASKS & COMMANDS
+# ═══════════════════════════════════════════════════════════════════
+tasks:
+  - mine-market-data
+  - web-research
+  - scrape-competitors
+  - build-competitive-matrix
+
+commands:
+  - "*mine-data"           # Coleta completa
+  - "*competitive-scan"    # Foco em concorrência
+
+handoff:
+  destino: "insight-synthesizer"
+  entrega: "Raw Data + Competitive Matrix"
+
+data_files:
+  - taxonomia-diferenciais.yaml
+  - fontes-pesquisa-referencia.yaml   # 8 relatórios anuais + 74 fontes abertas
+  # Frameworks curados (2026-02)
+  - kahneman-dual-systems.yaml       # Coletar dados sobre decisões (Sistema 1/2)
+  - jtbd-framework.yaml              # Coletar dados sobre Jobs To Be Done
+
+confidence: 0.92
+version: "1.1"
