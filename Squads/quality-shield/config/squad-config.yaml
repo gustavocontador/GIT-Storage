@@ -1,0 +1,105 @@
+# Quality Shield - Squad Configuration
+# Configuracoes operacionais do squad.
+# Referenciado por agentes e tasks durante execucao.
+
+# URLs de producao
+production:
+  url: "https://fomibrasil.com.br"
+  # IMPORTANTE: Sempre sem www e sem trailing slash.
+  # www.fomibrasil.com.br faz 307 redirect para fomibrasil.com.br
+
+# Timeouts por etapa do fluxo (em minutos)
+# Benchmark: Bug OAuth BUG-2026-02-11-001 levou ~12min total
+timeouts:
+  kb_search: 1            # Busca na knowledge base
+  diagnosis: 5            # Diagnostico completo (Sage)
+  impact_analysis: 3      # Analise de impacto (Nova)
+  fix_implementation: 15  # Implementacao do fix (@dev)
+  regression_check: 5     # Testes de regressao (Shield)
+  deploy: 3               # Deploy com rollback plan (@devops)
+  production_verify: 5    # Verificacao em producao (Sentinel)
+  total_flow: 40          # Timeout absoluto do fluxo completo
+
+# Severidade - niveis de teste e verificacao
+severity:
+  CRITICO:
+    regression_levels: [1, 2, 3, 4]
+    production_verify: true
+    max_retry_loops: 3
+    description: "Funcoes principais: login, discover, feed, reviews, listas, profile"
+  ALTO:
+    regression_levels: [1, 2, 3]
+    production_verify: true
+    max_retry_loops: 2
+    description: "Funcoes importantes: notifications, settings, social"
+  MEDIO:
+    regression_levels: [1, 2]
+    production_verify: false
+    max_retry_loops: 1
+    description: "Funcoes secundarias"
+  BAIXO:
+    regression_levels: [1]
+    production_verify: false
+    max_retry_loops: 1
+    description: "UI, texto, estilo"
+
+# Health check
+health_check:
+  on_activation:
+    enabled: true
+    type: quick           # login + feed apenas
+    timeout_seconds: 30
+  post_deploy:
+    enabled: true
+    type: full            # todos os fluxos criticos
+    timeout_seconds: 120
+  on_demand:
+    enabled: true
+    type: full
+    timeout_seconds: 120
+
+# Knowledge base
+knowledge_base:
+  max_search_results: 5
+  auto_record: true       # Gravar automaticamente apos fix aprovado
+  pattern_threshold: 2    # Numero de bugs similares para sugerir novo padrao
+
+# Regression Guard
+regression:
+  stop_on_first_failure: true   # Parar na primeira falha (nao executar niveis seguintes)
+  level_1_command: "npm test"   # Comando para rodar testes unitarios
+  level_2_trace_depth: 3        # Profundidade maxima de trace transitivo
+  level_3_mock_policy: "NAO mockar as partes que foram fixadas"
+  level_4_format: "step-by-step com resultado esperado em CADA passo"
+
+# Config externo (paths relativos verificados - existem em docs/framework/)
+# coding-standards: ../../docs/framework/coding-standards.md
+# tech-stack: ../../docs/framework/tech-stack.md
+# source-tree: ../../docs/framework/source-tree.md
+
+# Fluxos criticos (referencia para health-check e production-verify)
+critical_flows:
+  - id: login-email
+    description: "Login com email e senha"
+    entry_url: "/"
+  - id: login-google-oauth
+    description: "Login com Google OAuth"
+    entry_url: "/"
+  - id: reset-password
+    description: "Reset de senha via email"
+    entry_url: "/reset-password"
+  - id: feed
+    description: "Feed principal de reviews"
+    entry_url: "/feed"
+  - id: discover
+    description: "Busca e descoberta de restaurantes"
+    entry_url: "/discover"
+  - id: create-review
+    description: "Criacao de review"
+    entry_url: "/create-review"
+  - id: lists
+    description: "Listas de restaurantes"
+    entry_url: "/lists"
+  - id: profile
+    description: "Perfil do usuario"
+    entry_url: "/profile"

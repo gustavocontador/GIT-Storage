@@ -1,0 +1,122 @@
+name: quality-shield
+version: 1.3.0
+description: >
+  Squad operacional para resolver bugs com fluxo 100% automatico.
+  Diagnostico de causa raiz, analise de impacto, fix seguro, teste de regressao,
+  deploy com rollback plan, e verificacao em producao.
+  Knowledge base que aprende com cada bug resolvido.
+author: opone
+license: MIT
+slashPrefix: qs
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    # Orchestrator (user-facing)
+    - chief.md
+    # Specialists
+    - diagnostician.md
+    - impact-analyst.md
+    - regression-guard.md
+    - production-monitor.md
+  tasks:
+    # Core workflow tasks
+    - diagnose.md
+    - analyze-impact.md
+    - regression-check.md
+    - production-verify.md
+    - health-check.md
+    # Knowledge base tasks
+    - kb-record.md
+    - kb-search.md
+    # Setup & mapping tasks
+    - build-dependency-graph.md
+    - map-feature-flow.md
+    - map-all-flows.md
+    # Deep analysis tasks
+    - deep-trace.md
+    - dependency-risk-score.md
+    - regression-report.md
+  workflows:
+    - bug-fix-flow.md
+    - hotfix-flow.md
+    - kb-maintenance.md
+    - onboarding-flow.md
+  checklists:
+    - regression-checklist.md
+    - deploy-checklist.md
+    - diagnosis-checklist.md
+    - production-incident-checklist.md
+  templates:
+    - diagnosis-report.md
+    - impact-report.md
+    - kb-entry.yaml
+  tools:
+    - playwright-setup.md
+  scripts:
+    - scan-imports.md
+    - kb-search-helper.md
+  data:
+    - dependency-graph.yaml
+    - feature-flows.md
+    - knowledge-base.yaml
+    - known-interconnections.md
+    - regression-patterns.md
+
+# Agents from aios-core that participate in this squad
+external_agents:
+  - id: dev
+    role: "Implements fixes with full context from Diagnostician and Impact Analyst"
+  - id: devops
+    role: "Deploys fixes with rollback plan, executes rollback if production verification fails"
+
+# Severity levels (defined manually by user)
+severity:
+  CRITICO:
+    regression_levels: [1, 2, 3, 4]
+    production_verify: true
+    description: "Funcoes principais do app (login, discover, feed, reviews, listas, profile)"
+  ALTO:
+    regression_levels: [1, 2, 3]
+    production_verify: true
+    description: "Funcoes importantes (notifications, settings, social)"
+  MEDIO:
+    regression_levels: [1, 2]
+    production_verify: false
+    description: "Funcoes secundarias"
+  BAIXO:
+    regression_levels: [1]
+    production_verify: false
+    description: "UI, texto, estilo"
+
+# Health check triggers
+health_checks:
+  on_activation: true
+  on_activation_type: quick  # login + feed only
+  post_deploy: true
+  post_deploy_type: full     # all critical flows
+  on_demand: true
+  on_demand_type: full       # all critical flows
+
+config:
+  squad-config: config/squad-config.yaml
+  coding-standards: ../../docs/framework/coding-standards.md
+  tech-stack: ../../docs/framework/tech-stack.md
+  source-tree: ../../docs/framework/source-tree.md
+
+dependencies:
+  node:
+    - "@playwright/test"
+  python: []
+  squads: []
+
+tags:
+  - quality
+  - debugging
+  - regression
+  - production-monitoring
+  - operational
+  - knowledge-base
