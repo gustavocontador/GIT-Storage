@@ -1,0 +1,148 @@
+name: youtube-title
+version: 1.0.0
+description: World-class YouTube title creation & optimization pipeline for YouTube creators
+author: AIOS Community
+license: UNLICENSED
+slashPrefix: youtube-title
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+orchestrator: title-chief
+
+tiers:
+  tier_0:
+    name: Orchestrator
+    agents:
+      - title-chief
+  tier_1:
+    name: Research
+    agents:
+      - title-researcher
+  tier_2:
+    name: Title Generators
+    agents:
+      - curiosity-architect
+      - power-titler
+      - pattern-disruptor
+      - trigger-specialist
+  tier_3:
+    name: Optimization
+    agents:
+      - title-scorer
+  tools:
+    - title-qa
+
+components:
+  agents:
+    - title-chief.md
+    - title-researcher.md
+    - curiosity-architect.md
+    - power-titler.md
+    - pattern-disruptor.md
+    - trigger-specialist.md
+    - title-scorer.md
+    - title-qa.md
+  tasks:
+    - research-titles.md
+    - generate-curiosity-titles.md
+    - generate-power-titles.md
+    - generate-pattern-titles.md
+    - generate-trigger-titles.md
+    - score-titles.md
+    - qa-check-titles.md
+  workflows: []
+  checklists:
+    - title-quality-checklist.md
+  templates: []
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  knowledge-base: data/youtube-title-kb.md
+
+routing:
+  foundation_first: true
+  qa_gate: title-qa
+  flow: |
+    1. title-researcher analyzes niche competition (BLOCKING)
+    2. 4 generators create titles in parallel
+    3. title-scorer scores and ranks all titles (BLOCKING)
+    4. title-qa validates voice DNA (BLOCKING)
+
+quality_gates:
+  - id: OT_QG_001
+    name: Niche Research
+    description: Competitive titles researched before generation
+    blocking: true
+  - id: OT_QG_002
+    name: Title Scoring
+    description: All titles scored and ranked by CTR potential
+    blocking: true
+  - id: OT_QG_003
+    name: Voice DNA Validation
+    description: Top titles pass the creator's voice DNA check
+    blocking: true
+
+voice:
+  owner: Creator Voice DNA
+  tone: direct, no-BS, family-first mentor
+  words_use:
+    - bridge
+    - momentum
+    - consistent
+    - backlog
+    - system
+    - goldmine
+    - compound
+    - execute
+    - build
+  words_avoid:
+    - unlimited
+    - revolutionary
+    - passive income
+    - secret
+    - guaranteed
+    - synergy
+    - innovative
+    - unlock your potential
+  emotional_anchors:
+    - family (wife, kids, daughter, partner)
+    - kitchen table, coffee at home
+    - 2 AM (worry time)
+    - lunch break (work time)
+    - Rome/vacation (freedom symbol)
+
+target_audience:
+  name: The Working Professional
+  age: 30+
+  situation: Full-time corporate job, family provider, paycheck to paycheck
+  psychology: Wants out but can't afford to jump
+  test: "The 2 AM Test - lying in bed calculating years to financial freedom"
+
+products:
+  - name: "[Your Free Lead Magnet]"
+    type: free
+    description: Free product delivery hub with ebook, bonuses, and resources
+  - name: "[Your Paid Product]"
+    type: paid
+    description: Your primary paid product or service
+  - name: "[Your Premium Offering]"
+    type: paid
+    description: Course + community + coaching
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - youtube
+  - titles
+  - ctr
+  - click-through-rate
+  - mental-triggers
+  - curiosity-gap
+  - thumbnail-synergy
