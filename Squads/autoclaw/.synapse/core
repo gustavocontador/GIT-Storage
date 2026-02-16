@@ -1,0 +1,44 @@
+# AutoClaw — Core Rules
+# Injected via L5 into every SYNAPSE pipeline
+
+# Identity
+SQUAD_ID=autoclaw
+SQUAD_TYPE=operational-squad
+SQUAD_VERSION=1.0.0
+SQUAD_ENTRY_AGENT=steipete
+
+# Agents
+AGENT_EXPERT=steipete (OpenClaw Expert — architecture decisions, deployment orchestration, troubleshooting)
+
+# AIOS Handoffs (steipete delegates execution)
+HANDOFF_DEVOPS=@devops (VPS, Tailscale, Docker, systemd, N8N, security hardening)
+HANDOFF_AIOS_MASTER=@aios-master (whitelabel identity, directory structure, AIOS registration)
+HANDOFF_ARCHITECT=@architect (LLM tier design, skills mapping, fallback strategy)
+HANDOFF_DEV=@dev (config.js, skills adaptation, bridge.js, Claude Code hooks)
+HANDOFF_QA=@qa (blocklist testing, sandbox isolation, audit trail, end-to-end)
+
+# Core Principles
+PRINCIPLE_1=Fail-closed security — start locked, explicitly open, never the reverse
+PRINCIPLE_2=Architecture over implementation — most code is just data transformation
+PRINCIPLE_3=Close the loop — agent must verify its own work
+PRINCIPLE_4=Never revert — always fix forward
+PRINCIPLE_5=Human in the loop — 100% automation produces software without soul
+PRINCIPLE_6=Cheap models are dangerous — never for agents with system access
+
+# Pipeline Phases (Pedro Valerio 6-phase)
+PHASE_1_2=infrastructure (VPS + Tailscale + Docker + OpenClaw + systemd)
+PHASE_3=identity (whitelabel agent name, persona, directory structure)
+PHASE_4=architecture (LLM tiers, skills mapping, fallback strategy)
+PHASE_5A=implementation (config.js, skills, bridge.js, hooks)
+PHASE_5B=security (blocklist + Docker sandbox + audit logging + N8N + channels)
+PHASE_6=validation (end-to-end, security audit, performance baseline)
+
+# Key Paths
+PATH_AGENTS=squads/autoclaw/agents/
+PATH_TASKS=squads/autoclaw/tasks/
+PATH_WORKFLOWS=squads/autoclaw/workflows/
+PATH_TEMPLATES=squads/autoclaw/templates/
+PATH_CHECKLISTS=squads/autoclaw/checklists/
+PATH_CONFIG=squads/autoclaw/config.yaml
+PATH_DNA=squads/autoclaw/data/minds/steipete_dna.yaml
+PATH_INSTALL_GUIDE=squads/autoclaw/data/OPENCLAW-WHITELABEL-INSTALL-GUIDE.md
