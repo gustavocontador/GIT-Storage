@@ -1,0 +1,148 @@
+name: youtube-outlier
+version: 1.0.0
+description: World-class YouTube strategy & channel growth team for YouTube creators
+author: AIOS Community
+license: UNLICENSED
+slashPrefix: youtube-outlier
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+orchestrator: strategy-chief
+
+tiers:
+  tier_0:
+    name: Diagnostic
+    agents:
+      - channel-strategist
+  tier_1:
+    name: Strategy Masters
+    agents:
+      - algorithm-expert
+      - content-strategist
+  tier_2:
+    name: Analysis
+    agents:
+      - analytics-analyst
+
+components:
+  agents:
+    - strategy-chief.md
+    - channel-strategist.md
+    - algorithm-expert.md
+    - content-strategist.md
+    - analytics-analyst.md
+  tasks:
+    - audit-channel.md
+    - create-growth-strategy.md
+    - optimize-algorithm.md
+    - plan-content-calendar.md
+    - generate-video-ideas.md
+    - analyze-performance.md
+    - go-viral-strategy.md
+    - policy-check.md
+  workflows: []
+  checklists:
+    - strategy-validation-checklist.md
+  templates: []
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  knowledge-base: data/youtube-growth-kb.md
+
+routing:
+  foundation_first: true
+  qa_gate: strategy-chief
+  flow: |
+    1. channel-strategist audits channel state (BLOCKING)
+    2. algorithm-expert optimizes discoverability (if needed)
+    3. content-strategist plans content pillars and ideas
+    4. analytics-analyst tracks performance and iterates
+    5. strategy-chief validates strategy alignment (BLOCKING)
+
+quality_gates:
+  - id: OO_QG_001
+    name: Request Classification
+    description: Request correctly classified and routed to specialist
+    blocking: false
+  - id: OO_QG_002
+    name: Channel Audit
+    description: Channel audited before any strategy is created
+    blocking: true
+  - id: OO_QG_003
+    name: Policy Compliance
+    description: All strategies comply with current YouTube policies
+    blocking: true
+  - id: OO_QG_004
+    name: Strategy Validation
+    description: Strategy validated for actionability and measurability
+    blocking: true
+
+voice:
+  owner: Creator Voice DNA
+  tone: direct, no-BS, family-first mentor
+  words_use:
+    - bridge
+    - momentum
+    - consistent
+    - backlog
+    - leverage
+    - system
+    - compound
+    - execute
+    - build
+    - outlier
+  words_avoid:
+    - unlimited
+    - revolutionary
+    - passive income
+    - secret
+    - guaranteed
+    - synergy
+    - innovative
+    - unlock your potential
+    - hack
+    - guru
+  emotional_anchors:
+    - family (wife, kids, daughter, partner)
+    - kitchen table, coffee at home
+    - 2 AM (worry time)
+    - lunch break (work time)
+    - Rome/vacation (freedom symbol)
+
+target_audience:
+  name: The Working Professional
+  age: 30+
+  situation: Full-time corporate job, family provider, paycheck to paycheck
+  psychology: Wants out but can't afford to jump
+  test: "The 2 AM Test - lying in bed calculating years to financial freedom"
+
+products:
+  - name: "[Your Free Resource]"
+    type: free
+    description: Free lead magnet with ebook, bonuses, and resources
+  - name: "[Your AI Content Platform]"
+    type: paid
+    description: AI-powered YouTube content creation platform
+  - name: "[Your Premium Community]"
+    type: paid
+    description: Course + community + coaching
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - youtube
+  - strategy
+  - channel-growth
+  - algorithm
+  - content-planning
+  - analytics
+  - viral
+  - seo
+  - youtube
