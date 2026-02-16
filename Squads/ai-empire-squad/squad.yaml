@@ -1,0 +1,148 @@
+name: ai-empire-squad
+title: AI Empire Squad - Build Million-Dollar Businesses
+version: "1.0.0"
+description: |
+  Elite consulting squad for building million-dollar AI businesses from scratch.
+  10 specialized consultants working in synergy using Claude Code + AIOS.
+  From ideation to market launch, completely autonomous execution capability.
+
+project: AI-FIRST
+created: 2026-02-10
+maintainer: Squad Creator
+license: proprietary
+
+# Core Architecture
+architecture:
+  type: multi-tier
+  tiers:
+    tier1: Orchestration & Leadership
+    tier2: Strategic Decision-Making (Roundtable)
+    tier3: Execution & Implementation
+    tier4: Governance & Oversight
+
+# Manifest - All agents in this squad
+agents:
+  # TIER 1: Orchestration
+  - id: master-coordinator
+    name: Master Coordinator
+    title: 🎯 Master Coordinator
+    tier: 1
+    file: agents/01-master-coordinator.yaml
+    role: Orchestrates all operations, coordinates decision-making
+
+  # TIER 2: Strategic Minds (Roundtable)
+  - id: ai-strategist
+    name: AI Strategist
+    title: 🤖 AI Strategist
+    tier: 2
+    file: agents/02-ai-strategist.yaml
+    role: Explores maximum potential of Claude Code + AIOS architecture
+
+  - id: business-strategist
+    name: Business Strategist
+    title: 💰 Business Strategist
+    tier: 2
+    file: agents/03-business-strategist.yaml
+    role: Identifies opportunities, builds monetization strategies
+
+  - id: product-manager
+    name: Product Manager
+    title: 📦 Product Manager
+    tier: 2
+    file: agents/04-product-manager.yaml
+    role: Defines product vision, roadmap, and market differentiation
+
+  # TIER 3: Executors
+  - id: systems-architect
+    name: Systems Architect
+    title: 🏗️ Systems Architect
+    tier: 3
+    file: agents/05-systems-architect.yaml
+    role: Designs scalable architecture from day 1
+
+  - id: developer-lead
+    name: Developer Lead
+    title: 💻 Developer Lead
+    tier: 3
+    file: agents/06-developer-lead.yaml
+    role: Implements code and maintains quality standards
+
+  - id: data-specialist
+    name: Data Specialist
+    title: 📊 Data Specialist
+    tier: 3
+    file: agents/07-data-specialist.yaml
+    role: Analytics, metrics, and data-driven decision making
+
+  - id: devops-engineer
+    name: DevOps Engineer
+    title: 🚀 DevOps Engineer
+    tier: 3
+    file: agents/08-devops-engineer.yaml
+    role: Infrastructure, scalability, and deployment automation
+
+  # TIER 4: Governance
+  - id: mentor-guide
+    name: Mentor & Guide
+    title: 📚 Mentor & Guide
+    tier: 4
+    file: agents/09-mentor-guide.yaml
+    role: Guides entire process, ensures best practices
+
+  - id: compliance-officer
+    name: Compliance Officer
+    title: ⚖️ Compliance Officer
+    tier: 4
+    file: agents/10-compliance-officer.yaml
+    role: Legal protection, security, IP safeguarding
+
+# Task-First Architecture
+tasks:
+  - id: squad-kickoff
+    file: tasks/01-squad-kickoff.md
+    description: Initialize squad and align on AI-FIRST project vision
+
+  - id: opportunity-discovery
+    file: tasks/02-opportunity-discovery.md
+    description: Discover and validate business opportunities
+
+  - id: roundtable-decision
+    file: tasks/03-roundtable-decision.md
+    description: Roundtable discussion and decision-making framework
+
+  - id: build-execution
+    file: tasks/04-build-execution.md
+    description: Build MVP with full architecture
+
+  - id: market-validation
+    file: tasks/05-market-validation.md
+    description: Validate with real market data
+
+  - id: scale-optimization
+    file: tasks/06-scale-optimization.md
+    description: Scale operations and optimize for growth
+
+# Workflows
+workflows:
+  - id: idea-to-launch
+    file: workflows/idea-to-launch.yaml
+    description: Complete journey from idea to market launch
+
+# Configuration
+config:
+  task_first: true
+  parallel_execution: true
+  decision_frequency: daily
+  validation_gates: strict
+
+# Dependencies
+dependencies:
+  aios_version: "2.1+"
+  claude_code_required: true
+  requires:
+    - squads/marketing-squad (optional, for launch campaigns)
+
+# Contact & Support
+contact:
+  creator: Squad Creator
+  support: Use /help or *guide command
