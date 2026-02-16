@@ -1,0 +1,51 @@
+name: sales-squad
+version: 1.0.0
+description: Custom squad for sales automation
+author: Adriano
+license: UNLICENSED
+slashPrefix: sales
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - sales-consultant.md
+    - reseller-analyst.md
+    - sales-ops.md
+  tasks:
+    - sales-consultant-analyze-reseller.md
+    - sales-consultant-propose-mix.md
+    - sales-consultant-consultive-approach.md
+    - reseller-analyst-analyze-metrics.md
+    - reseller-analyst-seasonality-report.md
+    - reseller-analyst-inventory-check.md
+    - sales-ops-crm-update.md
+    - sales-ops-kpi-dashboard.md
+    - sales-ops-standardize-process.md
+    - sales-ops-market-education.md
+  workflows: []
+  checklists: []
+  templates: []
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+  source-tree: config/source-tree.md
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - sales
+  - b2b
+  - crm
+  - revendedores
+  - venda-consultiva
+  - automation
