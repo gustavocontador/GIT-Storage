@@ -1,0 +1,96 @@
+# Agent Registry - Skill Tester Squad
+# Consolidated index for agent discovery and routing
+# Updated: 2026-02-10 - Added skill-tester activatable agent + knowledge refs
+
+squad: skill-tester
+version: 1.0.0
+total_agents: 4
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ORCHESTRATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+
+chief:
+  eval-chief:
+    id: eval-chief
+    role: "Lead Evaluator & Test Architect"
+    expertise: [evaluation-design, criteria-definition, result-synthesis]
+    best_for: [design-evaluation, coordinate-testing, synthesize-verdict]
+    routes_to: [test-runner, quality-judge]
+    entry_point: true
+    file: "agents/eval-chief.md"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SPECIALISTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+specialists:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # EXECUTION
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  test-runner:
+    id: test-runner
+    role: "Skill Executor & Output Collector"
+    expertise: [skill-execution, scenario-design, output-collection]
+    best_for: [execute-skills, run-scenarios, collect-outputs]
+    commands: ["*run-skill", "*run-scenario"]
+    file: "agents/test-runner.md"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # EVALUATION
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  quality-judge:
+    id: quality-judge
+    role: "Output Evaluator & Quality Scorer"
+    expertise: [output-analysis, scoring, comparative-evaluation]
+    best_for: [evaluate-outputs, score-comparison, quality-assessment]
+    commands: ["*evaluate", "*score"]
+    file: "agents/quality-judge.md"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ACTIVATABLE (User-facing entry point)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+activatable:
+  skill-tester:
+    id: skill-tester
+    role: "Skill Evaluation Orchestrator"
+    expertise: [skill-comparison, evaluation-orchestration, verdict-synthesis]
+    best_for: [compare-skills, quick-compare, setup-criteria]
+    entry_point: true
+    user_facing: true
+    file: "agents/skill-tester.md"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ROUTING MATRIX
+# ═══════════════════════════════════════════════════════════════════════════════
+
+routing_matrix:
+  compare_skills: eval-chief
+  execute_skill: test-runner
+  evaluate_output: quality-judge
+  generate_report: eval-chief
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TASKS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+tasks:
+  - setup-evaluation
+  - execute-skills
+  - evaluate-outputs
+  - generate-comparison
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GLOBAL COMMANDS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+global_commands:
+  "*compare-skills": "Comparar 2+ skills com avaliação completa"
+  "*quick-compare": "Comparação rápida sem relatório detalhado"
+  "*setup-criteria": "Definir critérios de avaliação customizados"
+  "*help": "Mostrar comandos disponíveis"
+  "*exit": "Sair do modo skill-tester"

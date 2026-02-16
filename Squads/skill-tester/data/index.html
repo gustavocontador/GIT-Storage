@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Tester — Comparativo UI/UX Frontend Skills</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #08080A;
+    --surface: #111113;
+    --surface-2: #1A1A1E;
+    --border: #2A2A2F;
+    --text: #F4F4F5;
+    --text-muted: #A0A0AB;
+    --text-dim: #6B6B78;
+    --terracotta: #E07A5F;
+    --sage: #81B29A;
+    --golden: #F2CC8F;
+    --coral: #FF6B4A;
+    --amber: #F59E0B;
+    --violet: #8B5CF6;
+    --green: #4ADE80;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .serif { font-family: 'Instrument Serif', serif; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 80px 24px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 500px;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(224,122,95,0.12) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(129,178,154,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+
+  .badge span { color: var(--terracotta); font-weight: 600; }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 620px;
+    margin: 0 auto 56px;
+    line-height: 1.7;
+  }
+
+  /* RANKING BAR */
+  .ranking {
+    max-width: 1280px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+  }
+
+  .ranking-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow-x: auto;
+  }
+
+  .ranking-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  .ranking-items {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .rank-item .pos {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .rank-1 { background: rgba(224,122,95,0.08); color: var(--terracotta); }
+  .rank-1 .pos { background: var(--terracotta); color: #fff; }
+  .rank-2 { background: rgba(255,107,74,0.06); color: var(--coral); }
+  .rank-2 .pos { background: var(--coral); color: #fff; }
+  .rank-3 { background: rgba(139,92,246,0.06); color: var(--violet); }
+  .rank-3 .pos { background: var(--violet); color: #fff; }
+  .rank-4 { background: rgba(129,178,154,0.06); color: var(--sage); }
+  .rank-4 .pos { background: var(--sage); color: #fff; }
+
+  .rank-score {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+
+  .card.winner-card {
+    border-color: var(--terracotta);
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 40px;
+  }
+
+  .card.winner-card:hover {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 0 1px var(--terracotta);
+  }
+
+  .winner-left, .winner-right { display: flex; flex-direction: column; gap: 18px; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .skill-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+
+  .score {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .score-d { color: var(--terracotta); }
+  .score-a { color: var(--coral); }
+  .score-c { color: var(--violet); }
+  .score-b { color: var(--sage); }
+
+  .score small {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .card-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 4px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .winner-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 14px;
+    background: rgba(224,122,95,0.1);
+    border: 1px solid rgba(224,122,95,0.25);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--terracotta);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .winner-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    animation: winPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes winPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-d { color: var(--terracotta); }
+  .cta-a { color: var(--coral); }
+  .cta-c { color: var(--violet); }
+  .cta-b { color: var(--sage); }
+
+  .card-cta svg { transition: transform 0.2s; }
+  .card:hover .card-cta svg { transform: translateX(4px); }
+
+  /* FEATURES COMPARISON */
+  .features-section {
+    max-width: 1280px;
+    margin: 0 auto 64px;
+    padding: 0 24px;
+  }
+
+  .features-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 24px;
+  }
+
+  .features-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .features-row {
+    display: grid;
+    grid-template-columns: 200px repeat(4, 1fr);
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .features-row:last-child { border-bottom: none; }
+
+  .features-row.header {
+    background: var(--surface-2);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+  }
+
+  .features-row > div {
+    padding: 14px 20px;
+    text-align: center;
+  }
+
+  .features-row > div:first-child {
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .feat-yes { color: var(--green); }
+  .feat-partial { color: var(--amber); }
+  .feat-no { color: var(--text-dim); }
+
+  /* SCORECARD */
+  .verdict {
+    max-width: 1280px;
+    margin: 0 auto 64px;
+    padding: 0 24px;
+  }
+
+  .verdict-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px;
+  }
+
+  .verdict-box h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 28px;
+  }
+
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .criterion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--surface-2);
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .criterion-name { color: var(--text-muted); }
+
+  .criterion-scores {
+    display: flex;
+    gap: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+  }
+
+  .criterion-scores .d { color: var(--terracotta); }
+  .criterion-scores .a { color: var(--coral); }
+  .criterion-scores .c { color: var(--violet); }
+  .criterion-scores .b { color: var(--sage); }
+
+  /* VERDICT TEXT */
+  .verdict-text {
+    max-width: 1280px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .verdict-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--terracotta);
+    border-radius: 14px;
+    padding: 36px 40px;
+  }
+
+  .verdict-card h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    color: var(--terracotta);
+  }
+
+  .verdict-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  .verdict-card p:last-child { margin-bottom: 0; }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  footer a { color: var(--terracotta); text-decoration: none; }
+
+  /* Gradient line */
+  .grad-line {
+    height: 2px;
+    background: linear-gradient(90deg, var(--terracotta), var(--sage), var(--golden));
+    border-radius: 1px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+    .card.winner-card { grid-template-columns: 1fr; }
+    .features-row { grid-template-columns: 140px repeat(4, 1fr); font-size: 11px; }
+    .features-row > div { padding: 10px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">Skill Tester <span>v2.0</span></div>
+  <h1>Comparativo: UI/UX Frontend Skills</h1>
+  <p class="subtitle">4 skills executadas com o mesmo cenario (SaaS Analytics Dashboard). Avaliacao cega por 6 criterios com pesos. Clique em cada card para navegar pelo resultado.</p>
+</div>
+
+<!-- RANKING BAR -->
+<div class="ranking">
+  <div class="ranking-bar">
+    <div class="ranking-label">Ranking</div>
+    <div class="ranking-items">
+      <div class="rank-item rank-1">
+        <div class="pos">1</div>
+        Skill D: Hybrid
+        <span class="rank-score">9.1</span>
+      </div>
+      <div class="rank-item rank-2">
+        <div class="pos">2</div>
+        Skill A: Elite
+        <span class="rank-score">8.7</span>
+      </div>
+      <div class="rank-item rank-3">
+        <div class="pos">3</div>
+        Skill C: Anthropic
+        <span class="rank-score">8.3</span>
+      </div>
+      <div class="rank-item rank-4">
+        <div class="pos">4</div>
+        Skill B: Bencium
+        <span class="rank-score">8.4</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILL CARDS -->
+<div class="cards">
+
+  <!-- WINNER: Skill D (full width) -->
+  <a href="skill-d-hybrid.html" class="card winner-card">
+    <div class="winner-badge">Vencedora</div>
+    <div class="winner-left">
+      <div class="card-header">
+        <span class="skill-label">Skill D — Hybrid</span>
+        <div class="score score-d">9.1 <small>/10</small></div>
+      </div>
+      <div class="card-title">Hybrid Frontend Design</div>
+      <div class="card-desc">
+        Combina o melhor de todas: paleta sofisticada terracotta+sage+golden,
+        Instrument Serif para headlines, noise textures, gradient mesh hero,
+        glass morphism KPIs com count-up animado, SVG charts com drawing animation,
+        command palette (Cmd+K) com keyboard nav, accent color switching ao vivo,
+        toast system, floating particles. 13 secoes completas.
+      </div>
+      <div class="tags">
+        <span class="tag">Terracotta + Sage</span>
+        <span class="tag">Glass Morphism</span>
+        <span class="tag">Command Palette</span>
+        <span class="tag">SVG Charts</span>
+        <span class="tag">Accent Switch</span>
+        <span class="tag">Toast System</span>
+        <span class="tag">Particles</span>
+      </div>
+    </div>
+    <div class="winner-right">
+      <div style="font-size:13px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Por que venceu</div>
+      <div style="display:flex; flex-direction:column; gap:12px; flex:1;">
+        <div style="padding:12px 16px; background:var(--surface-2); border-radius:10px; font-size:13px; color:var(--text-muted); line-height:1.6;">
+          <strong style="color:var(--terracotta);">Paleta unica:</strong> Terracotta + sage + golden e quente, sofisticada e nao-generica. Evita o cliche blue/purple de AI.
+        </div>
+        <div style="padding:12px 16px; background:var(--surface-2); border-radius:10px; font-size:13px; color:var(--text-muted); line-height:1.6;">
+          <strong style="color:var(--sage);">Micro-interacoes:</strong> Count-up animado, chart drawing, card hover lift+glow, toast notifications, pulse dots, floating particles.
+        </div>
+        <div style="padding:12px 16px; background:var(--surface-2); border-radius:10px; font-size:13px; color:var(--text-muted); line-height:1.6;">
+          <strong style="color:var(--golden);">Funcionalidade:</strong> Command palette com fuzzy search + keyboard nav, accent color switching ao vivo, theme toggles, tab filters funcionais.
+        </div>
+      </div>
+      <div class="card-cta cta-d">
+        Ver dashboard completo
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <!-- Skill A -->
+  <a href="skill-a-elite-frontend.html" class="card">
+    <div class="card-header">
+      <span class="skill-label">Skill A</span>
+      <div class="score score-a">8.7 <small>/10</small></div>
+    </div>
+    <div class="card-title">Elite Frontend UX Engineer</div>
+    <div class="card-desc">
+      A mais completa em volume (2.827 linhas). Design data-forward com
+      sidebar charcoal, coral accent, Plus Jakarta Sans + Inter. Dark/light mode toggle,
+      10 secoes completas: KPIs, bar chart, donut, tabela com filtros, activity feed,
+      analytics cards, settings panel, export modal. Tokens rigorosos.
+    </div>
+    <div class="tags">
+      <span class="tag">Data-Forward</span>
+      <span class="tag">Dark/Light Mode</span>
+      <span class="tag">2,827 linhas</span>
+      <span class="tag">10 secoes</span>
+    </div>
+    <div class="card-cta cta-a">
+      Ver dashboard
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- Skill B -->
+  <a href="skill-b-bencium-innovative.html" class="card">
+    <div class="card-header">
+      <span class="skill-label">Skill B</span>
+      <div class="score score-b">8.4 <small>/10</small></div>
+    </div>
+    <div class="card-title">Bencium Innovative UX Designer</div>
+    <div class="card-desc">
+      A mais criativa. Estilo editorial magazine com soft brutalism, LIGHT theme (cream #FAF7F2),
+      Fraunces + Space Grotesk, layouts assimetricos, diagonal accents, timeline alternada,
+      clip-path area chart, transaction cards (nao tabela), scroll animations com IntersectionObserver.
+    </div>
+    <div class="tags">
+      <span class="tag">Editorial Light</span>
+      <span class="tag">Soft Brutalism</span>
+      <span class="tag">Asymmetric Grid</span>
+      <span class="tag">11 secoes</span>
+    </div>
+    <div class="card-cta cta-b">
+      Ver dashboard
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- Skill C -->
+  <a href="skill-c-anthropic-frontend.html" class="card">
+    <div class="card-header">
+      <span class="skill-label">Skill C</span>
+      <div class="score score-c">8.3 <small>/10</small></div>
+    </div>
+    <div class="card-title">Anthropic Frontend Design</div>
+    <div class="card-desc">
+      Equilibrio entre criatividade e polish tecnico. Dark theme violet+cyan,
+      Instrument Serif headlines, SVG noise textures, command palette (Cmd+K),
+      glass morphism, chart animations. Boa base que inspirou a skill hibrida,
+      mas menos completa que A e D.
+    </div>
+    <div class="tags">
+      <span class="tag">Violet + Cyan</span>
+      <span class="tag">Command Palette</span>
+      <span class="tag">SVG Charts</span>
+      <span class="tag">12 secoes</span>
+    </div>
+    <div class="card-cta cta-c">
+      Ver dashboard
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+</div>
+
+<!-- FEATURES COMPARISON TABLE -->
+<div class="features-section">
+  <h2>Comparativo de Features</h2>
+  <div class="features-table">
+    <div class="features-row header">
+      <div>Feature</div>
+      <div>D: Hybrid</div>
+      <div>A: Elite</div>
+      <div>B: Bencium</div>
+      <div>C: Anthropic</div>
+    </div>
+    <div class="features-row">
+      <div>Sidebar Navigation</div>
+      <div class="feat-yes">&#10003;</div>
+      <div class="feat-yes">&#10003;</div>
+      <div class="feat-yes">&#10003;</div>
+      <div class="feat-yes">&#10003;</div>
+    </div>
+    <div class="features-row">
+      <div>KPI Cards + Sparklines</div>
+      <div class="feat-yes">&#10003; SVG</div>
+      <div class="feat-yes">&#10003; CSS</div>
+      <div class="feat-partial">~ Asymmetric</div>
+      <div class="feat-yes">&#10003; SVG</div>
+    </div>
+    <div class="features-row">
+      <div>SVG Charts</div>
+      <div class="feat-yes">&#10003; Line + Donut</div>
+      <div class="feat-partial">~ CSS only</div>
+      <div class="feat-partial">~ Clip-path</div>
+      <div class="feat-yes">&#10003; Line + Donut</div>
+    </div>
+    <div class="features-row">
+      <div>Data Table + Filters</div>
+      <div class="feat-yes">&#10003; 10 rows</div>
+      <div class="feat-yes">&#10003; 8 rows</div>
+      <div class="feat-partial">~ Card layout</div>
+      <div class="feat-yes">&#10003; 10 rows</div>
+    </div>
+    <div class="features-row">
+      <div>Command Palette</div>
+      <div class="feat-yes">&#10003; Fuzzy + Keyboard</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-yes">&#10003; Fuzzy + Keyboard</div>
+    </div>
+    <div class="features-row">
+      <div>Settings Panel</div>
+      <div class="feat-yes">&#10003; 4 tabs</div>
+      <div class="feat-yes">&#10003; 3 sections</div>
+      <div class="feat-yes">&#10003; Panel</div>
+      <div class="feat-yes">&#10003; 4 tabs</div>
+    </div>
+    <div class="features-row">
+      <div>Toast Notifications</div>
+      <div class="feat-yes">&#10003; Stacked</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-yes">&#10003;</div>
+    </div>
+    <div class="features-row">
+      <div>Accent Color Switch</div>
+      <div class="feat-yes">&#10003; Live CSS vars</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+    </div>
+    <div class="features-row">
+      <div>Noise Texture</div>
+      <div class="feat-yes">&#10003;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-yes">&#10003;</div>
+    </div>
+    <div class="features-row">
+      <div>Gradient Mesh BG</div>
+      <div class="feat-yes">&#10003; Animated</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-yes">&#10003;</div>
+    </div>
+    <div class="features-row">
+      <div>Glass Morphism</div>
+      <div class="feat-yes">&#10003;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-yes">&#10003;</div>
+    </div>
+    <div class="features-row">
+      <div>Scroll Animations</div>
+      <div class="feat-yes">&#10003; IO + Stagger</div>
+      <div class="feat-yes">&#10003; IO</div>
+      <div class="feat-yes">&#10003; IO</div>
+      <div class="feat-yes">&#10003; IO</div>
+    </div>
+    <div class="features-row">
+      <div>Dark/Light Theme</div>
+      <div class="feat-partial">~ Dark only</div>
+      <div class="feat-yes">&#10003; Toggle</div>
+      <div class="feat-partial">~ Light only</div>
+      <div class="feat-partial">~ Dark only</div>
+    </div>
+    <div class="features-row">
+      <div>Floating Particles</div>
+      <div class="feat-yes">&#10003; 8 particles</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+      <div class="feat-no">&#10007;</div>
+    </div>
+    <div class="features-row">
+      <div>Unique Color Palette</div>
+      <div class="feat-yes">&#10003; Terracotta+Sage</div>
+      <div class="feat-partial">~ Coral (common)</div>
+      <div class="feat-yes">&#10003; Earth tones</div>
+      <div class="feat-partial">~ Violet+Cyan</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCORECARD -->
+<div class="verdict">
+  <div class="verdict-box">
+    <h2>Scorecard por Criterio</h2>
+    <div class="criteria-grid">
+      <div class="criterion">
+        <span class="criterion-name">Relevancia (25%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:9</span>
+          <span class="b">B:8</span>
+          <span class="c">C:9</span>
+        </div>
+      </div>
+      <div class="criterion">
+        <span class="criterion-name">Qualidade (25%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:9</span>
+          <span class="b">B:8</span>
+          <span class="c">C:8</span>
+        </div>
+      </div>
+      <div class="criterion">
+        <span class="criterion-name">Formato (15%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:9</span>
+          <span class="b">B:8</span>
+          <span class="c">C:8</span>
+        </div>
+      </div>
+      <div class="criterion">
+        <span class="criterion-name">Tom (15%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:8</span>
+          <span class="b">B:9</span>
+          <span class="c">C:8</span>
+        </div>
+      </div>
+      <div class="criterion">
+        <span class="criterion-name">Completude (10%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:9</span>
+          <span class="b">B:9</span>
+          <span class="c">C:8</span>
+        </div>
+      </div>
+      <div class="criterion">
+        <span class="criterion-name">Criatividade (10%)</span>
+        <div class="criterion-scores">
+          <span class="d">D:9</span>
+          <span class="a">A:7</span>
+          <span class="b">B:9</span>
+          <span class="c">C:8</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div class="verdict-text">
+  <div class="grad-line"></div>
+  <div class="verdict-card">
+    <h3>Veredicto Final</h3>
+    <p>
+      <strong>Skill D (Hybrid)</strong> vence com 9.1/10. Combina a sofisticacao de palette da Bencium (earth tones, nao-generica),
+      os SVG charts e micro-interacoes da Anthropic (noise textures, gradient mesh, command palette),
+      e o rigor de tokens/completude da Elite. O resultado e uma skill que produz interfaces
+      quentes, sofisticadas e tecnicamente impecaveis.
+    </p>
+    <p>
+      <strong>Skill A (Elite)</strong> fica em 2o com 8.7 — a mais completa em volume e tokens, mas com menos
+      criatividade visual. <strong>Skill B (Bencium)</strong> em 3o com 8.4 — a mais criativa e unica,
+      mas com menos polish tecnico. <strong>Skill C (Anthropic)</strong> em 4o com 8.3 — boa base equilibrada,
+      mas menos completa que as demais na versao complexa.
+    </p>
+  </div>
+</div>
+
+<footer>
+  Gerado por <a href="#">Skill Tester Squad</a> — AIOS Core &middot; 08/02/2026
+  <br><span style="font-style:italic; font-family:'Instrument Serif',serif; margin-top:8px; display:inline-block; color:var(--text-muted);">Where skills are measured, not assumed</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+name: Skill Tester
+version: 1.0.0
+description: >
+  Squad especializado em comparar e avaliar skills (prompts, system prompts, slash commands).
+  Recebe 2+ skills, executa contra cenários controlados e produz ranking comparativo
+  com scorecard quantitativo e relatório qualitativo. Inclui framework de avaliação
+  UI/UX calibrado com o frontend-design-hybrid skill (9.1/10), permitindo avaliações
+  especializadas de skills de design e frontend com critérios comprovados.
+
+squad_type: specialist
+domain: quality-assurance
+
+author: rafaelscosta
+license: MIT
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - eval-chief
+    - test-runner
+    - quality-judge
+    - skill-tester          # Activatable agent (user-facing entry point)
+
+  tasks:
+    - setup-evaluation
+    - execute-skills
+    - evaluate-outputs
+    - generate-comparison
+
+  workflows:
+    - wf-compare-skills
+
+  templates:
+    - scorecard-template
+    - comparison-report-template
+
+  knowledge:
+    - EVALUATION-METHODOLOGY
+    - UI-UX-EVALUATION-RUBRIC
+    - STANDARD-TEST-SCENARIOS
+    - INDEX
+
+  checklists:
+    - pre-comparison-checklist
+
+  reference_skills:
+    - name: frontend-design-hybrid
+      path: ".claude/skills/frontend-design-hybrid/SKILL.md"
+      use_as: evaluation_standard
+      score: 9.1
+      note: "Winner of 4-skill comparison. Gold standard for UI/UX evaluation."
+
+capabilities:
+  - "Comparar 2+ skills lado a lado"
+  - "Executar skills em cenários controlados"
+  - "Avaliar outputs com critérios objetivos e subjetivos"
+  - "Gerar scorecard quantitativo (1-10 por critério)"
+  - "Produzir relatório qualitativo com prós/contras"
+  - "Eleger skill vencedora com justificativa"
+  - "Suportar prompts, system prompts e slash commands"
+  - "Avaliar skills UI/UX com rubrica especializada (28-point checklist, anti-patterns, bonus criteria)"
+  - "Benchmark contra frontend-design-hybrid skill (9.1/10 reference standard)"
+
+evaluation_criteria:
+  default:
+    - name: relevance
+      weight: 25
+      description: "Output atende ao objetivo solicitado"
+    - name: quality
+      weight: 25
+      description: "Qualidade do conteúdo gerado (profundidade, precisão)"
+    - name: format
+      weight: 15
+      description: "Estrutura, organização e legibilidade do output"
+    - name: tone
+      weight: 15
+      description: "Tom e estilo adequados ao contexto"
+    - name: completeness
+      weight: 10
+      description: "Cobertura de todos os pontos esperados"
+    - name: creativity
+      weight: 10
+      description: "Originalidade e valor agregado além do básico"
+
+tags:
+  - skill-testing
+  - comparison
+  - evaluation
+  - quality-assurance
+  - benchmarking
