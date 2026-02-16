@@ -1,0 +1,65 @@
+name: copy
+version: 1.0.0
+tested: false
+updated_at: "2026-02-15"
+short-title: Copy Squad
+description: >-
+  Squad de copywriting baseado em 10 elite minds reais com frameworks documentados.
+  Orchestrator: @copy-chief (triage, routing, diagnostico de mercado).
+  Tier 0: @eugene-schwartz (5 Stages of Awareness, diagnostico), @claude-hopkins (Scientific Advertising, fundacao).
+  Tier 1: @gary-halbert (sales letters, direct mail), @dan-kennedy (PAS, 28-Step System),
+  @joe-sugarman (Slippery Slide, 17 Axioms), @stefan-georgi (RMBC Method).
+  Tier 2: @john-caples (35 Headline Formulas), @bob-bly (B2B, Copywriter's Handbook),
+  @joanna-wiebe (Conversion Copywriting, VOC Mining).
+  Tier 3: @todd-brown (E5 Method, funnels).
+  10 agents com Voice DNA + Thinking DNA extraidos de frameworks reais.
+author: AIOS Team
+entry_agent: copy-chief
+slashPrefix: copy
+
+settings:
+  activation:
+    show_ecosystem_report: false
+    show_greeting: true
+    show_quick_commands: true
+
+tier_structure:
+  orchestrator: copy-chief
+  tier_0:
+    - eugene-schwartz
+    - claude-hopkins
+  tier_1:
+    - gary-halbert
+    - dan-kennedy
+    - joe-sugarman
+    - stefan-georgi
+  tier_2:
+    - john-caples
+    - bob-bly
+    - joanna-wiebe
+  tier_3:
+    - todd-brown
+
+quality_gates:
+  - id: CP-QG-001
+    name: "Market Awareness Classification"
+    transition: "Input → Tier 0"
+    type: routing
+  - id: CP-QG-002
+    name: "Diagnosis Complete"
+    transition: "Tier 0 → Tier 1"
+    type: blocking
+  - id: CP-QG-003
+    name: "Draft Review"
+    transition: "Execution → Output"
+    type: blocking
+  - id: CP-QG-004
+    name: "Final Copy Audit"
+    transition: "Output → Delivery"
+    type: blocking
+
+pattern_library:
+  prefix: CP
+  naming_convention:
+    format: "{PREFIX}-{CATEGORY}-{NUMBER}"
+    example: "CP-TP-001"
