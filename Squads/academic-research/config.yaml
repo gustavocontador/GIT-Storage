@@ -1,0 +1,596 @@
+name: academic-research
+version: 1.0.0
+category: T3
+status: active
+
+metadata:
+  display_name: Academic & Research
+  description: Rigorous scientific research, academic writing, and publication support
+  icon: 🎓
+  color: "#2E86AB"
+  tier: T3
+  created: 2026-02-07
+  updated: 2026-02-07
+
+agents:
+  - id: research-chief
+    file: agents/research-chief.md
+    role: P0 Chief
+    tier: chief
+    expertise: [research-methodology, project-management, publication-strategy, ethics]
+
+  - id: academic-writer
+    file: agents/academic-writer.md
+    role: P1 Specialist
+    tier: specialist
+    expertise: [scientific-writing, imrad-structure, academic-style, manuscripts]
+
+  - id: literature-reviewer
+    file: agents/literature-reviewer.md
+    role: P1 Specialist
+    tier: specialist
+    expertise: [literature-search, prisma, systematic-reviews, synthesis]
+
+  - id: citation-manager
+    file: agents/citation-manager.md
+    role: P1 Specialist
+    tier: specialist
+    expertise: [citations, zotero, plagiarism-detection, reference-management]
+
+  - id: peer-reviewer
+    file: agents/peer-reviewer.md
+    role: P1 Specialist
+    tier: specialist
+    expertise: [peer-review, quality-assurance, methodology-assessment, feedback]
+
+tasks:
+  # Research Design & Strategy (Chief)
+  - id: research-design
+    file: tasks/research-design.yaml
+    category: strategy
+    agent: research-chief
+    priority: high
+
+  - id: coordinate-publication
+    file: tasks/coordinate-publication.yaml
+    category: strategy
+    agent: research-chief
+    priority: high
+
+  - id: review-manuscript
+    file: tasks/review-manuscript.yaml
+    category: quality-assurance
+    agent: research-chief
+    priority: high
+
+  - id: ethics-approval
+    file: tasks/ethics-approval.yaml
+    category: ethics
+    agent: research-chief
+    priority: high
+
+  # Academic Writing (Writer)
+  - id: write-paper
+    file: tasks/write-paper.yaml
+    category: writing
+    agent: academic-writer
+    priority: high
+
+  - id: write-literature-review
+    file: tasks/write-literature-review.yaml
+    category: writing
+    agent: academic-writer
+    priority: high
+
+  - id: write-methodology
+    file: tasks/write-methodology.yaml
+    category: writing
+    agent: academic-writer
+    priority: high
+
+  - id: revise-manuscript
+    file: tasks/revise-manuscript.yaml
+    category: revision
+    agent: academic-writer
+    priority: high
+
+  # Literature Review (Reviewer)
+  - id: conduct-literature-search
+    file: tasks/conduct-literature-search.yaml
+    category: research
+    agent: literature-reviewer
+    priority: high
+
+  - id: screen-papers
+    file: tasks/screen-papers.yaml
+    category: research
+    agent: literature-reviewer
+    priority: medium
+
+  - id: extract-data
+    file: tasks/extract-data.yaml
+    category: research
+    agent: literature-reviewer
+    priority: medium
+
+  - id: synthesize-findings
+    file: tasks/synthesize-findings.yaml
+    category: research
+    agent: literature-reviewer
+    priority: medium
+
+  - id: write-systematic-review
+    file: tasks/write-systematic-review.yaml
+    category: writing
+    agent: literature-reviewer
+    priority: high
+
+  # Citation Management (Citation Manager)
+  - id: format-citations
+    file: tasks/format-citations.yaml
+    category: citations
+    agent: citation-manager
+    priority: medium
+
+  - id: check-plagiarism
+    file: tasks/check-plagiarism.yaml
+    category: quality-assurance
+    agent: citation-manager
+    priority: high
+
+  - id: manage-references
+    file: tasks/manage-references.yaml
+    category: citations
+    agent: citation-manager
+    priority: low
+
+  - id: convert-citation-style
+    file: tasks/convert-citation-style.yaml
+    category: citations
+    agent: citation-manager
+    priority: low
+
+  # Peer Review (Peer Reviewer)
+  - id: internal-peer-review
+    file: tasks/internal-peer-review.yaml
+    category: quality-assurance
+    agent: peer-reviewer
+    priority: high
+
+  - id: address-reviewer-comments
+    file: tasks/address-reviewer-comments.yaml
+    category: revision
+    agent: peer-reviewer
+    priority: high
+
+workflows:
+  - id: complete-research-project
+    file: workflows/complete-research-project.yaml
+    category: comprehensive
+    priority: high
+    estimated_duration: 9-12 months
+
+  - id: systematic-review-protocol
+    file: workflows/systematic-review-protocol.yaml
+    category: review
+    priority: high
+    estimated_duration: 4-6 months
+
+  - id: paper-submission-workflow
+    file: workflows/paper-submission-workflow.yaml
+    category: submission
+    priority: medium
+    estimated_duration: 2-4 weeks
+
+commands:
+  # Research Design
+  - name: research-design
+    description: Design comprehensive research study with methodology and timeline
+    task: research-design
+    aliases: [design, plan-research]
+    examples:
+      - "*research-design 'AI in education' --type quantitative"
+      - "*research-design 'Teacher attitudes' --type qualitative --journal 'Educational Research'"
+
+  - name: ethics-approval
+    description: Prepare IRB/ethics committee application
+    task: ethics-approval
+    aliases: [irb, ethics]
+    examples:
+      - "*ethics-approval --design research-design.md"
+
+  # Literature Review
+  - name: literature-search
+    description: Conduct comprehensive literature search across databases
+    task: conduct-literature-search
+    aliases: [search, lit-search]
+    examples:
+      - "*literature-search 'machine learning' --scope systematic --databases PubMed,Scopus"
+      - "*literature-search 'educational technology' --scope narrative"
+
+  - name: screen-papers
+    description: Screen papers for inclusion using defined criteria
+    task: screen-papers
+    aliases: [screen]
+    examples:
+      - "*screen-papers search-results.csv --level title_abstract"
+      - "*screen-papers search-results.csv --level full_text --dual-screening"
+
+  - name: extract-data
+    description: Extract key information from included papers
+    task: extract-data
+    aliases: [extract]
+    examples:
+      - "*extract-data included-papers.csv --variables 'Author,Year,Findings'"
+
+  - name: synthesize
+    description: Synthesize findings to identify themes and patterns
+    task: synthesize-findings
+    aliases: [synthesis]
+    examples:
+      - "*synthesize data-extraction.csv --type thematic"
+      - "*synthesize data-extraction.csv --type meta_analysis"
+
+  # Writing
+  - name: write-paper
+    description: Write complete research paper following IMRaD structure
+    task: write-paper
+    aliases: [write, manuscript]
+    examples:
+      - "*write-paper --lit-review lit-review.md --methodology methods.md --journal 'Nature'"
+
+  - name: write-lit-review
+    description: Write comprehensive literature review section
+    task: write-literature-review
+    aliases: [lit-review]
+    examples:
+      - "*write-lit-review synthesis.md --type thematic"
+
+  - name: write-methodology
+    description: Write detailed methodology section
+    task: write-methodology
+    aliases: [methods]
+    examples:
+      - "*write-methodology --design research-design.md"
+
+  - name: write-systematic-review
+    description: Write complete systematic review following PRISMA guidelines
+    task: write-systematic-review
+    aliases: [systematic-review, prisma]
+    examples:
+      - "*write-systematic-review --search search-results.csv --extraction data.csv"
+
+  # Citations
+  - name: format-citations
+    description: Format all citations to specified style
+    task: format-citations
+    aliases: [citations, format-refs]
+    examples:
+      - "*format-citations manuscript.docx --style APA7"
+      - "*format-citations manuscript.docx --style MLA9"
+
+  - name: check-plagiarism
+    description: Run plagiarism check and fix issues
+    task: check-plagiarism
+    aliases: [plagiarism, turnitin]
+    examples:
+      - "*check-plagiarism manuscript.docx --tool Turnitin"
+
+  - name: manage-refs
+    description: Organize reference library (Zotero, Mendeley)
+    task: manage-references
+    aliases: [references, organize-refs]
+    examples:
+      - "*manage-refs papers/ --tool Zotero --organize-by project"
+
+  - name: convert-style
+    description: Convert manuscript from one citation style to another
+    task: convert-citation-style
+    aliases: [convert-citations]
+    examples:
+      - "*convert-style manuscript.docx --from APA7 --to MLA9"
+
+  # Review & Revision
+  - name: peer-review
+    description: Conduct internal peer review before submission
+    task: internal-peer-review
+    aliases: [review]
+    examples:
+      - "*peer-review manuscript.docx --journal 'Science'"
+
+  - name: address-comments
+    description: Respond to external reviewer feedback
+    task: address-reviewer-comments
+    aliases: [respond, revise-comments]
+    examples:
+      - "*address-comments manuscript.docx --feedback reviewer-comments.pdf"
+
+  - name: revise
+    description: Revise manuscript based on feedback
+    task: revise-manuscript
+    aliases: [revision]
+    examples:
+      - "*revise manuscript.docx --feedback peer-review.md --level minor"
+
+  - name: final-review
+    description: Final quality check before submission
+    task: review-manuscript
+    aliases: [final-check]
+    examples:
+      - "*final-review manuscript.docx --journal 'Nature'"
+
+  # Publication
+  - name: submit
+    description: Coordinate publication submission process
+    task: coordinate-publication
+    aliases: [publish, submission]
+    examples:
+      - "*submit manuscript.docx --journals 'Nature,Science,PNAS'"
+
+  # Workflows
+  - name: complete-research
+    description: End-to-end research project workflow (9-12 months)
+    workflow: complete-research-project
+    aliases: [full-research]
+    examples:
+      - "*complete-research 'AI in education' --type quantitative --journal 'Educational Research'"
+
+  - name: systematic-review
+    description: Complete systematic review workflow (4-6 months)
+    workflow: systematic-review-protocol
+    aliases: [prisma-workflow]
+    examples:
+      - "*systematic-review 'Does AI improve learning outcomes?'"
+
+  - name: submit-paper
+    description: Fast-track paper submission workflow (2-4 weeks)
+    workflow: paper-submission-workflow
+    aliases: [quick-submit]
+    examples:
+      - "*submit-paper draft.docx --journals 'Nature,Science' --style APA7"
+
+capabilities:
+  research_methodologies:
+    - Qualitative research (interviews, focus groups, ethnography, case studies)
+    - Quantitative research (surveys, experiments, statistical analysis)
+    - Mixed-methods research
+    - Systematic reviews (PRISMA 2020)
+    - Scoping reviews
+    - Narrative reviews
+    - Meta-analysis
+
+  writing_expertise:
+    - IMRaD structure (Introduction, Methods, Results, Discussion)
+    - Academic writing style (formal, precise, concise)
+    - Literature review writing
+    - Methodology section writing
+    - Discussion and conclusion writing
+    - Abstract writing
+    - Cover letter writing
+
+  citation_management:
+    - APA 7th edition
+    - MLA 9th edition
+    - Chicago style
+    - Harvard style
+    - Vancouver style
+    - IEEE style
+    - Reference management (Zotero, Mendeley, EndNote, BibTeX)
+    - Plagiarism detection (Turnitin, iThenticate)
+
+  quality_assurance:
+    - Internal peer review
+    - Methodological assessment
+    - Statistical analysis validation
+    - Ethics compliance checking
+    - PRISMA compliance (systematic reviews)
+
+  publication_support:
+    - Journal selection strategy
+    - Submission package preparation
+    - Cover letter writing
+    - Response to reviewers
+    - Revision management
+
+tools_integration:
+  reference_managers:
+    - Zotero (open-source, browser integration)
+    - Mendeley (PDF annotation, social features)
+    - EndNote (advanced, institutional use)
+    - BibTeX (LaTeX integration)
+
+  databases:
+    - PubMed (biomedical literature)
+    - Scopus (multidisciplinary)
+    - Web of Science (citation database)
+    - Google Scholar (broad coverage)
+    - IEEE Xplore (engineering, computer science)
+    - ERIC (education)
+    - PsycINFO (psychology)
+
+  analysis_tools:
+    - SPSS (statistical analysis)
+    - R (statistical programming)
+    - NVivo (qualitative analysis)
+    - MAXQDA (mixed-methods analysis)
+    - ATLAS.ti (qualitative analysis)
+    - Stata (statistical analysis)
+
+  writing_tools:
+    - LaTeX (scientific typesetting)
+    - Overleaf (collaborative LaTeX)
+    - Microsoft Word
+    - Google Docs
+    - Grammarly (grammar checking)
+
+  plagiarism_detection:
+    - Turnitin (industry standard)
+    - iThenticate (pre-publication checking)
+    - Grammarly (real-time checking)
+
+  other:
+    - PROSPERO (systematic review registration)
+    - OSF (Open Science Framework - pre-registration)
+    - figshare (data sharing)
+    - Mendeley Data (data repository)
+
+success_metrics:
+  publication_rate:
+    target: "80%+ of submissions accepted (eventually)"
+    description: "Percentage of papers that get published after revisions"
+
+  review_quality:
+    target: "< 2 major revisions per paper"
+    description: "Number of major revision rounds needed"
+
+  timeline_adherence:
+    target: "90%+ of projects completed on time"
+    description: "Percentage of projects meeting deadlines"
+
+  ethical_compliance:
+    target: "100% (zero violations)"
+    description: "No ethics violations or IRB issues"
+
+  plagiarism_rate:
+    target: "< 15% similarity score (excluding references)"
+    description: "Turnitin/iThenticate similarity percentage"
+
+  citation_accuracy:
+    target: "100% citations formatted correctly"
+    description: "No citation formatting errors"
+
+best_practices:
+  research_design:
+    - Start with clear research questions (SMART: Specific, Measurable, Achievable, Relevant, Time-bound)
+    - Pre-register study protocol when possible (PROSPERO for systematic reviews, OSF for other studies)
+    - Get ethics approval BEFORE data collection
+    - Plan for adequate sample size (power analysis for quantitative)
+
+  literature_review:
+    - Use broad search initially, then screen (better than narrow search)
+    - Conduct dual screening for systematic reviews (two independent reviewers)
+    - Document all search strings and decisions
+    - Include grey literature when appropriate (theses, reports, preprints)
+
+  writing:
+    - Follow IMRaD structure strictly
+    - Use past tense for methods and results
+    - Use present tense for general facts
+    - One idea per paragraph with clear topic sentences
+    - Cite as you write (don't wait until the end)
+
+  citations:
+    - Use reference manager (never format manually)
+    - Always include DOI when available
+    - Be consistent with citation style
+    - Check for plagiarism before submission
+
+  peer_review:
+    - Get internal peer review before submission
+    - Address ALL reviewer comments (even minor ones)
+    - Be respectful and professional in responses
+    - Never be defensive or hostile
+
+common_pitfalls:
+  research_design:
+    - Unclear or vague research questions
+    - Methodology too ambitious for timeline/resources
+    - Ignoring ethical considerations until too late
+    - Not considering potential limitations upfront
+
+  literature_review:
+    - Search too narrow (miss relevant papers)
+    - Cherry-picking studies that support hypothesis
+    - No quality assessment of included studies
+    - Ignoring contradictory findings
+
+  writing:
+    - Overclaiming ("proves" instead of "suggests")
+    - Missing methodological details (can't replicate)
+    - Results interpretation in results section (keep objective)
+    - Poor writing quality burying good research
+
+  citations:
+    - Inconsistent formatting (mixing styles)
+    - Missing information (incomplete citations)
+    - Plagiarism (not paraphrasing, no citations)
+    - Self-plagiarism (not citing own prior work)
+
+  submission:
+    - Submitting before manuscript is truly ready
+    - Not following journal formatting guidelines
+    - Weak or generic cover letter
+    - Defensive responses to reviewers
+
+use_cases:
+  - |
+    PhD Dissertation Chapter: Conduct complete research study from design to publication.
+    Timeline: 9-12 months. Example: "Does AI-powered tutoring improve student learning outcomes?"
+
+  - |
+    Systematic Review: PRISMA-compliant systematic review of existing literature.
+    Timeline: 4-6 months. Example: "Effectiveness of personalized learning interventions: A systematic review"
+
+  - |
+    Journal Article: Write and submit research paper to peer-reviewed journal.
+    Timeline: 2-4 months (writing + submission). Example: "Teacher attitudes toward AI in classrooms: A mixed-methods study"
+
+  - |
+    Conference Paper: Fast-track paper for conference submission.
+    Timeline: 2-4 weeks. Example: "Preliminary findings from AI chatbot intervention study"
+
+  - |
+    Grant Proposal: Write research sections for grant applications.
+    Timeline: 1-2 months. Example: NIH, NSF, or other funding agency proposals
+
+target_audience:
+  primary:
+    - PhD students and doctoral researchers
+    - Postdoctoral researchers
+    - Junior faculty (assistant professors)
+    - Independent researchers
+
+  secondary:
+    - Master's students (thesis projects)
+    - Research labs and centers
+    - Think tanks and policy research organizations
+    - Corporate research teams
+    - Government research agencies
+
+pricing_model:
+  tier: T3
+  complexity: specialized
+  typical_engagement: 3-12 months
+  value_proposition: |
+    High-ROI for academia: publications = career advancement.
+    Saves months of work on literature reviews and writing.
+    Reduces rejection risk through internal peer review.
+
+knowledge:
+  - name: RESEARCH-METHODOLOGY
+    path: knowledge/RESEARCH-METHODOLOGY.md
+    description: "Research design patterns, methodologies (qual/quant/mixed), IMRaD, ethics, best practices"
+  - name: SYSTEMATIC-REVIEW-GUIDE
+    path: knowledge/SYSTEMATIC-REVIEW-GUIDE.md
+    description: "PRISMA 2020 protocol, search strategy, screening, data extraction, meta-analysis"
+  - name: CITATION-STANDARDS
+    path: knowledge/CITATION-STANDARDS.md
+    description: "Citation styles (APA/MLA/Chicago/Harvard/Vancouver/IEEE), reference management, plagiarism prevention"
+  - name: INDEX
+    path: knowledge/INDEX.md
+    description: "Knowledge index with decision maps by situation and by agent"
+
+integrations:
+  upstream:
+    - knowledge-creator (for research synthesis)
+    - data-analytics (for statistical analysis)
+    - deep-scraper (for literature search augmentation)
+
+  downstream:
+    - knowledge-creator (turn research into teaching materials)
+    - copywriting (turn research into blog posts, articles)
+    - infoproduct-creation (turn research into courses)
+
+  complementary:
+    - project-management-clickup (track research milestones)
+    - creative-studio (design figures, diagrams, infographics)

@@ -1,0 +1,114 @@
+name: Academic Research
+version: 1.0.0
+description: >
+  Squad especializado em pesquisa acadêmica rigorosa, escrita científica e publicação
+  em periódicos peer-reviewed. Suporta metodologias qualitativas, quantitativas e
+  mistas, revisões sistemáticas (PRISMA 2020), gestão de citações (APA, MLA, Chicago,
+  Harvard, Vancouver, IEEE) e peer review interno. Pipeline completo: research design
+  → literature review → data collection → analysis → writing → submission.
+
+squad_type: specialist
+domain: academic-research
+
+author: rafaelscosta
+license: MIT
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - research-chief
+    - academic-writer
+    - literature-reviewer
+    - citation-manager
+    - peer-reviewer
+    - academic-research       # Activatable agent (user-facing entry point)
+
+  tasks:
+    # Research Design & Strategy (Chief)
+    - research-design
+    - coordinate-publication
+    - review-manuscript
+    - ethics-approval
+    # Academic Writing (Writer)
+    - write-paper
+    - write-literature-review
+    - write-methodology
+    - revise-manuscript
+    # Literature Review (Reviewer)
+    - conduct-literature-search
+    - screen-papers
+    - extract-data
+    - synthesize-findings
+    - write-systematic-review
+    # Citation Management
+    - format-citations
+    - check-plagiarism
+    - manage-references
+    - convert-citation-style
+    # Peer Review
+    - internal-peer-review
+    - address-reviewer-comments
+
+  workflows:
+    - complete-research-project
+    - systematic-review-protocol
+    - paper-submission-workflow
+
+  templates:
+    - research-proposal-template
+    - paper-template
+    - systematic-review-template
+    - response-to-reviewers-template
+
+  knowledge:
+    - RESEARCH-METHODOLOGY
+    - SYSTEMATIC-REVIEW-GUIDE
+    - CITATION-STANDARDS
+    - INDEX
+
+  checklists:
+    - pre-submission-checklist
+    - ethics-compliance-checklist
+
+capabilities:
+  - "Research design (qualitative, quantitative, mixed-methods)"
+  - "Literature reviews (narrative, scoping, systematic, meta-analysis)"
+  - "Academic writing (IMRaD structure, formal academic style)"
+  - "Citation management (APA, MLA, Chicago, Harvard, Vancouver, IEEE)"
+  - "Peer review and quality assurance"
+  - "Ethics approval preparation (IRB/CEP)"
+  - "Publication strategy (journal selection, submission, revision)"
+  - "PRISMA 2020 compliance for systematic reviews"
+  - "Statistical analysis validation"
+  - "Plagiarism detection and prevention"
+
+evaluation_criteria:
+  default:
+    - name: academic_rigor
+      weight: 30
+      description: "Solidez metodológica e validade científica"
+    - name: writing_quality
+      weight: 25
+      description: "Clareza, precisão e estilo acadêmico"
+    - name: completeness
+      weight: 20
+      description: "Cobertura de todos os elementos esperados"
+    - name: citation_accuracy
+      weight: 15
+      description: "Formatação e precisão das referências"
+    - name: originality
+      weight: 10
+      description: "Contribuição original ao campo"
+
+tags:
+  - academic
+  - research
+  - publication
+  - scientific-writing
+  - peer-review
+  - systematic-review
+  - imrad
+  - prisma

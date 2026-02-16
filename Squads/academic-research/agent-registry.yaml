@@ -1,0 +1,97 @@
+# ============================================================
+# Academic Research — Agent Registry
+# ============================================================
+# Total agents: 6 (1 chief + 4 specialists + 1 activatable)
+# Last updated: 2026-02-10
+# ============================================================
+
+total_agents: 6
+
+# ── Chief ────────────────────────────────────────────────────
+chief:
+  - id: research-chief
+    file: agents/research-chief.md
+    role: P0 Chief — Research Strategy & Project Leadership
+    tier: chief
+    expertise: [research-methodology, project-management, publication-strategy, ethics]
+    tasks:
+      - research-design
+      - coordinate-publication
+      - review-manuscript
+      - ethics-approval
+
+# ── Specialists ─────────────────────────────────────────────
+specialists:
+  - id: academic-writer
+    file: agents/academic-writer.md
+    role: P1 Specialist — Scientific Writing (IMRaD)
+    tier: specialist
+    expertise: [scientific-writing, imrad-structure, academic-style, manuscripts]
+    tasks:
+      - write-paper
+      - write-literature-review
+      - write-methodology
+      - revise-manuscript
+
+  - id: literature-reviewer
+    file: agents/literature-reviewer.md
+    role: P1 Specialist — Literature Search & Systematic Reviews
+    tier: specialist
+    expertise: [literature-search, prisma, systematic-reviews, synthesis]
+    tasks:
+      - conduct-literature-search
+      - screen-papers
+      - extract-data
+      - synthesize-findings
+      - write-systematic-review
+
+  - id: citation-manager
+    file: agents/citation-manager.md
+    role: P1 Specialist — References & Plagiarism Prevention
+    tier: specialist
+    expertise: [citations, reference-management, plagiarism-detection, apa, mla, chicago]
+    tasks:
+      - format-citations
+      - check-plagiarism
+      - manage-references
+      - convert-citation-style
+
+  - id: peer-reviewer
+    file: agents/peer-reviewer.md
+    role: P1 Specialist — Internal Review & Revision Support
+    tier: specialist
+    expertise: [peer-review, quality-assurance, methodology-assessment, feedback]
+    tasks:
+      - internal-peer-review
+      - address-reviewer-comments
+
+# ── Activatable (User-Facing Entry Point) ───────────────────
+activatable:
+  - id: academic-research
+    file: agents/academic-research.md
+    role: User-facing orchestrator — entry point for the squad
+    description: >
+      Activatable agent that receives user requests and routes to
+      the appropriate specialist. Supports all *commands.
+
+# ── Routing Matrix ──────────────────────────────────────────
+routing_matrix:
+  research-design: research-chief
+  ethics-approval: research-chief
+  coordinate-publication: research-chief
+  review-manuscript: research-chief
+  write-paper: academic-writer
+  write-literature-review: academic-writer
+  write-methodology: academic-writer
+  revise-manuscript: academic-writer
+  conduct-literature-search: literature-reviewer
+  screen-papers: literature-reviewer
+  extract-data: literature-reviewer
+  synthesize-findings: literature-reviewer
+  write-systematic-review: literature-reviewer
+  format-citations: citation-manager
+  check-plagiarism: citation-manager
+  manage-references: citation-manager
+  convert-citation-style: citation-manager
+  internal-peer-review: peer-reviewer
+  address-reviewer-comments: peer-reviewer
