@@ -1,0 +1,71 @@
+name: contabil-squad
+version: 1.0.0
+description: Squad para contabilidade completa — MEI & Simples Nacional 2026, incluindo contabilidade tributaria, gerencial, fiscal digital, compliance e planejamento estrategico
+author: Adriano
+license: UNLICENSED
+slashPrefix: contabil
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - tributarista.md
+    - gerencial.md
+    - fiscal-digital.md
+    - compliance.md
+    - planejamento.md
+  tasks:
+    # Tributarista
+    - tributarista-apuracao-simples.md
+    - tributarista-transicao-ibs-cbs.md
+    - tributarista-obrigacoes-acessorias.md
+    - tributarista-calculo-das-mei.md
+    # Gerencial
+    - gerencial-relatorio-desempenho.md
+    - gerencial-analise-custos.md
+    - gerencial-comparativo-regimes.md
+    - gerencial-projecao-tributaria.md
+    # Fiscal Digital
+    - fiscal-digital-emissao-nfe.md
+    - fiscal-digital-atualizacao-leiautes.md
+    - fiscal-digital-integracao-erp.md
+    - fiscal-digital-nfse-municipal.md
+    # Compliance
+    - compliance-verificacao-enquadramento.md
+    - compliance-revisao-pendencias.md
+    - compliance-preparacao-fiscalizacao.md
+    - compliance-regularizacao-debitos.md
+    # Planejamento
+    - planejamento-simulacao-impacto.md
+    - planejamento-reducao-carga.md
+    - planejamento-creditos-tributarios.md
+    - planejamento-transicao-2026.md
+  workflows:
+    - fechamento-mensal-mei.md
+  checklists:
+    - checklist-conformidade-2026.md
+  templates: []
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+  source-tree: config/source-tree.md
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - contabilidade
+  - tributario
+  - mei
+  - simples-nacional
+  - fiscal
+  - compliance
+  - reforma-tributaria-2026
