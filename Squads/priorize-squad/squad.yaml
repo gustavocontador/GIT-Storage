@@ -1,0 +1,131 @@
+pack:
+  name: priorize-squad
+  version: 1.1.0
+  entry_agent: priorize-chief
+  short-title: Prioritization Squad
+  description: >-
+    AI-powered prioritization toolkit with 23 documented techniques and
+    3 specialized agents across Tier 0/1/2. Diagnoses context, selects the
+    optimal method, executes structured scoring sessions, and compares
+    techniques — from a 5-minute Eisenhower matrix to full AHP analysis.
+  author: AIOS Community
+  icon: "🎯"
+  slashPrefix: Priorize
+
+# Pattern Library
+pattern_library:
+  prefix: PR
+  naming_convention:
+    format: "{PREFIX}-{CATEGORY}-{NUMBER}"
+    example: "PR-TP-001"
+  categories:
+    - id: TP
+      name: "Task Patterns"
+      description: "Patterns for prioritization task structure"
+    - id: EP
+      name: "Executor Patterns"
+      description: "Patterns for executor selection"
+    - id: PP
+      name: "Process Patterns"
+      description: "Patterns for prioritization workflows"
+    - id: DP
+      name: "Decision Patterns"
+      description: "Patterns for technique selection logic"
+
+# Task Standards (HO-TP-001 inspired)
+task_standards:
+  enforce_anatomy: true
+  validator: "PR-TP-001"
+  required_fields:
+    - task_name
+    - status
+    - responsible_executor
+    - execution_type
+    - input
+    - output
+    - action_items
+    - acceptance_criteria
+  optional_fields:
+    - estimated_time
+    - dependencies
+    - templates
+    - quality_gate
+    - handoff
+
+# Executor Types
+executor_types:
+  human:
+    id: "PR-EP-001"
+    name: "Human Executor"
+    use_for:
+      - "Final prioritization decisions"
+      - "Stakeholder alignment"
+      - "Team voting sessions"
+  agent:
+    id: "PR-EP-002"
+    name: "Agent Executor (AI)"
+    use_for:
+      - "Technique selection guidance"
+      - "Score calculation"
+      - "Comparison analysis"
+  hybrid:
+    id: "PR-EP-003"
+    name: "Hybrid Executor"
+    use_for:
+      - "Guided prioritization sessions"
+      - "Assisted scoring"
+      - "Review and validation"
+  worker:
+    id: "PR-EP-004"
+    name: "Worker Executor"
+    use_for:
+      - "Score computation"
+      - "Matrix generation"
+      - "Report formatting"
+
+# Agent Registry
+agents:
+  - id: priorize-chief
+    name: Prioritization Architect
+    tier: 0
+    role: "Diagnosis & orchestration — selects technique, delegates execution"
+    file: agents/priorize-chief.md
+
+  - id: technique-executor
+    name: Technique Executor
+    tier: 1
+    role: "Executes scoring sessions — RICE, ICE, WSJF, AHP, GUT, matrices"
+    file: agents/technique-executor.md
+
+  - id: technique-analyst
+    name: Technique Analyst
+    tier: 2
+    role: "Compares techniques, analyzes trade-offs, context-fit scoring"
+    file: agents/technique-analyst.md
+
+# Workflow Configuration
+workflow_config:
+  checkpoint_policy: always_active
+  fail_fast: true
+  allow_manual_override: false
+
+# Changelog
+changelog:
+  - version: "1.1.0"
+    date: "2026-02-13"
+    changes:
+      - "Added technique-executor agent (Tier 1 — scoring specialist)"
+      - "Added technique-analyst agent (Tier 2 — comparison specialist)"
+      - "Added ARCHITECTURE.md with component flow diagram"
+      - "Added CHANGELOG.md standalone"
+      - "Added 2 objection algorithms to priorize-chief (total: 5)"
+      - "Improved technique-review checklist with inline auto-correction (v1.2)"
+      - "Updated priorize-chief handoffs to delegate to Tier 1/2 agents"
+
+  - version: "1.0.0"
+    date: "2026-02-13"
+    changes:
+      - "Initial creation with 23-technique catalog"
+      - "4 tasks: select-technique, execute-prioritization, compare-techniques, quick-prioritize"
+      - "1 agent: priorize-chief (Tier 0 orchestrator)"
+      - "1 checklist: technique-review"
