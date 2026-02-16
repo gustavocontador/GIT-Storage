@@ -1,0 +1,466 @@
+## ═══════════════════════════════════════════════════════════════════════════════
+## TEAM TAXONOMY SQUAD - Configuration
+## Purpose: Design, validate, and orchestrate team structures for AI-first products
+## Based on: Team Topologies (Skelton & Pais) + Socio-Technical Architecture
+## ═══════════════════════════════════════════════════════════════════════════════
+
+squad:
+  id: team-taxonomy
+  name: Team Taxonomy Squad
+  version: 1.1.0
+  created_date: "2025-02-05"
+
+  purpose: |
+    Design, validate, and orchestrate team structures for AI-first product development.
+    Applies Team Topologies principles to both human teams AND AI agent squads.
+    Ensures organizational structure enables fast value flow with proper governance.
+
+  use_when:
+    - "Planning new team structure"
+    - "Scaling engineering organization"
+    - "Designing AI agent squad orchestration"
+    - "Evaluating team interaction patterns"
+    - "Validating organizational boundaries"
+    - "Assessing cognitive load across teams"
+    - "Implementing Conway's Law inversion"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # AGENT ROSTER
+  # ───────────────────────────────────────────────────────────────────────────
+
+  agents:
+    orchestrator:
+      name: team-taxonomy-chief
+      role: "Squad Orchestrator & Synthesis Engine"
+      file: agents/team-taxonomy-chief.md
+      description: "Routes requests to specialists, coordinates workflows, synthesizes insights"
+      when_to_use: "Always start here - chief routes to appropriate specialists"
+
+    tier_0_diagnostic:
+      name: ruth-malan
+      role: "Decision Architecture Diagnostician"
+      file: agents/ruth-malan.md
+      description: "Diagnoses socio-technical misalignments BEFORE restructuring"
+      tier: 0
+      specialties:
+        - "Socio-technical congruence analysis"
+        - "Communication structure diagnostics"
+        - "Decision architecture evaluation"
+        - "Conway's Law impact assessment"
+        - "Current state archaeology"
+      when_to_use: "When unsure if restructuring is needed or diagnosing problems"
+
+    tier_1_masters:
+      - name: matthew-skelton
+        role: "Team Topologies Master"
+        file: agents/matthew-skelton.md
+        description: "Structures teams around value streams using 4-type topology"
+        tier: 1
+        specialties:
+          - "Team Topologies design (4 fundamental types)"
+          - "Cognitive load assessment"
+          - "Team API definition"
+          - "Conway's Law inversion"
+          - "Fast flow optimization"
+        when_to_use: "Designing new team structure or assessing current topology"
+
+      - name: manuel-pais
+        role: "Team Interaction Patterns Designer"
+        file: agents/manuel-pais.md
+        description: "Designs optimal interaction protocols between teams"
+        tier: 1
+        specialties:
+          - "Interaction modes (collaboration, X-as-a-Service, facilitation)"
+          - "Cognitive load optimization through interactions"
+          - "Team coupling analysis"
+          - "Pull-based vs push-based design"
+          - "Team contract definition"
+        when_to_use: "Designing how teams should interact with each other"
+
+    tier_2_systematizers:
+      - name: barry-hawkins
+        role: "AI Agent Orchestration Architect"
+        file: agents/barry-hawkins.md
+        description: "Governs multi-agent systems with safety-first boundaries"
+        tier: 2
+        specialties:
+          - "Agent boundary definition"
+          - "Orchestration patterns (sequential, parallel, hierarchical, peer)"
+          - "Safety constraints & veto conditions"
+          - "Agent interaction protocols"
+          - "Failure mode analysis"
+          - "Human-in-the-loop mechanisms"
+        when_to_use: "Designing AI agent squads or multi-agent systems"
+
+      - name: yoav-shoham
+        role: "Multi-Agent Theory Specialist"
+        file: agents/yoav-shoham.md
+        description: "Provides mathematical foundations for agent coordination"
+        tier: 2
+        specialties:
+          - "Game-theoretic analysis"
+          - "Coordination protocol design"
+          - "Equilibrium analysis"
+          - "Strategic interaction patterns"
+          - "Protocol stability validation"
+          - "Pathological equilibria detection"
+        when_to_use: "Validating agent protocols or complex coordination scenarios"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # PRIMARY FRAMEWORKS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  frameworks:
+    - name: "Team Topologies"
+      authors: "Matthew Skelton, Manuel Pais"
+      year: 2019
+      core_concept: "Four fundamental team types organized around value streams"
+      four_types:
+        - "Stream-Aligned Team: Owns a flow of business value"
+        - "Platform Team: Reduces cognitive load via internal services"
+        - "Enabling Team: Accelerates capability adoption"
+        - "Complicated Subsystem Team: Handles irreducible technical complexity"
+
+    - name: "Socio-Technical Architecture"
+      authors: "Ruth Malan, Dana Bredemeyer"
+      year: 2003+
+      core_concept: "Organization structure directly shapes system behavior"
+      key_principles:
+        - "Architecture is not only about technology"
+        - "Team structure affects system boundaries"
+        - "Communication paths constrain design"
+
+    - name: "AI Agent Orchestration"
+      authors: "Barry Hawkins, AIOS Community"
+      year: 2024+
+      core_concept: "Multi-agent systems need explicit boundaries and protocols"
+      key_principles:
+        - "Agent boundaries define decision authority"
+        - "Orchestration patterns determine behavior"
+        - "Safety is the primary constraint"
+
+    - name: "Multi-Agent Systems Theory"
+      authors: "Yoav Shoham, Stanford AI Lab"
+      year: 2000+
+      core_concept: "Mathematical foundations for agent coordination"
+      key_principles:
+        - "Game theory predicts multi-agent behavior"
+        - "Coordination protocols can be designed systematically"
+        - "Equilibrium analysis validates stability"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # KEY CONCEPTS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  concepts:
+    four_team_types:
+      - "Stream-Aligned: Fast value delivery, customer-focused"
+      - "Platform: Enabling services, removes friction"
+      - "Enabling: Temporary, coaches others"
+      - "Complicated-Subsystem: Handles hard problems"
+
+    three_interaction_modes:
+      - "Collaboration: High-touch, time-boxed problem solving"
+      - "X-as-a-Service: Stable, self-service consumption"
+      - "Facilitation: Coaching and enablement"
+
+    cognitive_load:
+      definition: "Maximum complexity a team can sustain"
+      factors: ["Team size", "Problem complexity", "Context switching", "Tool friction"]
+      management: "Match team size to team type needs"
+
+    conway_law_inversion:
+      definition: "Design system architecture to match desired organizational structure"
+      application: "Team topology SHOULD drive system design"
+      principle: "Org design is system design - they are inseparable"
+
+    tier_system:
+      tier_0: "Diagnostic/Foundation - answers 'SHOULD we do this?'"
+      tier_1: "Masters - 'HOW do we structure this?'"
+      tier_2: "Systematizers - 'WHAT patterns apply here?'"
+      orchestrator: "Coordinates all tiers - 'WHICH specialist for this problem?'"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # WORKFLOWS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  workflows:
+    - id: design-team-structure
+      name: "Design New Team Structure"
+      phases: 4
+      duration: "1-2 days"
+      specialists: [ruth-malan, matthew-skelton, manuel-pais]
+      description: "Greenfield team structure design from scratch"
+
+    - id: validate-ai-agents
+      name: "Validate AI Agent Squad Design"
+      phases: 5
+      duration: "4-6 hours"
+      specialists: [matthew-skelton, barry-hawkins, yoav-shoham]
+      description: "Design and validate multi-agent system orchestration"
+
+    - id: org-health-check
+      name: "Organizational Structure Health Check"
+      phases: 3
+      duration: "2-3 hours"
+      specialists: [ruth-malan, matthew-skelton, manuel-pais]
+      description: "Diagnose issues with current organization structure"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # TASKS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  tasks:
+    - id: analyze-strategic-context
+      file: tasks/analyze-strategic-context.md
+      workflow: wf-design-team-structure
+      phase: phase_1
+      agent: ruth-malan
+
+    - id: design-team-topology
+      file: tasks/design-team-topology.md
+      workflow: wf-design-team-structure
+      phase: phase_2
+      agent: matthew-skelton
+
+    - id: design-team-interactions
+      file: tasks/design-team-interactions.md
+      workflow: wf-design-team-structure
+      phase: phase_3
+      agent: manuel-pais
+
+    - id: diagnose-org-health
+      file: tasks/diagnose-org-health.md
+      workflow: wf-org-health-check
+      phase: phase_1
+      agent: ruth-malan
+
+    - id: analyze-team-structure
+      file: tasks/analyze-team-structure.md
+      workflow: wf-org-health-check
+      phase: phase_2a
+      agent: matthew-skelton
+
+    - id: redesign-team-interactions
+      file: tasks/redesign-team-interactions.md
+      workflow: wf-org-health-check
+      phase: phase_2b
+      agent: manuel-pais
+
+    - id: assess-agent-topology
+      file: tasks/assess-agent-topology.md
+      workflow: wf-validate-ai-agents
+      phase: phase_1
+      agent: matthew-skelton
+
+    - id: design-agent-orchestration
+      file: tasks/design-agent-orchestration.md
+      workflow: wf-validate-ai-agents
+      phase: phase_2
+      agent: barry-hawkins
+
+    - id: validate-agent-protocols
+      file: tasks/validate-agent-protocols.md
+      workflow: wf-validate-ai-agents
+      phase: phase_3
+      agent: yoav-shoham
+
+    - id: synthesize-report
+      file: tasks/synthesize-report.md
+      workflow: all
+      phase: synthesis
+      agent: team-taxonomy-chief
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # CHECKLISTS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  checklists:
+    - id: team-design-checklist
+      file: checklists/team-design-checklist.md
+      workflow: wf-design-team-structure
+      gate: TT-QG-001
+
+    - id: org-health-checklist
+      file: checklists/org-health-checklist.md
+      workflow: wf-org-health-check
+      gate: TT-QG-002
+
+    - id: agent-validation-checklist
+      file: checklists/agent-validation-checklist.md
+      workflow: wf-validate-ai-agents
+      gate: TT-QG-003
+
+    - id: topology-quality-gate
+      file: checklists/topology-quality-gate.md
+      workflow: any-topology-design
+      gate: TT-QG-004
+
+    - id: interaction-quality-gate
+      file: checklists/interaction-quality-gate.md
+      workflow: any-interaction-design
+      gate: TT-QG-005
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # CONFLICT RESOLUTION
+  # ───────────────────────────────────────────────────────────────────────────
+
+  conflict_resolution:
+    description: |
+      Tier-based arbitration rules for resolving disagreements between specialists.
+      Higher tiers have authority over lower tiers. Chief arbitrates same-tier conflicts.
+
+    rules:
+      tier_0_veto:
+        authority: "@ruth-malan"
+        rule: "Ruth has diagnostic veto. If she says 'don't restructure', the workflow STOPS."
+        applies_to: "Any recommendation to restructure without completed diagnosis"
+        override: "Only the human stakeholder can override a Tier 0 veto"
+        rationale: "Restructuring without diagnosis is the most expensive mistake"
+
+      tier_1_conflict:
+        parties: ["@matthew-skelton", "@manuel-pais"]
+        arbiter: "@team-taxonomy-chief"
+        rule: "When Matthew and Manuel disagree (e.g., structure says X but interaction says Y), Chief arbitrates"
+        process:
+          - "Both specialists present evidence"
+          - "Chief weighs evidence strength and alignment with diagnosis"
+          - "Chief makes decision with documented rationale"
+          - "Decision logged in conflict resolution section of synthesis report"
+        escalation: "Human stakeholder if Chief cannot resolve"
+
+      tier_2_conflict:
+        parties: ["@barry-hawkins", "@yoav-shoham"]
+        arbiter: "Escalate to Tier 1"
+        rule: "When Barry and Yoav disagree (e.g., engineering says safe but theory says unstable), escalate to Tier 1 for broader context"
+        process:
+          - "Present conflict to @matthew-skelton for structural perspective"
+          - "If still unresolved, @team-taxonomy-chief arbitrates"
+          - "Decision logged with full rationale"
+        escalation: "Human stakeholder if cross-tier conflict persists"
+
+      cross_tier:
+        rule: "Lower tier cannot override higher tier without Chief approval"
+        examples:
+          - "Tier 2 (Barry) cannot override Tier 1 (Matthew) on team structure"
+          - "Tier 1 (Manuel) cannot override Tier 0 (Ruth) on diagnosis"
+          - "Chief can override any tier with documented rationale"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # USAGE GUIDELINES
+  # ───────────────────────────────────────────────────────────────────────────
+
+  usage:
+    start_here: |
+      Always begin with team-taxonomy-chief
+      → Chief routes to appropriate specialist(s)
+      → Chief coordinates multi-specialist workflows
+
+    single_specialist:
+      example: "I need to design interaction patterns between my teams"
+      route: "team-taxonomy-chief → manuel-pais"
+
+    multi_specialist:
+      example: "I want to restructure my entire organization"
+      route: "team-taxonomy-chief → ruth-malan → matthew-skelton → manuel-pais"
+
+    ai_focus:
+      example: "I need to design a multi-agent squad"
+      route: "team-taxonomy-chief → matthew-skelton → barry-hawkins → yoav-shoham"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # INTEGRATION WITH AIOS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  aios_integration:
+    description: |
+      Team Taxonomy Squad applies Team Topologies principles to design
+      and validate AI agent squads within AIOS framework.
+
+    use_cases:
+      - "Designing squad structure for new domain (use team-taxonomy → squad-creator)"
+      - "Validating AI agent orchestration (use team-taxonomy → dev squad)"
+      - "Assessing organization impact before changes (diagnostic-first)"
+
+    handoff_targets:
+      - squad-creator: "After designing team structure, use squad-creator to build agents"
+      - dev: "Implement team structure in code"
+      - qa: "Validate that implementation matches design"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # QUALITY STANDARDS
+  # ───────────────────────────────────────────────────────────────────────────
+
+  quality_metrics:
+    agents:
+      min_lines: 900
+      required_sections:
+        - voice_dna
+        - thinking_dna
+        - output_examples (min 3)
+        - anti_patterns
+        - completion_criteria
+        - handoff_to
+
+    frameworks:
+      documented: true
+      battle_tested: true
+      replicable: true
+
+    outputs:
+      completeness: "All decision rationale documented"
+      clarity: "Non-technical stakeholders understand recommendations"
+      actionability: "Recommendations lead to concrete next steps"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # TECHNICAL METADATA
+  # ───────────────────────────────────────────────────────────────────────────
+
+  metadata:
+    tier_distribution:
+      tier_0: 1
+      tier_1: 2
+      tier_2: 2
+      orchestrator: 1
+      total_agents: 6
+
+    total_lines:
+      ruth_malan: 946
+      matthew_skelton: 1071
+      manuel_pais: 1232
+      barry_hawkins: 1453
+      yoav_shoham: 1342
+      team_taxonomy_chief: 900+
+      total: 7000+
+
+    frameworks_applied: 4
+    workflows_included: 3
+    tasks_included: 10
+    checklists_included: 5
+    quality_gates: 5
+    example_scenarios: 12+
+
+    source_materials:
+      - "team_taxonomy_ai_first.md (provided by user)"
+      - "Team Topologies book (Skelton & Pais)"
+      - "Multi-Agent Systems research (Shoham)"
+      - "AIOS framework standards"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # SUCCESS CRITERIA
+  # ───────────────────────────────────────────────────────────────────────────
+
+  success_criteria:
+    agent_quality: "All agents pass quality gate SC_AGT_001"
+    frameworks: "Each agent applies documented frameworks"
+    examples: "All output examples are concrete and realistic"
+    handoffs: "Clear routing between all specialists"
+    integration: "Works seamlessly with AIOS framework"
+    adoption: "Non-technical stakeholders can use squad"
+
+---
+
+# END CONFIG.YAML
+# This configuration is validated and ready for production use
+# Last updated: 2025-02-05
+# Maintained by: Squad Architect
