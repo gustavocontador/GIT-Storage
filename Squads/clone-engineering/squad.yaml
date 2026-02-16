@@ -1,0 +1,102 @@
+name: clone-engineering
+version: 1.0.0
+description: "AI Clone Engineering squad — MMOS pipeline with DNA Mental 8-layer methodology for creating high-fidelity cognitive clones (93-97% target)"
+author: Felipe Rosa
+license: MIT
+slashPrefix: clone
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - el-clonador.md
+    - mind-mapper.md
+    - kb-curator.md
+    - prompt-architect.md
+    - fidelity-tester.md
+  tasks:
+    # el-clonador (Pipeline Orchestrator)
+    - el-clonador-start-pipeline.md
+    - el-clonador-phase-gate.md
+    - el-clonador-viability.md
+    - el-clonador-deploy.md
+    # mind-mapper (Cognitive Extraction)
+    - mind-mapper-classify-sources.md
+    - mind-mapper-extract-layer.md
+    - mind-mapper-extract-all.md
+    - mind-mapper-triangulate.md
+    - mind-mapper-generate-identity-core.md
+    - mind-mapper-generate-cognitive-spec.md
+    - mind-mapper-gap-analysis.md
+    # kb-curator (Knowledge Base)
+    - kb-curator-chunk-source.md
+    - kb-curator-chunk-batch.md
+    - kb-curator-index-chunks.md
+    - kb-curator-validate-retrieval.md
+    - kb-curator-kb-status.md
+    # prompt-architect (System Prompts)
+    - prompt-architect-create-prompt.md
+    - prompt-architect-create-generalista.md
+    - prompt-architect-test-persona.md
+    - prompt-architect-optimize-prompt.md
+    - prompt-architect-integrate-memory.md
+    # fidelity-tester (Validation)
+    - fidelity-tester-create-scenarios.md
+    - fidelity-tester-run-scenarios.md
+    - fidelity-tester-blind-test.md
+    - fidelity-tester-fidelity-report.md
+    - fidelity-tester-iterate.md
+  workflows:
+    - mmos-full-pipeline.yaml
+    - layer-extraction.yaml
+    - fidelity-iteration.yaml
+  checklists:
+    - phase-gate-checklist.md
+    - triangulation-checklist.md
+    - fidelity-validation-checklist.md
+  templates:
+    - layer-template.yaml
+    - chunk-template.yaml
+    - system-prompt-template.md
+    - scenario-template.yaml
+    - fidelity-report-template.md
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+  source-tree: config/source-tree.md
+
+data:
+  - dna-mental-layers.md
+  - mmos-pipeline-phases.md
+  - persona-switching-rules.md
+
+knowledge_base:
+  source: "../../aprendizado/clones-new-agents/alan_nicolas/kb/"
+  chunks: 20
+  manifest: "../../aprendizado/clones-new-agents/alan_nicolas/kb/index.yaml"
+
+system_prompts:
+  main: "../../aprendizado/clones-new-agents/alan_nicolas/system_prompts/generalista.md"
+  specialists:
+    - "../../aprendizado/clones-new-agents/alan_nicolas/specialists/prompt_el_clonador.md"
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - ai-clone
+  - cognitive-architecture
+  - dna-mental
+  - mmos-pipeline
+  - prompt-engineering
+  - knowledge-base
+  - fidelity-testing
+  - clone-engineering
