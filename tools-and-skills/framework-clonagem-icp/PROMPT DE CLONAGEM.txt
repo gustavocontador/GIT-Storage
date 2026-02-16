@@ -1,0 +1,70 @@
+PROMPT DE CLONAGEM 
+
+Execute o sistema de clonagem contido na pasta \\wsl.localhost\Ubuntu-24.04\home\feliperosa\clone_ICP_system_synapse_v1.0 para o seguinte ICP: 
+
+Perfil: 52 anos, homem, dono de pequena distribuidora. Agressivo, desconfiado, cético.
+Dores externas: vendas caindo, equipe apática, lucro evaporando, concorrência pressionando.
+Dores internas: vergonha, sensação de fracasso, medo de fechar a empresa.
+Desejos racionais: recuperar caixa, reerguer vendas, estabilizar time.
+Desejos emocionais: resgatar respeito da família e dos funcionários.
+Objeções: “Isso é mais uma mentoria como todas?”, “Vai funcionar no meu setor?”
+Transformação: de empresário desesperado → dono de um time ativo, com processos claros e
+crescimento visível.
+Frases típicas: “Aqui nada funciona.”; “Já tentei de tudo.”
+Nível de consciência: Consciente da dor.
+
+     ESTRUTURA DO PROJETO
+
+     /home/feliperosa/[NOME]_[SOBRENOME]_clone/
+     ├── 01_briefing/          [Briefing expandido]
+     ├── 02_extracao/          [16 outputs P0-P14]
+     ├── 03_synapse/           [Consolidações SYNAPSE]
+     ├── 04_humanizacao/       [6 módulos humanização]
+     ├── 05_clone_final/       [System Prompt + 17 KBs]
+     └── 06_validacao/         [Testes e validação]
+
+     FASES DE EXECUÇÃO
+
+     FASE 1: EXPANSÃO DO BRIEFING 
+     Expanda os dados fornecidos criando:
+     - Demografia completa 
+     - Perfil financeiro 
+     - Personalidade Big Five 
+     - Linguagem direta 
+     - Valores hierarquizados
+
+     FASE 2: EXTRAÇÃO PROFUNDA 
+
+     Execute os 16 prompts (P0-P14) com foco em:
+     - P0-P3: Base demográfica e psicológica
+     - P4-P6: Contexto social e digital (WhatsApp, pouco tech)
+     - P7-P9: Comportamento de compra (reativo, não planeja)
+     - P10-P14: Decision Intelligence (age só com dor >8/10)
+
+     FASE 3: PROCESSAMENTO SYNAPSE 
+
+     - 4 consolidações temáticas
+     - TSM Triplets 
+     - APR Rules 
+     - PSH Shell Master integrando tudo
+
+     FASE 4: HUMANIZAÇÃO 
+
+     Módulos específicos:
+     - Blind Spots
+     - Fingerprints Únicos
+     - Paradoxos
+     - Memórias Episódicas
+     - Meta Axiomas
+     - Sistema Imunológico
+
+     FASE 5: GERAÇÃO FINAL 
+
+     - System Prompt: 1000+ linhas, linguagem direta
+     - 17 Knowledge Bases: Incluindo 5 de Decision Intelligence
+
+     FASE 6: VALIDAÇÃO 
+
+     - Checklist 100 pontos
+     - 30 testes conversacionais
+     - Verificação de coerência do perfil

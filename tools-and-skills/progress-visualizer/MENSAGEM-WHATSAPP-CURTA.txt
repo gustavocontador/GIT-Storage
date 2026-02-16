@@ -1,0 +1,39 @@
+📊 *Progress Visualizer* - Skill para Claude Code
+
+Pessoal! 🚀
+
+Compartilhando uma skill SENSACIONAL que uso no meu workflow com Claude Code.
+
+*O que é?*
+Transforma suas tasks em visualizações ASCII lindíssimas direto no terminal! Mostra visualmente onde você está no projeto, o que foi feito e o que vem pela frente.
+
+*5 estilos disponíveis:*
+1. Dashboard Completo (tabelas + métricas)
+2. Roadmap Horizontal (timeline de fases)
+3. Quest Map (tema RPG, motivacional!)
+4. Kanban Board (estilo Trello)
+5. Status Rápido (minimalista)
+
+*Como usar:*
+- Só falar "show progress" ou "quero ver o roadmap"
+- Claude escolhe o melhor estilo automaticamente
+- Ou força um estilo específico: "show as kanban"
+
+*Por que é útil?*
+✓ Contexto visual instantâneo
+✓ Motivação (ver progresso é satisfatório!)
+✓ Fácil tirar print e compartilhar
+✓ Tracking de evolução
+
+*No zip vai:*
+• Skill completa
+• Guia de instalação
+• Exemplos visuais de cada estilo
+• Instruções detalhadas
+
+*Instalação:*
+Extrair e colocar em ~/.claude/skills/ ou .claude/commands/AIOS/skills/
+
+Se usarem, me mandem print! 📸
+
+Qualquer dúvida, só chamar! 💪

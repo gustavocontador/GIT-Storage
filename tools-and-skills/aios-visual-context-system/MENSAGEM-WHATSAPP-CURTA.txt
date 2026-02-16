@@ -1,0 +1,22 @@
+🚀 *AIOS Visual Context System v2.0*
+
+Statusline rico para Claude Code! 📊
+
+*✨ Novo em v2.0:*
+🎨 Emoji temático nos títulos!
+```
+npx aios-core context set-title "Design" --emoji 🎨
+```
+
+📐 Formato otimizado (2 linhas, não comprime input)
+
+*Mostra:*
+• Modelo IA, progress bar, tokens
+• Custo e tempo da sessão
+• Contexto personalizado
+• CPU/RAM, data/hora
+
+Download: [SERÁ ADICIONADO]
+Docs completas incluídas! 📚
+
+Por Luiz Fosc | AIOS Framework

@@ -1,0 +1,52 @@
+🚀 *AIOS Visual Context System v2.0*
+
+Statusline COMPLETO para Claude Code com contexto rico! 📊
+
+*✨ Novidades v2.0:*
+
+🎨 *Emoji Temático* - Agora você pode adicionar emoji que simboliza seu trabalho!
+```
+npx aios-core context set-title "Design System" --emoji 🎨
+```
+
+📐 *Formato de 2 Linhas* - Otimizado para não comprimir área de input
+
+*O que mostra:*
+✓ 🤖 Modelo de IA em uso
+✓ 📊 Progress bar visual de contexto
+✓ 💰 Custo da sessão
+✓ ⏱️ Tempo decorrido
+✓ 🎨 Contexto AIOS com emoji temático
+✓ 📁 Diretório e branch git
+✓ 💻 CPU e RAM do sistema
+✓ 📅 Data e hora
+
+*Exemplo visual:*
+```
+🤖 Sonnet 4.5 | ████░░ 75% 150k | 💰 $5.23 ⏱ 10m | 🎨 Design System
+📁 ~/aios-core:main | 💻 45%/75% | 📅 12/02/26 🕐 19:35
+```
+
+*📦 Download:*
+GitHub: [SERÁ ADICIONADO]
+
+*📚 Documentação completa incluída:*
+• INSTALL.md - Instalação passo a passo
+• QUICK-START.md - Começar em 5 minutos
+• CUSTOMIZATION.md - Personalizar cores e formato
+• CHANGELOG.md - Histórico de versões
+
+*🎯 Casos de uso:*
+🎨 Design → `--emoji 🎨`
+⚙️ Backend → `--emoji ⚙️`
+🧠 Mind Cloning → `--emoji 🧠`
+📢 Marketing → `--emoji 📢`
+
+*💡 Ideal para:*
+• Desenvolvedores que usam Claude Code
+• Quem trabalha em múltiplos projetos
+• Quem quer tracking visual de progresso
+• Usuários do AIOS Framework
+
+Desenvolvido com ❤️ por Luiz Fosc
+Para o AIOS Framework (Synkra AI)
