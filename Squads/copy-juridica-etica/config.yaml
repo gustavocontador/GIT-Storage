@@ -1,0 +1,95 @@
+name: copy
+version: 1.0.0
+short-title: Copy Squad
+description: >-
+  Squad de copy especializado no site da Gabriela Nagamati, advogada previdenciária.
+  Baseado em 5 elite minds com frameworks documentados.
+  Orquestrador: @copy-chief (triage, routing, criação de copy),
+  Tier 1: @schwartz (5 Levels of Awareness), @edwards (P.A.S.T.O.R. Ético), @miller (StoryBrand SB7),
+  Tier 2: @maslen (Copywriting Empático), @duistermaat (Enchanting Blog).
+  Contexto: INSS/previdenciário legal website, Itapetininga/SP, OAB/SP 458.056.
+
+author: AIOS Team
+entry_agent: copy-chief
+slashPrefix: copySqaud
+domain: content_marketing
+language: pt-BR
+context: INSS/previdenciario law website, Itapetininga/SP, OAB/SP 458.056
+
+# Activation settings
+settings:
+  greeting_level: named
+  auto_save: true
+  language: pt-BR
+
+  activation:
+    show_ecosystem_report: true
+    show_greeting: true
+    show_quick_commands: true
+
+  ecosystem_report:
+    show_totals: true
+    show_top_squads: false
+    show_quality_refs: false
+    show_gaps: false
+
+# Agents
+agents:
+  - name: copy-chief
+    tier: 0
+    title: Estrategista de Copy & Orquestrador
+    description: Orquestra fluxo de copy, decide frameworks, roteia para especialistas
+    role: orchestrator
+
+  - name: schwartz
+    tier: 1
+    title: Eugene Schwartz - 5 Levels of Awareness
+    description: Analisa nível de awareness do público, estrutura copy por estágio de buyer journey
+    role: specialist
+    framework: 5-levels-of-awareness
+
+  - name: edwards
+    tier: 1
+    title: Ray Edwards - P.A.S.T.O.R. Ético
+    description: Structura argumentação ética, cria copy persuasivo sem manipulação
+    role: specialist
+    framework: pastor-framework
+
+  - name: miller
+    tier: 1
+    title: Donald Miller - StoryBrand SB7
+    description: Aplica StoryBrand 7-Point Framework, posiciona cliente como herói
+    role: specialist
+    framework: storybrand-sb7
+
+  - name: maslen
+    tier: 2
+    title: Andy Maslen - Copywriting Empático
+    description: Cria copy baseado em empatia, dor e benefícios emocionais
+    role: specialist
+    framework: empathic-copywriting
+
+  - name: duistermaat
+    tier: 2
+    title: Henneke Duistermaat - Enchanting Blog
+    description: Estrutura artigos e conteúdo blog, torna leitura irresistível
+    role: specialist
+    framework: enchanting-blog
+
+# Keywords
+keywords:
+  - copywriting
+  - persuasão
+  - storybrand
+  - awareness
+  - pastor
+  - empatia
+  - blog
+  - legal marketing
+  - INSS
+  - previdenciário
+  - itapetininga
+  - advogada
+  - buyer journey
+  - frameworks
+  - content marketing
