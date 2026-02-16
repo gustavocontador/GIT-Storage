@@ -1,15 +1,15 @@
 #!/usr/bin/env bun
 
 /**
- * Bridge OpenClaw <-> Supabase
+ * Bridge OpenClaw + Claude Code <-> Supabase
  *
- * Sincroniza sessoes, mensagens e eventos do OpenClaw com o Supabase PostgreSQL.
+ * Sincroniza sessoes, mensagens e eventos do OpenClaw E Claude Code com o Supabase PostgreSQL.
  *
  * Uso:
  *   node bridge.js status   — Estado da conexao e ultima sincronizacao
  *   node bridge.js migrate  — Cria/atualiza tabelas no Supabase
  *   node bridge.js sync     — Sincroniza sessoes JSONL pendentes
- *   node bridge.js watch    — Daemon: observa novos JSONL e sincroniza em tempo real
+ *   node bridge.js watch    — Daemon: observar e sincronizar em tempo real
  */
 
 import { readFileSync, readdirSync, existsSync, watch } from "node:fs";
@@ -25,12 +25,29 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const OPENCLAW_DIR = join(homedir(), ".openclaw");
 const SESSIONS_DIR = join(OPENCLAW_DIR, "agents", "main", "sessions");
 const EVENTS_LOG = join(OPENCLAW_DIR, "logs", "claude-code-events.jsonl");
+const CLAUDE_CODE_DIR = join(homedir(), ".claude", "projects");
 const MIGRATIONS_DIR = join(
   process.env.AIOS_ROOT || join(homedir(), "Documents", "AIOS"),
   ".aios-core",
   "infrastructure",
   "migrations"
 );
+
+// --- Noise filters ---
+
+const NOISE_PATTERNS = [
+  /^HEARTBEAT/i,
+  /^NO_REPLY$/,
+  /^MEMORY\.md/,
+  /conversation_label.*heartbeat/i,
+  /WhatsApp gateway (dis)?connected/,
+  /^System: \[/,
+];
+
+function isNoise(content) {
+  if (!content || content.trim().length === 0) return true;
+  return NOISE_PATTERNS.some((p) => p.test(content));
+}
 
 // --- Supabase REST helpers ---
 
@@ -175,14 +192,19 @@ function parseSessionFile(filepath) {
     } else if (entry.type === "message" && entry.message) {
       const msg = entry.message;
       const usage = msg.usage || {};
+      const content = typeof msg.content === "string"
+        ? msg.content
+        : Array.isArray(msg.content)
+          ? msg.content.map((c) => c.text || "").join("\n")
+          : JSON.stringify(msg.content);
+
+      // Filter noise
+      if (isNoise(content)) continue;
+
       messages.push({
         openclaw_message_id: entry.id,
         role: msg.role,
-        content: typeof msg.content === "string"
-          ? msg.content
-          : Array.isArray(msg.content)
-            ? msg.content.map((c) => c.text || "").join("\n")
-            : JSON.stringify(msg.content),
+        content,
         timestamp: entry.timestamp,
         token_count: usage.totalTokens || null,
         cost: usage.cost?.total || null,
@@ -237,6 +259,113 @@ function parseEventsLog(filepath, since = null) {
   }
 
   return events;
+}
+
+// --- Parse Claude Code JSONL session ---
+
+function parseClaudeCodeFile(filepath) {
+  const lines = readFileSync(filepath, "utf-8")
+    .split("\n")
+    .filter((l) => l.trim());
+
+  // Use filename (without .jsonl) as session ID — Claude Code reuses sessionId
+  // across continuations, but each file is a distinct conversation
+  const fileSessionId = basename(filepath, ".jsonl");
+
+  const messages = [];
+  let internalSessionId = null;
+  let model = null;
+  let startedAt = null;
+  let cwd = null;
+
+  for (const line of lines) {
+    let entry;
+    try {
+      entry = JSON.parse(line);
+    } catch {
+      continue;
+    }
+
+    // Skip non-message types (progress, file-history-snapshot, queue-operation, system)
+    if (!["user", "assistant"].includes(entry.type)) continue;
+
+    if (!internalSessionId && entry.sessionId) internalSessionId = entry.sessionId;
+    if (!cwd && entry.cwd) cwd = entry.cwd;
+    if (!startedAt && entry.timestamp) startedAt = entry.timestamp;
+
+    const msg = entry.message;
+    if (!msg) continue;
+
+    if (!model && msg.model) model = msg.model;
+
+    // Extract text content
+    let content = "";
+    if (typeof msg.content === "string") {
+      content = msg.content;
+    } else if (Array.isArray(msg.content)) {
+      content = msg.content
+        .filter((c) => c.type === "text")
+        .map((c) => c.text || "")
+        .join("\n");
+    }
+
+    // Filter noise
+    if (isNoise(content)) continue;
+
+    // Truncate very large content (tool results, etc) to 10KB
+    if (content.length > 10000) {
+      content = content.substring(0, 10000) + "\n...[truncated]";
+    }
+
+    const usage = msg.usage || {};
+    messages.push({
+      openclaw_message_id: entry.uuid,
+      role: msg.role,
+      content,
+      timestamp: entry.timestamp,
+      token_count: (usage.input_tokens || 0) + (usage.output_tokens || 0) || null,
+      cost: null,
+      model: msg.model || null,
+      stop_reason: msg.stop_reason || null,
+      metadata: {
+        parentUuid: entry.parentUuid,
+        requestId: entry.requestId,
+        source: "claude-code",
+      },
+    });
+  }
+
+  const session = fileSessionId
+    ? {
+        openclaw_session_id: fileSessionId,
+        started_at: startedAt,
+        model,
+        metadata: { cwd, source: "claude-code", internalSessionId },
+      }
+    : null;
+
+  return { session, messages, events: [] };
+}
+
+// --- Discover Claude Code sessions ---
+
+function discoverClaudeCodeSessions() {
+  if (!existsSync(CLAUDE_CODE_DIR)) return [];
+
+  const files = [];
+  const projects = readdirSync(CLAUDE_CODE_DIR);
+  for (const project of projects) {
+    const projectDir = join(CLAUDE_CODE_DIR, project);
+    try {
+      const items = readdirSync(projectDir).filter((f) => f.endsWith(".jsonl"));
+      for (const item of items) {
+        files.push({ path: join(projectDir, item), project, filename: item });
+      }
+    } catch {
+      continue;
+    }
+  }
+  return files;
 }
 
 // --- Sync ---
@@ -352,45 +481,123 @@ async function syncEventsLog() {
   return events.length;
 }
 
-async function syncAllSessions() {
-  console.log("Sincronizando sessoes...\n");
+async function syncClaudeCodeFile(filepath, project) {
+  const filename = basename(filepath);
+  const { session, messages } = parseClaudeCodeFile(filepath);
 
-  if (!existsSync(SESSIONS_DIR)) {
-    console.log(`Diretorio de sessoes nao encontrado: ${SESSIONS_DIR}`);
+  if (!session) {
+    console.log(`  [skip] ${filename} — sem dados de sessao`);
+    return 0;
+  }
+
+  console.log(
+    `  [cc-sync] ${project}/${filename} — ${messages.length} msgs`
+  );
+
+  // Upsert session
+  session.metadata.project = project;
+  const [sessionRow] = await supabaseUpsert("sessions", {
+    openclaw_session_id: session.openclaw_session_id,
+    model: session.model,
+    cwd: session.metadata?.cwd,
+    started_at: session.started_at,
+    metadata: session.metadata,
+  }, "openclaw_session_id");
+
+  const sessionId = sessionRow.id;
+  let count = 1;
+
+  // Delete existing messages for this session (re-sync to handle updates)
+  try {
+    await supabaseQuery("messages", "DELETE", null, `session_id=eq.${sessionId}`);
+  } catch { /* table may be empty */ }
+
+  // Insert messages
+  if (messages.length > 0) {
+    const msgRows = messages.map((m) => ({
+      ...m,
+      session_id: sessionId,
+    }));
+
+    for (let i = 0; i < msgRows.length; i += 50) {
+      const batch = msgRows.slice(i, i + 50);
+      await supabaseQuery("messages", "POST", batch);
+      count += batch.length;
+    }
+  }
+
+  return count;
+}
+
+async function syncAllClaudeCode() {
+  console.log("Sincronizando Claude Code sessions...\n");
+
+  const ccFiles = discoverClaudeCodeSessions();
+  if (ccFiles.length === 0) {
+    console.log("  Nenhuma sessao Claude Code encontrada.");
     return;
   }
 
-  const lastSync = await getLastSync("sessions");
-  const lastFile = lastSync?.last_synced_file;
+  console.log(`  ${ccFiles.length} sessao(oes) Claude Code encontrada(s):\n`);
 
-  const files = readdirSync(SESSIONS_DIR)
-    .filter((f) => f.endsWith(".jsonl"))
-    .sort();
-
-  // Filtra arquivos ja sincronizados
-  const pending = lastFile
-    ? files.filter((f) => f > lastFile)
-    : files;
-
-  if (pending.length === 0) {
-    console.log("  Nenhuma sessao nova para sincronizar.");
-  } else {
-    console.log(`  ${pending.length} sessao(oes) pendente(s):\n`);
-
-    let totalCount = 0;
-    for (const file of pending) {
-      try {
-        const count = await syncSessionFile(join(SESSIONS_DIR, file));
-        totalCount += count;
-        await recordSync("sessions", file, count);
-      } catch (err) {
-        console.error(`  [ERRO] ${file}: ${err.message}`);
-        await recordSync("sessions", file, 0, "error", err.message);
-      }
+  let totalCount = 0;
+  for (const { path: fp, project, filename } of ccFiles) {
+    const syncKey = `cc:${project}/${filename}`;
+    try {
+      const count = await syncClaudeCodeFile(fp, project);
+      totalCount += count;
+      await recordSync("claude-code", syncKey, count);
+    } catch (err) {
+      console.error(`  [ERRO] ${filename}: ${err.message}`);
+      await recordSync("claude-code", syncKey, 0, "error", err.message);
     }
-
-    console.log(`\n  Total: ${totalCount} registros sincronizados.`);
   }
+
+  console.log(`\n  Claude Code total: ${totalCount} registros sincronizados.`);
+}
+
+async function syncAllSessions() {
+  console.log("Sincronizando sessoes OpenClaw...\n");
+
+  if (existsSync(SESSIONS_DIR)) {
+    const lastSync = await getLastSync("sessions");
+    const lastFile = lastSync?.last_synced_file;
+
+    const files = readdirSync(SESSIONS_DIR)
+      .filter((f) => f.endsWith(".jsonl"))
+      .sort();
+
+    // Filtra arquivos ja sincronizados
+    const pending = lastFile
+      ? files.filter((f) => f > lastFile)
+      : files;
+
+    if (pending.length === 0) {
+      console.log("  Nenhuma sessao OpenClaw nova para sincronizar.");
+    } else {
+      console.log(`  ${pending.length} sessao(oes) pendente(s):\n`);
+
+      let totalCount = 0;
+      for (const file of pending) {
+        try {
+          const count = await syncSessionFile(join(SESSIONS_DIR, file));
+          totalCount += count;
+          await recordSync("sessions", file, count);
+        } catch (err) {
+          console.error(`  [ERRO] ${file}: ${err.message}`);
+          await recordSync("sessions", file, 0, "error", err.message);
+        }
+      }
+
+      console.log(`\n  Total OpenClaw: ${totalCount} registros sincronizados.`);
+    }
+  } else {
+    console.log(`  Diretorio OpenClaw nao encontrado: ${SESSIONS_DIR}`);
+  }
+
+  // Sync Claude Code sessions
+  console.log("");
+  await syncAllClaudeCode();
 
   // Sync events log
   console.log("");
@@ -401,22 +608,23 @@ async function syncAllSessions() {
 
 async function watchMode() {
   console.log("Modo watch ativo. Observando novos arquivos JSONL...\n");
-  console.log(`  Sessions: ${SESSIONS_DIR}`);
-  console.log(`  Events:   ${EVENTS_LOG}`);
+  console.log(`  OpenClaw sessions: ${SESSIONS_DIR}`);
+  console.log(`  Claude Code dir:   ${CLAUDE_CODE_DIR}`);
+  console.log(`  Events log:        ${EVENTS_LOG}`);
   console.log("\n  Ctrl+C para sair.\n");
+
+  const watchers = [];
 
   // Sync inicial
   await syncAllSessions();
 
-  // Watch sessions dir
+  // Watch OpenClaw sessions dir
   if (existsSync(SESSIONS_DIR)) {
     const sessionsWatcher = watch(SESSIONS_DIR, async (eventType, filename) => {
       if (!filename || !filename.endsWith(".jsonl")) return;
-
-      // Debounce: espera 2s para o arquivo ser completamente escrito
       await new Promise((r) => setTimeout(r, 2000));
 
-      console.log(`\n  [watch] Detectado: ${filename}`);
+      console.log(`\n  [watch] Detectado OpenClaw: ${filename}`);
       try {
         const count = await syncSessionFile(join(SESSIONS_DIR, filename));
         await recordSync("sessions", filename, count);
@@ -425,15 +633,45 @@ async function watchMode() {
         console.error(`  [watch] ERRO: ${err.message}`);
       }
     });
-
-    process.on("SIGINT", () => {
-      sessionsWatcher.close();
-      console.log("\n\nWatch encerrado.");
-      process.exit(0);
-    });
+    watchers.push(sessionsWatcher);
   }
 
-  // Periodic sync do events log (a cada 60s)
+  // Watch Claude Code project dirs
+  if (existsSync(CLAUDE_CODE_DIR)) {
+    const projects = readdirSync(CLAUDE_CODE_DIR);
+    for (const project of projects) {
+      const projectDir = join(CLAUDE_CODE_DIR, project);
+      try {
+        const w = watch(projectDir, async (eventType, filename) => {
+          if (!filename || !filename.endsWith(".jsonl")) return;
+          await new Promise((r) => setTimeout(r, 3000));
+
+          console.log(`\n  [watch-cc] Detectado: ${project}/${filename}`);
+          try {
+            const count = await syncClaudeCodeFile(
+              join(projectDir, filename),
+              project
+            );
+            await recordSync("claude-code", `cc:${project}/${filename}`, count);
+            console.log(`  [watch-cc] OK — ${count} registros`);
+          } catch (err) {
+            console.error(`  [watch-cc] ERRO: ${err.message}`);
+          }
+        });
+        watchers.push(w);
+      } catch {
+        continue;
+      }
+    }
+  }
+
+  process.on("SIGINT", () => {
+    watchers.forEach((w) => w.close());
+    console.log("\n\nWatch encerrado.");
+    process.exit(0);
+  });
+
+  // Periodic sync: events log (60s) + Claude Code (5min)
   setInterval(async () => {
     try {
       await syncEventsLog();
@@ -442,6 +680,14 @@ async function watchMode() {
     }
   }, 60_000);
 
+  setInterval(async () => {
+    try {
+      await syncAllClaudeCode();
+    } catch (err) {
+      console.error(`  [periodic] Erro sincronizando Claude Code: ${err.message}`);
+    }
+  }, 300_000);
+
   // Manter processo vivo
   await new Promise(() => {});
 }
@@ -449,11 +695,12 @@ async function watchMode() {
 // --- Status ---
 
 async function showStatus() {
-  console.log("Bridge OpenClaw <-> Supabase\n");
-  console.log(`  Supabase URL: ${SUPABASE_URL || "(nao configurado)"}`);
-  console.log(`  Key:          ${SUPABASE_KEY ? "***" + SUPABASE_KEY.slice(-8) : "(nao configurado)"}`);
-  console.log(`  Sessions dir: ${SESSIONS_DIR}`);
-  console.log(`  Events log:   ${EVENTS_LOG}\n`);
+  console.log("Bridge OpenClaw + Claude Code <-> Supabase\n");
+  console.log(`  Supabase URL:      ${SUPABASE_URL || "(nao configurado)"}`);
+  console.log(`  Key:               ${SUPABASE_KEY ? "***" + SUPABASE_KEY.slice(-8) : "(nao configurado)"}`);
+  console.log(`  OpenClaw sessions: ${SESSIONS_DIR}`);
+  console.log(`  Claude Code dir:   ${CLAUDE_CODE_DIR}`);
+  console.log(`  Events log:        ${EVENTS_LOG}\n`);
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error("ERRO: Variaveis SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY nao configuradas.");
@@ -510,7 +757,18 @@ async function showStatus() {
     const localFiles = readdirSync(SESSIONS_DIR).filter((f) =>
       f.endsWith(".jsonl")
     );
-    console.log(`\n  Sessoes locais: ${localFiles.length} arquivo(s) JSONL`);
+    console.log(`\n  OpenClaw local:    ${localFiles.length} arquivo(s) JSONL`);
+  }
+
+  // Claude Code sessions
+  const ccFiles = discoverClaudeCodeSessions();
+  console.log(`  Claude Code local: ${ccFiles.length} sessao(oes)`);
+  if (ccFiles.length > 0) {
+    const projects = [...new Set(ccFiles.map((f) => f.project))];
+    for (const p of projects) {
+      const pFiles = ccFiles.filter((f) => f.project === p);
+      console.log(`    ${p}: ${pFiles.length} sessao(oes)`);
+    }
   }
 
   console.log("");
