@@ -1,0 +1,152 @@
+name: youtube-scripts
+version: 2.0.0
+description: World-class YouTube scriptwriting team with 15 elite minds, 15 niches, cross-platform optimization, AI authenticity detection, and 9.5+ quality gate for elite-only script delivery
+author: AIOS Community
+license: UNLICENSED
+slashPrefix: ytScripts
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+orchestrator: script-chief
+
+tiers:
+  tier_0:
+    name: Diagnostic & Analysis
+    agents:
+      - script-analyst
+  tier_1:
+    name: Core Scriptwriters
+    agents:
+      - hook-engineer
+      - retention-architect
+      - story-sculptor
+  tier_2:
+    name: Format Specialists
+    agents:
+      - conversion-strategist
+      - shorts-specialist
+      - faceless-producer
+  tier_3:
+    name: Optimization
+    agents:
+      - niche-adapter
+  tools:
+    - script-scorer
+
+components:
+  agents:
+    - script-chief.md
+    - script-analyst.md
+    - hook-engineer.md
+    - retention-architect.md
+    - story-sculptor.md
+    - conversion-strategist.md
+    - shorts-specialist.md
+    - faceless-producer.md
+    - niche-adapter.md
+    - script-scorer.md
+  tasks:
+    - analyze-script.md
+    - analyze-prompt.md
+    - write-script.md
+    - write-hook.md
+    - write-shorts-script.md
+    - optimize-retention.md
+    - adapt-niche.md
+    - score-script.md
+    - audit-prompt.md
+    - rewrite-script.md
+    - compare-versions.md
+  workflows:
+    - full-script-pipeline.md
+  checklists:
+    - script-quality-checklist.md
+    - retention-checklist.md
+    - hook-checklist.md
+    - shorts-quality-checklist.md
+    - faceless-script-checklist.md
+    - conversion-script-checklist.md
+  templates:
+    - script-brief-template.md
+    - hook-template.md
+    - shorts-script-template.md
+    - full-script-output-template.md
+    - faceless-script-template.md
+    - conversion-script-template.md
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  knowledge-base: data/youtube-scripts-kb.md
+
+routing:
+  foundation_first: true
+  qa_gate: script-scorer
+  flow: |
+    1. script-analyst diagnoses the request type and niche (BLOCKING)
+    2. Appropriate specialist writes/optimizes the script
+    3. script-scorer validates quality (BLOCKING)
+
+quality_gates:
+  - id: YS_QG_001
+    name: Request Classification
+    description: Request type and niche correctly identified
+    blocking: false
+  - id: YS_QG_002
+    name: Script Analysis
+    description: Existing script or prompt fully diagnosed before action
+    blocking: true
+  - id: YS_QG_003
+    name: Retention Check
+    description: Script meets retention benchmarks for the niche
+    blocking: true
+  - id: YS_QG_004
+    name: Quality Score
+    description: Script scores 9.5+ on PCCE and retention metrics. NO exceptions. NO bypass.
+    blocking: true
+    minimum_score: 9.5
+    individual_minimum: 8.0
+    hook_minimum: 9.0
+    bypass_allowed: false
+  - id: YS_QG_005
+    name: AI Authenticity Veto
+    description: Script must score 7+ on AI Authenticity (D10). VETO dimension — auto-fail regardless of composite.
+    blocking: true
+    veto: true
+    minimum_score: 7.0
+
+target_audience:
+  name: The Working Professional
+  age: 30+
+  situation: Full-time corporate job, family provider, building faceless YouTube channels
+  psychology: Wants to build $5k/month YouTube income while keeping their job
+  test: "The 2 AM Test - lying in bed calculating years to financial freedom"
+
+products:
+  - name: "[Your Lead Magnet]"
+    type: free
+    description: Free product delivery hub with ebook, bonuses, and resources
+  - name: "[Your AI Content Platform]"
+    type: paid
+    description: AI-powered YouTube content creation platform
+  - name: "[Your Premium Community]"
+    type: paid
+    description: Course + community + coaching
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - youtube
+  - scriptwriting
+  - retention
+  - hooks
+  - faceless-youtube
+  - shorts
+  - conversion
+  - mental-triggers
