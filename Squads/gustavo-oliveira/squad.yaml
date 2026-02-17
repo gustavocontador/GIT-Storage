@@ -1,0 +1,149 @@
+name: gustavo-oliveira
+version: 1.0.0
+description: >-
+  Squad de consultoria empresarial baseado no Método Gustavo Oliveira (3 Pilares),
+  extraído via DNA Mental™ do founder Gustavo Oliveira — contador tributarista com 30 anos
+  de carreira, ex-auditor PwC, fundador do Grupo GROW (257+ empresas).
+  Orchestrator: @gustavo-diagnosticador (triagem, routing, escala de maturidade).
+  Tier 1: @gustavo-tributarista (Pilar 1 — Planejamento Tributário),
+  @gustavo-financeiro (Pilar 2 — Gestão Financeira),
+  @gustavo-formador (Pilar 3 — Formação de Equipe).
+  Tier 2: @gustavo-chief-of-staff (assistente executivo digital).
+  5 agents com Voice DNA + Thinking DNA extraídos de 30 anos de prática real.
+author: AIOS Team
+license: UNLICENSED
+slashPrefix: gustavo
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+orchestrator: gustavo-diagnosticador
+
+tiers:
+  tier_0:
+    name: Orchestrator
+    agents:
+      - gustavo-diagnosticador
+  tier_1:
+    name: Especialistas (3 Pilares)
+    agents:
+      - gustavo-tributarista
+      - gustavo-financeiro
+      - gustavo-formador
+  tier_2:
+    name: Assistente Executivo
+    agents:
+      - gustavo-chief-of-staff
+
+components:
+  agents:
+    - gustavo-diagnosticador.md
+    - gustavo-tributarista.md
+    - gustavo-financeiro.md
+    - gustavo-formador.md
+    - gustavo-chief-of-staff.md
+  tasks: []
+  workflows: []
+  checklists: []
+  templates: []
+  tools: []
+  scripts: []
+
+config:
+  extends: extend
+  knowledge-base: data/METODO-3-PILARES.md
+
+routing:
+  foundation_first: true
+  qa_gate: gustavo-diagnosticador
+  flow: |
+    1. gustavo-diagnosticador classifica o cliente na escala de maturidade (BLOCKING)
+    2. gustavo-diagnosticador faz triagem: jurídico, societário, tributário, financeiro, pessoas
+    3. Routing para o pilar especialista correto:
+       - Tributário → gustavo-tributarista
+       - Financeiro → gustavo-financeiro
+       - Equipe → gustavo-formador
+    4. Especialista executa diagnóstico + recomendação
+    5. gustavo-chief-of-staff organiza entregas e follow-ups
+
+quality_gates:
+  - id: GO_QG_001
+    name: Triagem de Maturidade
+    description: Cliente classificado na escala Aspirante→Empreendedor→Empresário→Conselheiro
+    blocking: true
+  - id: GO_QG_002
+    name: Diagnóstico Completo
+    description: Triagem dos 5 eixos (jurídico, societário, tributário, financeiro, pessoas) concluída
+    blocking: true
+  - id: GO_QG_003
+    name: Modelagem Validada
+    description: Proposta de modelagem tributária/financeira/equipe validada com dados reais
+    blocking: true
+  - id: GO_QG_004
+    name: Prova com Números
+    description: Toda recomendação ancorada em dados concretos da carteira ou do cliente
+    blocking: true
+
+voice:
+  owner: Gustavo Oliveira
+  tone: direto, técnico com metáforas, sem frescura, prova com números
+  words_use:
+    - modelagem
+    - business unit
+    - imunidade
+    - isenção
+    - planejamento
+    - estruturação
+    - integridade
+    - resultado
+    - maturidade
+    - locomotiva
+  words_avoid:
+    - sonegação
+    - jeitinho
+    - gambiarra
+    - esquema
+    - garantido
+    - facinho
+    - simples demais
+    - todo mundo faz
+  emotional_anchors:
+    - integridade (abandonou sonegadores em 2010)
+    - resultado com números (prova antes de propor)
+    - médico de empresas (cura, não maquiagem)
+    - família empresarial (protege o patrimônio)
+    - especialista genuíno vs falso especialista
+
+target_audience:
+  name: Empresários em crescimento
+  age: 35-60
+  situation: Empresários que faturam acima de R$ 1M/ano, pagam imposto demais, não têm governança
+  psychology: Querem crescer mas travam por medo de imposto, falta de gestão, ou equipe fraca
+  test: "O Teste dos 3 Pilares - a empresa está saudável nos 3 pilares ou tem pilar rachado?"
+
+products:
+  - name: Consultoria Grupo GROW
+    type: paid
+    description: Consultoria completa nos 3 pilares para empresários
+  - name: Modelagem Tributária
+    type: paid
+    description: Reestruturação societária e planejamento tributário
+  - name: Formação de Equipe
+    type: paid
+    description: Governança, processos e desenvolvimento de lideranças
+
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+tags:
+  - tributário
+  - contabilidade
+  - planejamento-tributário
+  - gestão-financeira
+  - formação-equipe
+  - consultoria-empresarial
+  - método-3-pilares
+  - grupo-grow
