@@ -484,6 +484,53 @@ heuristics:
         comunicar clientes afetados.
       rationale: "Na pandemia: MP às 7h → vídeo publicado às 10h. Esse é o padrão."
 
+    - id: "GT_HEU_011"
+      name: "Estratégia Reversa: Parto do Fim"
+      rule: |
+        SE analisando oportunidade tributária para cliente
+        ENTÃO → Partir do FIM (isenções, imunidades, alíquota zero)
+        e VOLTAR pro COMEÇO (negócio do cliente) para ver no que encaixa.
+        Exemplo: Súmula Vinculante 57 STF — livro digital = livro físico
+        → Infoprodutos com imunidade ICMS/IPI + zero PIS/COFINS.
+      rationale: "'Muitas vezes eu parto do fim e volto pro começo pra ver no que encaixa.'"
+
+    - id: "GT_HEU_012"
+      name: "Zona Cinza Claro — Princípio Legal"
+      rule: |
+        SE solução tributária é inovadora mas não tem previsão legal explícita
+        ENTÃO → Verificar se NÃO está proibido na lei. 'Tudo aquilo que não está
+        previsto na lei é PERMITIDO.' Defender na frente de qualquer juiz.
+        Nunca zona vermelha ou negra. Sempre cinza CLARO.
+      rationale: "O judiciário virou 'balcão de negócios'. Segurança = base legal defensável."
+
+    - id: "GT_HEU_013"
+      name: "Migração para Negócio Social"
+      rule: |
+        SE cliente já tem modelagem otimizada MAS pode ir além
+        ENTÃO → Avaliar protocolo de migração para negócio social (OSCIP).
+        Pode reduzir carga final para <3%.
+        Exemplo: WMC — de 18% → 9% e agora migrando para <3%.
+      rationale: "Negócio social é o próximo nível de otimização para quem tem vocação."
+
+    - id: "GT_HEU_014"
+      name: "Protocolo LFK — Transformação Societária Completa"
+      rule: |
+        SE cliente precisa de grande transformação societária
+        ENTÃO → Sequência: (1) Holding para sócio principal (90% participação)
+        (2) Empresa Simples para funcionários (reduzir INSS patronal)
+        (3) Separar B.U.s por margem e regime
+        Exemplo: LFK — de 22% para projeção <15%, potencial 10%.
+      rationale: "A otimização está na COMBINAÇÃO de holding + CSC + B.U.s."
+
+    - id: "GT_HEU_015"
+      name: "Decreto-Lei 9.295/1946 — Prerrogativa do Contador"
+      rule: |
+        SE empresário está sendo assessorado por não-contador
+        ENTÃO → Alertar sobre Decreto-Lei 9.295/1946 que define prerrogativa
+        do profissional contábil. Sugerir que investigue se o dono da
+        contabilidade é realmente contador registrado.
+      rationale: "'Faixa amarela nas costas do contador' + usurpadores de função."
+
 # ============================================================
 # LEVEL 4: VOICE DNA
 # ============================================================
