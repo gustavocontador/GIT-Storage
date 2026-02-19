@@ -1,0 +1,45 @@
+# wf-licenciamento-ambiental.yaml
+name: "Licenciamento Ambiental (LP → LI → LO)"
+id: wf-licenciamento-ambiental
+owner: licencas-ambientais-agent
+duration_days: 180
+complexity: high
+
+description: "Licenciamento ambiental trifásico para indústrias"
+
+phases:
+  - phase: LP
+    name: "Licença Prévia"
+    duration_days: 90
+    objective: "Viabilidade ambiental localização"
+    steps:
+      - "Protocolar EIA/RIMA ou RCA"
+      - "Análise técnica órgão (CETESB/INEA)"
+      - "Vistoria (se necessário)"
+    output: "LP aprovada (validade 2 anos)"
+
+  - phase: LI
+    name: "Licença Instalação"
+    duration_days: 60
+    objective: "Autorizar construção"
+    dependencies: ["LP válida"]
+    steps:
+      - "Projeto executivo detalhado"
+      - "Plano gestão resíduos"
+      - "ART engenheiro obra"
+    output: "LI emitida (validade 2 anos)"
+
+  - phase: LO
+    name: "Licença Operação"
+    duration_days: 30
+    objective: "Autorizar funcionamento"
+    dependencies: ["Obra concluída"]
+    steps:
+      - "Vistoria órgão (verifica instalações)"
+      - "Laudo operação tratamento efluentes"
+      - "AVCB válido"
+    output: "LO emitida (validade 2-5 anos, renovável)"
+
+costs: "R$ 5.000 - R$ 50.000"
+coordination: "PARALELO com MAPA (cervejarias)"
+critical: "LO vence → renovar 120 dias antes"

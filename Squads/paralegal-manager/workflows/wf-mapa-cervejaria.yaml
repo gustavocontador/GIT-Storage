@@ -1,0 +1,297 @@
+# wf-mapa-cervejaria.yaml
+# Workflow completo: Registro MAPA para cervejarias
+# Owner: mapa-licencas-agent
+# Duration: 180 dias (6 meses)
+# Criticality: HIGH (processo #1 mais problemático do Grupo GROW)
+
+name: "MAPA Cervejaria - Registro Completo"
+id: wf-mapa-cervejaria
+version: "1.0.0"
+owner: mapa-licencas-agent
+type: paralegal-workflow
+duration_days: 180
+complexity: high
+
+description: |
+  Workflow completo para registro de cervejaria no MAPA (Ministério da Agricultura).
+  11 steps sequenciais + paralelo com licença ambiental (coordenação crítica).
+  Baseado em dezenas de processos reais do Grupo GROW.
+
+prerequisites:
+  - empresa_registrada: "Empresa registrada na Junta Comercial (CNPJ ativo)"
+  - cnae: "CNAE 1113-5/01 (Fabricação de cervejas e chopes)"
+  - imovel: "Imóvel identificado (próprio ou alugado)"
+  - capital: "Capital social mínimo R$ 50.000"
+
+coordination:
+  critical_parallel: |
+    EXECUTAR EM PARALELO (não sequencial):
+    - Workflow MAPA (este)
+    - Workflow Licença Ambiental (wf-licenca-ambiental.yaml)
+
+    ECONOMIA: 3-6 meses executando paralelo vs sequencial.
+    AGENTE COORDENADOR: licencas-ambientais-agent
+
+phases:
+  - phase: 1
+    name: "Documentação Inicial"
+    duration_days: 30
+    steps:
+      - id: step_1
+        name: "Contrato Social + Registro Junta"
+        responsible: junta-comercial-agent
+        duration_days: 5
+        actions:
+          - "Validar contrato social: objeto social inclui fabricação cerveja"
+          - "CNAE correto: 1113-5/01"
+          - "Capital social: mínimo R$ 50k (recomendado R$ 100k+)"
+          - "Registro Junta Comercial: NIRE obtido"
+        output: "Contrato social registrado + NIRE"
+        blockers:
+          - "Empresa não registrada → coordenar com junta-comercial-agent"
+
+      - id: step_2
+        name: "Responsável Técnico (Engenheiro Alimentos)"
+        responsible: mapa-licencas-agent
+        duration_days: 10
+        actions:
+          - "Contratar engenheiro de alimentos (registro CREA/CFT ativo)"
+          - "ART (Anotação Responsabilidade Técnica) ou RRT"
+          - "RT assina documentos técnicos MAPA"
+        output: "ART/RRT + contrato RT"
+        cost: "R$ 2.000 - R$ 5.000/mês (honorários RT)"
+        critical: |
+          SEM RT habilitado = pedido MAPA negado.
+          RT deve acompanhar TODO o processo (vistorias, ajustes).
+
+      - id: step_3
+        name: "Memorial Descritivo Fábrica"
+        responsible: mapa-licencas-agent
+        responsible_external: "Engenheiro Alimentos (RT)"
+        duration_days: 15
+        actions:
+          - "Planta baixa fábrica (layout equipamentos)"
+          - "Fluxograma produção (malte → mostura → fervura → fermentação → envase)"
+          - "Capacidade produção (litros/mês)"
+          - "Equipamentos (brassagem, fermentadores, envase)"
+          - "Manual Boas Práticas Fabricação (BPF)"
+        output: "Memorial descritivo completo + ART engenheiro"
+        dependencies:
+          - "Imóvel definido (endereço, metragem)"
+          - "Equipamentos especificados (mesmo que não comprados ainda)"
+
+  - phase: 2
+    name: "Licenças Prévias (Paralelas)"
+    duration_days: 60
+    parallel_execution: true
+    note: |
+      Steps 4-6 executam EM PARALELO com licença ambiental.
+      Coordenar com licencas-ambientais-agent.
+
+    steps:
+      - id: step_4
+        name: "Alvará Sanitário (VISA)"
+        responsible: alvara-licencas-agent
+        duration_days: 45
+        actions:
+          - "Adequar imóvel (piso lavável, paredes lisas, iluminação)"
+          - "Protocolar pedido VISA municipal"
+          - "Vistoria VISA (agendada após protocolo)"
+          - "SE aprovado → Alvará Sanitário emitido"
+        output: "Alvará Sanitário válido"
+        cost: "R$ 500 - R$ 2.000 (taxa + adequações)"
+        blockers:
+          - "Imóvel não adequado → vistoria reprova → 30-60d extras"
+
+      - id: step_5
+        name: "Alvará Funcionamento Municipal"
+        responsible: alvara-licencas-agent
+        duration_days: 30
+        dependencies: [step_4]
+        actions:
+          - "Protocolar alvará funcionamento (prefeitura)"
+          - "Zoneamento: validar endereço permite indústria"
+          - "Aguardar análise técnica prefeitura"
+        output: "Alvará funcionamento emitido"
+        cost: "R$ 500 - R$ 3.000 (varia município)"
+
+      - id: step_6
+        name: "Licença Ambiental (LP → LI → LO)"
+        responsible: licencas-ambientais-agent
+        duration_days: 180
+        parallel: true
+        note: |
+          EXECUTAR EM PARALELO COM MAPA (não esperar MAPA terminar).
+          Ver wf-licenca-ambiental.yaml para detalhes.
+
+          Timeline:
+          - LP (Licença Prévia): 60-90 dias
+          - LI (Licença Instalação): 60-90 dias
+          - LO (Licença Operação): 30-60 dias
+          TOTAL: 150-240 dias (overlap com MAPA)
+
+        output: "LO (Licença Operação) emitida"
+        cost: "R$ 5.000 - R$ 20.000 (estudos + taxas)"
+        critical: |
+          Licença ambiental PODE SER MAIS LONGA QUE MAPA.
+          Por isso PARALELO é obrigatório.
+
+  - phase: 3
+    name: "Protocolo MAPA"
+    duration_days: 60
+    steps:
+      - id: step_7
+        name: "Cadastro SIPEAGRO"
+        responsible: mapa-licencas-agent
+        duration_days: 5
+        actions:
+          - "Acessar sistema SIPEAGRO (MAPA)"
+          - "Criar usuário empresa (certificado digital obrigatório)"
+          - "Preencher cadastro estabelecimento"
+        output: "Cadastro SIPEAGRO ativo"
+        tech_requirement: "Certificado digital A1/A3 (via Lexio)"
+
+      - id: step_8
+        name: "Upload Documentação SIPEAGRO"
+        responsible: mapa-licencas-agent
+        duration_days: 10
+        dependencies: [step_1, step_2, step_3, step_4, step_5, step_6, step_7]
+        actions:
+          - "Upload contrato social + NIRE"
+          - "Upload ART/RRT engenheiro"
+          - "Upload memorial descritivo + plantas"
+          - "Upload alvará sanitário"
+          - "Upload alvará funcionamento"
+          - "Upload licença ambiental (LO)"
+          - "Preencher formulários específicos MAPA"
+        output: "Processo MAPA protocolado"
+        validation: |
+          VALIDAR TODOS DOCS ANTES UPLOAD:
+          - PDFs legíveis (não fotos distorcidas)
+          - Assinaturas digitais válidas
+          - Datas atualizadas (certidões < 90 dias)
+
+      - id: step_9
+        name: "Análise Documental MAPA"
+        responsible: mapa-licencas-agent
+        duration_days: 45
+        note: "BLACK BOX - MAPA analisa internamente"
+        possible_outcomes:
+          - outcome_1:
+              status: "Aprovado sem pendências"
+              next: "Avançar step_10"
+          - outcome_2:
+              status: "Pendências documentais"
+              action: "Complementar docs + aguardar nova análise (10-20 dias extras)"
+          - outcome_3:
+              status: "Rejeitado (erro grave)"
+              action: "Corrigir + reprotocolar (pode adicionar 60+ dias)"
+        output: "Análise concluída: aprovado ou pendências"
+
+  - phase: 4
+    name: "Finalização"
+    duration_days: 30
+    steps:
+      - id: step_10
+        name: "Vistoria MAPA (Presencial)"
+        responsible: mapa-licencas-agent
+        responsible_external: "Fiscal MAPA"
+        duration_days: 20
+        dependencies: [step_9]
+        actions:
+          - "MAPA agenda vistoria in loco (pode demorar 10-30 dias agendar)"
+          - "Fiscal verifica: equipamentos, higiene, fluxo produção, BPF"
+          - "RT (engenheiro) DEVE estar presente"
+          - "SE aprovado → Relatório vistoria positivo"
+          - "SE reprovado → Listar não-conformidades + nova vistoria (30-60d)"
+        output: "Relatório vistoria aprovado"
+        critical: |
+          Fábrica DEVE ESTAR 100% PRONTA para vistoria:
+          - Equipamentos instalados e funcionando
+          - Higienização impecável
+          - Manual BPF visível e seguido
+          - RT presente para explicar processos
+
+      - id: step_11
+        name: "Emissão Registro MAPA"
+        responsible: mapa-licencas-agent
+        duration_days: 10
+        dependencies: [step_10]
+        actions:
+          - "MAPA emite SIF (Serviço Inspeção Federal) ou SIE (Estadual)"
+          - "Número registro: formato XXX/YYYY (ex: 123/2025)"
+          - "Certificado registro (PDF + físico via correios)"
+        output: "Registro MAPA ativo - PODE PRODUZIR E VENDER"
+        celebration: |
+          🎉 CERVEJARIA OFICIALMENTE REGISTRADA!
+          Pode iniciar produção comercial.
+
+timeline_summary:
+  optimistic: "150 dias (5 meses) - tudo OK primeira tentativa"
+  realistic: "180 dias (6 meses) - 1-2 rodadas pendências"
+  pessimistic: "240 dias (8 meses) - vistoria reprova + retrabalho"
+
+costs_summary:
+  rt_honorarios: "R$ 12.000 - R$ 30.000 (6 meses × R$ 2k-5k/mês)"
+  memorial_descritivo: "R$ 3.000 - R$ 5.000"
+  alvara_sanitario: "R$ 500 - R$ 2.000"
+  alvara_funcionamento: "R$ 500 - R$ 3.000"
+  licenca_ambiental: "R$ 5.000 - R$ 20.000"
+  taxas_mapa: "R$ 1.000 - R$ 3.000"
+  adequacao_imovel: "R$ 10.000 - R$ 50.000 (varia muito)"
+  total_estimado: "R$ 32.000 - R$ 113.000"
+
+risks:
+  risk_1:
+    name: "Vistoria MAPA reprova"
+    probability: "30%"
+    impact: "HIGH (+30-60 dias)"
+    mitigation: "RT experiente + checklist pré-vistoria interna"
+
+  risk_2:
+    name: "Licença ambiental atrasa (mais que MAPA)"
+    probability: "40%"
+    impact: "CRITICAL (bloqueia step_8)"
+    mitigation: "PARALELO desde day 1 (coordenar com licencas-ambientais-agent)"
+
+  risk_3:
+    name: "Imóvel inadequado (zoneamento/estrutura)"
+    probability: "20%"
+    impact: "CRITICAL (precisa mudar imóvel, restart)"
+    mitigation: "Validar zoneamento + estrutura ANTES step_1"
+
+success_metrics:
+  - "Registro MAPA emitido em < 180 dias (target)"
+  - "Zero retrabalho documental (docs corretos primeira vez)"
+  - "Vistoria MAPA aprovada primeira tentativa"
+  - "Licença ambiental NÃO bloqueia MAPA (paralelo OK)"
+
+integrations:
+  gestta:
+    sync: "Tarefas MAPA aparecem no Gestta (sistema contábil)"
+    bi_directional: true
+
+  onvio:
+    comunicacao: "Updates semanais cliente via WhatsApp (segundas 9h)"
+    template: |
+      📊 MAPA Cervejaria - Status Semana
+      Etapa: [X] de 11 ([%] concluído)
+      Esta semana: [Ação realizada]
+      Próxima semana: [Próxima ação]
+      Prazo estimado conclusão: [DD/MM/AAAA]
+
+  lexio:
+    assinatura: "Documentos assinados digitalmente (memorial, contratos)"
+
+alerts:
+  - trigger: "step_9 pendências detectadas"
+    action: "Alerta paralegal + RT: resolver pendências < 7 dias"
+    priority: HIGH
+
+  - trigger: "step_10 vistoria agendada"
+    action: "Alerta 7 dias antes: checklist pré-vistoria"
+    priority: CRITICAL
+
+  - trigger: "Licença ambiental > 150 dias E MAPA step_7"
+    action: "Alerta: licença pode bloquear MAPA, escalar"
+    priority: HIGH

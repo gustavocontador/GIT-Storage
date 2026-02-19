@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "description": "Mapeamento CNAEs → Licenças necessárias (alvarás, sanitário, ambiental)",
+    "version": "1.0.0",
+    "last_updated": "2026-02-19"
+  },
+  "cnaes": [
+    {
+      "codigo": "1113-5/01",
+      "descricao": "Fabricação de cervejas e chopes",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "MAPA",
+          "descricao": "Registro Ministério Agricultura (SIF/SIE)",
+          "prazo_dias": 180,
+          "workflow": "wf-mapa-cervejaria.yaml",
+          "agent": "mapa-licencas-agent"
+        },
+        {
+          "tipo": "Licença Ambiental",
+          "descricao": "LP → LI → LO (órgão estadual)",
+          "prazo_dias": 180,
+          "workflow": "wf-licenciamento-ambiental.yaml",
+          "agent": "licencas-ambientais-agent",
+          "nota": "EXECUTAR EM PARALELO COM MAPA"
+        },
+        {
+          "tipo": "Alvará Sanitário",
+          "descricao": "VISA municipal",
+          "prazo_dias": 60,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal",
+          "prazo_dias": 30,
+          "agent": "alvara-licencas-agent"
+        }
+      ],
+      "custo_estimado": "R$ 50.000 - R$ 150.000",
+      "complexidade": "MUITO ALTA"
+    },
+    {
+      "codigo": "5611-2/01",
+      "descricao": "Restaurantes e similares",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "Alvará Sanitário",
+          "descricao": "VISA municipal (obrigatório)",
+          "prazo_dias": 60,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal",
+          "prazo_dias": 30,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "AVCB",
+          "descricao": "Corpo de Bombeiros (se > 200m²)",
+          "prazo_dias": 60,
+          "condicional": "metragem > 200m²"
+        }
+      ],
+      "custo_estimado": "R$ 2.000 - R$ 10.000",
+      "complexidade": "MÉDIA"
+    },
+    {
+      "codigo": "8630-5/01",
+      "descricao": "Atividade médica ambulatorial (clínicas)",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "Alvará Sanitário",
+          "descricao": "VISA municipal + RRT médico responsável",
+          "prazo_dias": 60,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal",
+          "prazo_dias": 30,
+          "agent": "alvara-licencas-agent"
+        }
+      ],
+      "requisitos_especiais": [
+        "Responsável Técnico: médico com CRM ativo",
+        "RRT assinado",
+        "Registro Conselho Regional Medicina"
+      ],
+      "custo_estimado": "R$ 2.000 - R$ 8.000",
+      "complexidade": "MÉDIA"
+    },
+    {
+      "codigo": "4771-7/01",
+      "descricao": "Comércio varejista de produtos farmacêuticos",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "Alvará Sanitário",
+          "descricao": "VISA + RRT farmacêutico responsável",
+          "prazo_dias": 60,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal",
+          "prazo_dias": 30,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Autorização ANVISA",
+          "descricao": "Agência Nacional Vigilância Sanitária",
+          "prazo_dias": 90,
+          "nota": "Farmácias exigem autorização federal ANVISA"
+        }
+      ],
+      "requisitos_especiais": [
+        "Responsável Técnico: farmacêutico com CRF ativo",
+        "Controle medicamentos controlados",
+        "Sistema rastreabilidade SNGPC"
+      ],
+      "custo_estimado": "R$ 5.000 - R$ 20.000",
+      "complexidade": "ALTA"
+    },
+    {
+      "codigo": "6201-5/00",
+      "descricao": "Desenvolvimento de programas de computador (software house)",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal (simplificado)",
+          "prazo_dias": 15,
+          "agent": "alvara-licencas-agent"
+        }
+      ],
+      "nota": "Atividade baixo impacto: apenas alvará funcionamento",
+      "custo_estimado": "R$ 200 - R$ 1.000",
+      "complexidade": "BAIXA"
+    },
+    {
+      "codigo": "4120-4/00",
+      "descricao": "Construção de edifícios",
+      "licencas_obrigatorias": [
+        {
+          "tipo": "Alvará Funcionamento",
+          "descricao": "Prefeitura municipal",
+          "prazo_dias": 30,
+          "agent": "alvara-licencas-agent"
+        },
+        {
+          "tipo": "Licença Ambiental",
+          "descricao": "Se obras alto impacto (> 5.000m²)",
+          "prazo_dias": 180,
+          "condicional": "metragem_obra > 5000",
+          "agent": "licencas-ambientais-agent"
+        }
+      ],
+      "requisitos_especiais": [
+        "Responsável Técnico: engenheiro civil (CREA)",
+        "ART por obra executada"
+      ],
+      "custo_estimado": "R$ 1.000 - R$ 30.000",
+      "complexidade": "MÉDIA-ALTA"
+    }
+  ],
+  "notas_uso": {
+    "consulta": "alvara-licencas-agent consulta este arquivo no step 'Análise Viabilidade'",
+    "routing": "paralegal-coordinator usa para rotear processos para agentes corretos",
+    "alertas": "Sistema alerta cliente: 'Seu CNAE exige licenças X, Y, Z (prazo N dias, custo R$)'"
+  }
+}

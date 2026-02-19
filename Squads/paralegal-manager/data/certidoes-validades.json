@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "description": "Validades de certidões e onde emitir",
+    "version": "1.0.0",
+    "last_updated": "2026-02-19",
+    "agent": "certidoes-compliance-agent"
+  },
+  "certidoes_federais": [
+    {
+      "nome": "CND Receita Federal",
+      "url": "https://servicos.receita.fazenda.gov.br",
+      "validade_dias": 180,
+      "cobre": ["IR PJ", "CSLL", "PIS", "COFINS", "IPI"],
+      "requisitos": ["Certificado digital A1/A3", "Declarações em dia"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito"
+    },
+    {
+      "nome": "CND PGFN (Dívida Ativa União)",
+      "url": "https://www.gov.br/pgfn",
+      "validade_dias": 180,
+      "cobre": ["Dívidas inscritas Dívida Ativa União"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito"
+    },
+    {
+      "nome": "CRF FGTS",
+      "url": "https://consulta-crf.caixa.gov.br",
+      "validade_dias": 30,
+      "cobre": ["FGTS funcionários"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito",
+      "alerta": "VALIDADE CURTA (30 dias) - monitorar mensalmente"
+    },
+    {
+      "nome": "CNDT (Certidão Negativa Débitos Trabalhistas)",
+      "url": "https://www.tst.jus.br/certidao",
+      "validade_dias": 180,
+      "cobre": ["Débitos trabalhistas Justiça do Trabalho"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito"
+    }
+  ],
+  "certidoes_estaduais": [
+    {
+      "nome": "CND Dívida Ativa Estadual (SP)",
+      "url": "https://www.pfe.fazenda.sp.gov.br",
+      "validade_dias": 180,
+      "cobre": ["ICMS", "IPVA", "ITCMD", "Multas estaduais"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito",
+      "estado": "SP"
+    },
+    {
+      "nome": "CND Dívida Ativa Estadual (RJ)",
+      "url": "https://www.fazenda.rj.gov.br",
+      "validade_dias": 180,
+      "online": true,
+      "estado": "RJ"
+    }
+  ],
+  "certidoes_municipais": [
+    {
+      "nome": "CND Tributos Municipais (São Paulo)",
+      "url": "https://www.prefeitura.sp.gov.br",
+      "validade_dias": 180,
+      "cobre": ["ISS", "IPTU", "Taxas municipais"],
+      "online": true,
+      "instantaneo": true,
+      "custo": "Gratuito",
+      "cidade": "São Paulo"
+    }
+  ],
+  "certidoes_cartorio": [
+    {
+      "nome": "Certidão Nascimento",
+      "onde": "Cartório Registro Civil (cidade nascimento)",
+      "validade": "Permanente (mas exigem < 90 dias emissão)",
+      "online": "Alguns cartórios via https://www.registrocivil.org.br",
+      "custo": "R$ 40 - R$ 80",
+      "prazo": "Instantâneo (online) ou 2-5 dias (presencial)"
+    },
+    {
+      "nome": "Certidão Casamento",
+      "onde": "Cartório onde casou",
+      "validade": "Permanente (mas exigem < 90 dias)",
+      "online": "Alguns cartórios",
+      "custo": "R$ 40 - R$ 80",
+      "nota": "Se casado regime comunhão: cônjuge DEVE assinar docs empresa"
+    },
+    {
+      "nome": "Certidão Óbito",
+      "onde": "Cartório óbito",
+      "validade": "Permanente",
+      "uso": "Inventário, sucessão, holding (se viúvo)",
+      "custo": "R$ 40 - R$ 80"
+    },
+    {
+      "nome": "Certidão Matrícula Imóvel (20 anos)",
+      "onde": "Cartório Registro Imóveis (por matrícula)",
+      "validade_dias": 90,
+      "uso": "Holding familiar, garantia real",
+      "custo": "R$ 50 - R$ 200",
+      "prazo": "Instantâneo (presencial) ou 1-3 dias (online)"
+    }
+  ],
+  "pacotes_processo": {
+    "abertura_empresa": {
+      "certidoes": [
+        "CND Receita Federal",
+        "CND PGFN",
+        "CND Estadual",
+        "CND Municipal",
+        "Certidão Nascimento sócios",
+        "Certidão Casamento sócios (se casados)"
+      ],
+      "prazo_total_dias": 1,
+      "custo_estimado": "R$ 0-160 (certidões cartório pagas)"
+    },
+    "holding_familiar": {
+      "certidoes": [
+        "Todas de abertura empresa",
+        "Certidão Matrícula Imóveis (20 anos)",
+        "Certidão Óbito (se viúvo)",
+        "CND INSS (sócios PF)"
+      ],
+      "prazo_total_dias": 5,
+      "custo_estimado": "R$ 500-3.000 (muitas certidões cartório)",
+      "multiplicador": "N imóveis × 2 certidões (matrícula + ônus)"
+    },
+    "licitacao": {
+      "certidoes": [
+        "CND Receita Federal",
+        "CND PGFN",
+        "CRF FGTS",
+        "CNDT Trabalhista",
+        "CND Estadual",
+        "CND Municipal"
+      ],
+      "validade_maxima_dias": 90,
+      "nota": "Emitir PRÓXIMO da data licitação (validades curtas)",
+      "prazo_total_dias": 1,
+      "custo_estimado": "Gratuito"
+    }
+  },
+  "alertas_sistema": {
+    "amarelo": {
+      "trigger": "Certidão vence em < 30 dias",
+      "acao": "Renovar proativamente"
+    },
+    "vermelho": {
+      "trigger": "Certidão vence em < 7 dias",
+      "acao": "URGENTE renovar"
+    },
+    "critico": {
+      "trigger": "Certidão vencida",
+      "acao": "Processo travado até renovação"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+# wf-alvara-funcionamento.yaml
+name: "Alvará de Funcionamento"
+id: wf-alvara-funcionamento
+owner: alvara-licencas-agent
+duration_days: 30
+complexity: medium
+
+description: "Obtenção alvará funcionamento municipal"
+
+steps:
+  - id: step_1
+    name: "Análise Viabilidade"
+    actions:
+      - "Zoneamento: endereço permite atividade?"
+      - "Licenças específicas por CNAE"
+
+  - id: step_2
+    name: "Coleta Documental"
+    items:
+      - "Contrato Social + CNPJ"
+      - "Inscrição Municipal"
+      - "IPTU imóvel"
+      - "Contrato locação OU escritura"
+
+  - id: step_3
+    name: "Protocolo Prefeitura"
+    action: "Preencher formulário + anexar docs + pagar taxa"
+
+  - id: step_4
+    name: "Análise Técnica"
+    duration_days: 15-45
+    note: "BLACK BOX - depende município"
+
+  - id: step_5
+    name: "Emissão Alvará"
+    output: "Alvará válido (renovação anual)"
+
+costs: "R$ 200 - R$ 5.000 (varia município)"
+validade: "1 ano (renovação obrigatória)"

@@ -1,0 +1,28 @@
+# wf-alteracao-contratual.yaml
+name: "Alteração Contratual"
+id: wf-alteracao-contratual
+owner: junta-comercial-agent
+duration_days: 3
+complexity: low
+
+description: "Alteração contratual (sócios, capital, endereço, CNAEs)"
+
+steps:
+  - id: step_1
+    name: "Validar Cláusulas Contratuais"
+    action: "Verificar se alteração exige aprovação unânime sócios"
+
+  - id: step_2
+    name: "Gerar Alteração Contratual"
+    action: "Template alteração + dados específicos"
+
+  - id: step_3
+    name: "Registrar Junta Comercial"
+    action: "Protocolar via REI + aguardar análise"
+    duration_days: 2
+
+  - id: step_4
+    name: "Atualizar CNPJ"
+    action: "Sync automático REI → Receita Federal"
+
+costs: "R$ 150 - R$ 300"

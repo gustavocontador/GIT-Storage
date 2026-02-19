@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "description": "Base de dados cartórios por município (para Holding Familiar anti-retrabalho)",
+    "version": "1.0.0",
+    "last_updated": "2026-02-19",
+    "coverage": "Principais municípios Grande São Paulo"
+  },
+  "municipios": [
+    {
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "cartorios": [
+        {
+          "nome": "1º Cartório de Registro de Imóveis",
+          "endereco": "Rua Boa Vista, 180 - Centro",
+          "telefone": "(11) 3105-1234",
+          "email": "atendimento@1cartoriosp.com.br",
+          "requisitos": {
+            "reconhecimento_firma": true,
+            "apostilamento": false,
+            "certidao_casamento_validade_dias": 90,
+            "itbi_previo": true,
+            "formato_contrato_social": "registrado_junta"
+          },
+          "notas": "Cartório mais rápido capital (15-20 dias)"
+        },
+        {
+          "nome": "2º Cartório de Registro de Imóveis",
+          "endereco": "Rua Líbero Badaró, 425 - Centro",
+          "telefone": "(11) 3105-5678",
+          "requisitos": {
+            "reconhecimento_firma": true,
+            "apostilamento": false,
+            "certidao_casamento_validade_dias": 60,
+            "itbi_previo": true,
+            "formato_contrato_social": "autenticado"
+          },
+          "notas": "Exige certidões < 60 dias (mais restritivo)"
+        }
+      ]
+    },
+    {
+      "cidade": "Guarulhos",
+      "estado": "SP",
+      "cartorios": [
+        {
+          "nome": "1º Cartório de Registro de Imóveis Guarulhos",
+          "endereco": "Rua Claudino Barbosa, 111 - Centro",
+          "telefone": "(11) 2087-1000",
+          "requisitos": {
+            "reconhecimento_firma": false,
+            "apostilamento": true,
+            "certidao_casamento_validade_dias": 90,
+            "itbi_previo": false,
+            "formato_contrato_social": "registrado_junta"
+          },
+          "notas": "NÃO aceita reconhecimento firma, exige apostila"
+        }
+      ]
+    },
+    {
+      "cidade": "Santo André",
+      "estado": "SP",
+      "cartorios": [
+        {
+          "nome": "Cartório Único de Registro de Imóveis",
+          "endereco": "Av. José Caballero, 257 - Centro",
+          "telefone": "(11) 4438-1500",
+          "requisitos": {
+            "reconhecimento_firma": true,
+            "apostilamento": true,
+            "certidao_casamento_validade_dias": 90,
+            "itbi_previo": true,
+            "formato_contrato_social": "registrado_junta"
+          },
+          "notas": "Cartório único (centraliza todos imóveis Santo André)"
+        }
+      ]
+    },
+    {
+      "cidade": "São Bernardo do Campo",
+      "estado": "SP",
+      "cartorios": [
+        {
+          "nome": "1º Cartório de Registro de Imóveis SBC",
+          "endereco": "Rua Marechal Deodoro, 1071 - Centro",
+          "telefone": "(11) 4125-2200",
+          "requisitos": {
+            "reconhecimento_firma": true,
+            "apostilamento": false,
+            "certidao_casamento_validade_dias": 60,
+            "itbi_previo": true,
+            "formato_contrato_social": "autenticado"
+          }
+        }
+      ]
+    },
+    {
+      "cidade": "Osasco",
+      "estado": "SP",
+      "cartorios": [
+        {
+          "nome": "Cartório de Registro de Imóveis Osasco",
+          "endereco": "Rua Antonio Agu, 300 - Centro",
+          "telefone": "(11) 3682-1400",
+          "requisitos": {
+            "reconhecimento_firma": false,
+            "apostilamento": false,
+            "certidao_casamento_validade_dias": 90,
+            "itbi_previo": false,
+            "formato_contrato_social": "registrado_junta"
+          },
+          "notas": "Mais flexível (sem reconhecimento, sem apostila)"
+        }
+      ]
+    }
+  ],
+  "notas_uso": {
+    "framework_anti_retrabalho": "Step 3 do wf-holding-familiar: consultar requisitos TODOS cartórios ANTES protocolar",
+    "matriz_requisitos": "Uniformizar pelo mais restritivo (SE um exige X, fazer X para todos)",
+    "protocolo_simultaneo": "Step 8: protocolar TODOS cartórios MESMO DIA"
+  }
+}

@@ -1,0 +1,57 @@
+# wf-comunicacao-semanal.yaml
+# Workflow: Comunicação Semanal Automática (Onvio WhatsApp)
+# Owner: paralegal-chief-of-staff
+# Trigger: Toda segunda-feira 9h (cron)
+# Duration: 5-10 minutos (background job)
+
+name: "Comunicação Semanal Automática"
+id: wf-comunicacao-semanal
+version: "1.0.0"
+owner: paralegal-chief-of-staff
+type: automation-workflow
+trigger: "cron:0 9 * * 1"  # Segunda 9h
+duration_minutes: 10
+
+description: |
+  Workflow automático que envia mensagem WhatsApp para todos clientes
+  com processos ativos, informando status, pendências e próximas etapas.
+
+steps:
+  - id: step_1
+    name: "Buscar Processos Ativos"
+    action: "Query database: status IN ['pending', 'in_progress']"
+    output: "Lista processos ativos com clientes"
+
+  - id: step_2
+    name: "Gerar Mensagem por Cliente"
+    action: "Template engine + dados processo"
+    template: |
+      📊 STATUS GERAL
+      - Processo: {process_name} - Etapa {current_step} de {total_steps}
+      - Prazo estimado: {deadline}
+
+      ⚠️ PENDÊNCIAS
+      {pending_items}
+
+      📅 PRÓXIMAS ETAPAS
+      - Esta semana: {this_week_action}
+      - Próxima semana: {next_week_action}
+
+      🎯 COMPROMETIMENTO
+      Estamos comprometidos em concluir no prazo.
+
+  - id: step_3
+    name: "Enviar via Onvio WhatsApp"
+    action: "Onvio API: send message"
+    rate_limit: "1 mensagem / 5 segundos (evitar block)"
+    retry: "3x com backoff exponencial"
+
+  - id: step_4
+    name: "Log Envios"
+    action: "Registrar: cliente, status (sucesso/erro), timestamp"
+    output: "Dashboard logs visível em paralegal-manager"
+
+metrics:
+  clientes_por_execucao: "~50"
+  duracao_total: "5-10 minutos (50 × 5s + overhead)"
+  success_rate_target: "> 95%"

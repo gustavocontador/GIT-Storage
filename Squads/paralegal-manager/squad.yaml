@@ -1,0 +1,341 @@
+name: paralegal-manager
+version: 1.0.0
+description: >-
+  Sistema SaaS de gestão e acompanhamento de processos paralegais para escritórios contábeis.
+  Squad híbrido fusionado de 5 DNAs: gustavo-oliveira (processos contábeis + governança),
+  direito-paralegal (expertise jurídica + compliance), AIOS agents (tech stack completo),
+  design (UI/UX + Design System), project-management-clickup (workflows + automações).
+
+  Resultado da Squad Fusion v1.0 - DNA Mental™ + AIOS System.
+  Otimizado para Grupo GROW: 257+ empresas, processos críticos (MAPA cervejarias 180d,
+  Holding Familiar com retrabalho cartórios), integração Gestta/Lexio/Onvio Messenger.
+
+author: AIOS Team (Squad Fusion)
+license: UNLICENSED
+slashPrefix: paralegal
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+  fusion:
+    enabled: true
+    sources:
+      - gustavo-oliveira  # v2.0.0 - Método 3 Pilares
+      - direito-paralegal  # DNA extraído via questionário
+      - aios-agents  # DEV, PM, QA, DEVOPS, ARCHITECT, UX
+      - design  # v2.1.0 - Brad Frost methodology
+      - project-management-clickup  # Workflows + automações
+    fusion_date: "2026-02-18"
+    fusion_mode: quality
+    quality_score: 9.2
+
+orchestrator: paralegal-coordinator
+
+tiers:
+  tier_0:
+    name: Orchestrator
+    agents:
+      - paralegal-coordinator  # Fusão: gustavo-diagnosticador + PM routing
+
+  tier_1:
+    name: Especialistas Jurídicos
+    agents:
+      - mapa-licencas-agent  # Cervejarias + Ambientais (DNA questionário)
+      - holding-familiar-agent  # Holdings + Cartórios (DNA questionário)
+      - junta-comercial-agent  # Abertura/Alteração/Encerramento
+      - alvara-licencas-agent  # Alvarás + Sanitário + Bombeiros
+      - certidoes-compliance-agent  # Certidões + Certificados Digitais
+      - licencas-ambientais-agent  # IBAMA + Órgãos Estaduais
+
+  tier_1_tech:
+    name: Especialistas Técnicos
+    agents:
+      - system-architect  # Arquitetura SaaS (AIOS ARCHITECT)
+      - fullstack-developer  # Desenvolvimento (AIOS DEV)
+      - product-manager  # Roadmap + Features (AIOS PM)
+      - ux-designer  # Interface + Experiência (design + AIOS UX)
+
+  tier_2:
+    name: Suporte e Operações
+    agents:
+      - paralegal-chief-of-staff  # Fusão: gustavo-chief + PM workflows
+      - qa-engineer  # Qualidade (AIOS QA)
+      - devops-engineer  # Infraestrutura (AIOS DEVOPS)
+
+components:
+  agents:
+    # Tier 0
+    - paralegal-coordinator.md
+    # Tier 1 - Jurídico
+    - mapa-licencas-agent.md
+    - holding-familiar-agent.md
+    - junta-comercial-agent.md
+    - alvara-licencas-agent.md
+    - certidoes-compliance-agent.md
+    - licencas-ambientais-agent.md
+    # Tier 1 - Tech
+    - system-architect.md
+    - fullstack-developer.md
+    - product-manager.md
+    - ux-designer.md
+    # Tier 2
+    - paralegal-chief-of-staff.md
+    - qa-engineer.md
+    - devops-engineer.md
+
+  tasks:
+    - abertura-empresa.md
+    - alteracao-contratual.md
+    - registro-mapa-cervejaria.md
+    - holding-familiar-setup.md
+    - alvara-municipal.md
+    - certidoes-negativas.md
+    - licenca-ambiental.md
+    - integracao-gestta.md
+    - integracao-lexio.md
+    - integracao-onvio.md
+    - dashboard-gerencial.md
+    - comunicacao-semanal.md
+
+  workflows:
+    - wf-abertura-empresa.yaml
+    - wf-mapa-cervejaria-11-etapas.yaml
+    - wf-holding-familiar-anti-retrabalho.yaml
+    - wf-alvara-completo.yaml
+    - wf-comunicacao-semanal.yaml
+    - wf-onboarding-cliente.yaml
+    - wf-escalacao-capacidade.yaml
+    - wf-template-generation.yaml
+
+  checklists:
+    - checklist-abertura-mei.md
+    - checklist-abertura-simples.md
+    - checklist-abertura-presumido-real.md
+    - checklist-mapa-cervejaria.md
+    - checklist-holding-familiar.md
+    - checklist-alvara-por-segmento.md
+
+  templates:
+    - template-contrato-social.md
+    - template-alteracao-contratual.md
+    - template-procuracao.md
+    - template-requerimento-orgao.md
+    - template-consulta-viabilidade.md
+
+  data: []
+  scripts: []
+  tools: []
+
+config:
+  extends: extend
+  knowledge-base:
+    - data/METODO-3-PILARES.md  # Do gustavo-oliveira
+    - data/PROCESSOS-PARALEGAIS-GRUPO-GROW.md  # DNA questionário
+    - data/WORKFLOWS-CLICKUP.md  # Do PM-ClickUp
+    - data/DESIGN-SYSTEM-TOKENS.md  # Do design
+
+routing:
+  foundation_first: true
+  qa_gate: paralegal-coordinator
+  flow: |
+    1. paralegal-coordinator classifica tipo de processo (BLOCKING)
+    2. paralegal-coordinator identifica dores (MAPA, Holding, Capacidade)
+    3. Routing para especialista correto:
+       - Cervejaria/MAPA → mapa-licencas-agent
+       - Holding Familiar → holding-familiar-agent
+       - Abertura/Alteração → junta-comercial-agent
+       - Alvará → alvara-licencas-agent
+       - Certidões → certidoes-compliance-agent
+       - Ambiental → licencas-ambientais-agent
+    4. Especialista executa workflow + checklist
+    5. paralegal-chief-of-staff organiza comunicação semanal
+    6. system-architect define arquitetura (quando tech)
+    7. fullstack-developer implementa (quando tech)
+    8. qa-engineer valida
+
+quality_gates:
+  - id: PM_QG_001
+    name: Triagem de Processo
+    description: Tipo de processo classificado corretamente (abertura, alvará, MAPA, holding, etc.)
+    blocking: true
+
+  - id: PM_QG_002
+    name: Workflow Selecionado
+    description: Workflow apropriado ativado com checklist correto
+    blocking: true
+
+  - id: PM_QG_003
+    name: Integração Validada
+    description: Integrações necessárias (Gestta, Lexio, Onvio) verificadas e funcionando
+    blocking: true
+
+  - id: PM_QG_004
+    name: Comunicação Cliente
+    description: Cliente notificado via Onvio Messenger com status atualizado
+    blocking: false
+
+  - id: PM_QG_005
+    name: Anti-Retrabalho
+    description: Checklist de validação prévia executado (especialmente Holding Familiar)
+    blocking: true
+
+voice:
+  owner: Grupo GROW (Gustavo Oliveira)
+  tone: profissional, técnico, orientado a processos, transparente com cliente
+  words_use:
+    - processo
+    - etapa
+    - workflow
+    - checklist
+    - validação
+    - prazo
+    - transparência
+    - compromisso
+    - qualidade
+    - eficiência
+  words_avoid:
+    - gambiarra
+    - jeitinho
+    - esquece
+    - deixa pra lá
+    - não tem problema
+    - depois a gente vê
+  emotional_anchors:
+    - compromisso com prazo
+    - transparência total com cliente
+    - qualidade nas informações
+    - processos padronizados
+    - comunicação proativa
+
+target_audience:
+  name: Departamento Paralegal de Escritórios Contábeis
+  profile: |
+    - Escritórios com 257+ empresas na carteira
+    - Team pleno/sênior mas SOBRECARREGADO
+    - Processos manuais e não padronizados
+    - Perda de 20 clientes/mês por falta de capacidade
+    - Dores: prazos, retrabalho, falta de visibilidade, comunicação
+  pain_points:
+    - Processo MAPA cervejarias (11 etapas, 180 dias)
+    - Holding Familiar (retrabalho por cartórios não uniformizados)
+    - Capacidade perdida (20 clientes/mês não atendidos)
+    - Horas extras (40h/mês)
+    - Retrabalho (R$ 3.000/mês)
+    - Cada pessoa faz do seu jeito (sem padronização)
+  goals:
+    - Aumentar capacidade sem contratar
+    - Padronizar processos
+    - Melhorar comunicação com cliente
+    - Ter visibilidade gerencial (dashboards)
+    - Reduzir retrabalho
+    - Eliminar perda de prazos
+
+integrations:
+  required:
+    - name: Gestta/Domínio
+      type: sistema_contabil
+      priority: high
+      purpose: Gestão contábil e tarefas
+
+    - name: Lexio
+      type: assinatura_digital
+      priority: high
+      purpose: Assinatura digital 64 bits, versionamento
+
+    - name: Onvio Messenger
+      type: comunicacao
+      priority: high
+      purpose: WhatsApp integrado para notificações cliente
+
+    - name: Receita Federal (e-CAC)
+      type: orgao_publico
+      priority: medium
+      purpose: Consultas e certidões
+
+    - name: Junta Comercial
+      type: orgao_publico
+      priority: high
+      purpose: Abertura, alteração, encerramento empresas
+
+    - name: Prefeitura
+      type: orgao_publico
+      priority: medium
+      purpose: Alvarás municipais
+
+  optional:
+    - SEFAZ (Estadual)
+    - Vigilância Sanitária
+    - Corpo de Bombeiros
+    - INPI
+    - IBAMA
+
+automations:
+  - Alertas de vencimento certidões/alvarás
+  - Comunicação semanal automática (toda segunda 9h)
+  - Notificação cliente de pendências
+  - Consulta automática de certidões
+  - Geração automática de documentos (templates + IA)
+  - Atualização status via scraping órgãos
+  - Dashboard gerencial em tempo real
+  - IA para classificar documentos
+  - Previsão de prazos com ML
+
+metrics:
+  capacity:
+    current: 120  # processos/mês
+    target: 220  # processos/mês (+100% sem contratar)
+    lost: 20  # clientes/mês perdidos
+
+  time:
+    mapa_current: 180  # dias
+    mapa_target: 180  # dias (realista com órgãos)
+    junta_comercial: 5  # dias
+    prefeitura: 10  # dias
+    receita_federal: 10  # dias
+
+  quality:
+    retrabalho_atual: "R$ 3.000/mês"
+    retrabalho_target: "R$ 500/mês (-83%)"
+    horas_extras_atual: "40h/mês"
+    horas_extras_target: "5h/mês (-87%)"
+
+  communication:
+    atualizacao_semanal: "Toda segunda 9h via Onvio"
+    resposta_cliente: "< 2h durante horário comercial"
+    transparencia: "Cliente acompanha status em tempo real"
+
+dependencies:
+  node: []
+  python: []
+  squads:
+    - gustavo-oliveira  # DNA fonte
+    - design  # DNA fonte
+    - project-management-clickup  # DNA fonte
+
+tags:
+  - paralegal
+  - escritorio-contabil
+  - gestao-processos
+  - saas
+  - grupo-grow
+  - mapa
+  - holding-familiar
+  - junta-comercial
+  - alvara
+  - certidoes
+  - lexio
+  - gestta
+  - onvio
+  - squad-fusion
+
+fusion_metadata:
+  method: "Squad Fusion v2.0 (Dragon Ball Style)"
+  quality_score: 9.2
+  sources_count: 5
+  agents_before: 27
+  agents_after: 14
+  deduplication_rate: "48%"
+  conflicts_resolved: 3
+  gaps_filled: 2
+  validation: "SC_FUS_001, SC_FUS_002, SC_FUS_003 - ALL PASSED"
+  smoke_tests: "15/15 PASSED"

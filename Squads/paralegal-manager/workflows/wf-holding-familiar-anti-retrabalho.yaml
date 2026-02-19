@@ -1,0 +1,324 @@
+# wf-holding-familiar-anti-retrabalho.yaml
+# Workflow: Holding Familiar com Framework Anti-Retrabalho Cartórios
+# Owner: holding-familiar-agent
+# Duration: 30-60 dias (fases não simultâneas)
+# Criticality: HIGH (problema #2 mais crítico - 100% retrabalho → 20%)
+
+name: "Holding Familiar - Framework Anti-Retrabalho"
+id: wf-holding-familiar-anti-retrabalho
+version: "2.0.0"
+owner: holding-familiar-agent
+type: paralegal-workflow
+duration_days: 45
+complexity: high
+
+description: |
+  Workflow completo para constituição de Holding Familiar com transferência de imóveis.
+  DIFERENCIAL: Framework Anti-Retrabalho (3 fases) que reduz retrabalho de 100% para 20%.
+
+  PROBLEMA RESOLVIDO:
+  Cartórios não uniformizados causavam 100% de retrabalho (refazer documentos).
+  Cada cartório exige documentos diferentes, formatos diferentes, certidões diferentes.
+
+  SOLUÇÃO:
+  FASE 1 - Mapeamento: Identificar TODOS cartórios ANTES protocolar
+  FASE 2 - Uniformização: Padronizar docs por requisitos de cada cartório
+  FASE 3 - Protocolo Simultâneo: Protocolar TODOS no MESMO DIA
+
+golden_rule: |
+  REGRA DE OURO: NUNCA protocolar em cartório sem mapear TODOS os outros cartórios primeiro.
+
+phases:
+  - phase: 1
+    name: "Mapeamento Pré-Protocolo"
+    duration_days: 7
+    objective: "Identificar TODOS cartórios envolvidos e requisitos específicos"
+
+    steps:
+      - id: step_1
+        name: "Inventário de Imóveis"
+        responsible: holding-familiar-agent
+        duration_days: 2
+        actions:
+          - "Listar TODOS imóveis da família:"
+          - "  - Endereço completo"
+          - "  - Matrícula (número + cartório registro)"
+          - "  - Proprietário atual (CPF)"
+          - "  - Valor venal (IPTU)"
+          - "Validar: imóvel quitado ou financiado?"
+        output: "Planilha: N imóveis × dados completos"
+        alert: |
+          SE imóvel financiado (ainda pagando banco):
+          ENTÃO precisa anuência banco ANTES transferir para holding.
+          Bancos podem bloquear ou exigir quitação antecipada.
+
+      - id: step_2
+        name: "Mapeamento Cartórios"
+        responsible: holding-familiar-agent
+        duration_days: 1
+        dependencies: [step_1]
+        actions:
+          - "Por matrícula, identificar cartório registro:"
+          - "  - Imóvel 1: Cartório X (cidade A)"
+          - "  - Imóvel 2: Cartório Y (cidade B)"
+          - "  - Imóvel 3: Cartório X (cidade A) - mesmo que imóvel 1"
+          - "Resultado: N imóveis → M cartórios únicos"
+        output: "Lista de cartórios únicos envolvidos (pode ser 1, pode ser 5+)"
+        example: |
+          Cliente com 5 imóveis:
+          - 3 imóveis: Cartório 1º Ofício São Paulo
+          - 1 imóvel: Cartório 2º Ofício Guarulhos
+          - 1 imóvel: Cartório Único Santo André
+          TOTAL: 3 cartórios diferentes
+
+      - id: step_3
+        name: "Consulta Requisitos POR Cartório"
+        responsible: holding-familiar-agent
+        duration_days: 4
+        dependencies: [step_2]
+        actions:
+          - "Para CADA cartório identificado:"
+          - "  1. Ligar/visitar cartório"
+          - "  2. Perguntar: 'Para transferir imóvel para holding, quais docs exigem?'"
+          - "  3. Documentar requisitos específicos:"
+          - "     - Reconhecimento firma? SIM/NÃO"
+          - "     - Apostilamento? SIM/NÃO"
+          - "     - Certidões: quais? (casamento, nascimento, óbito?)"
+          - "     - Formato contrato social: autenticado? registrado?"
+          - "     - ITBI: cálculo prévio obrigatório?"
+        output: "Matriz: Cartório × Requisitos Específicos"
+        critical: |
+          CADA CARTÓRIO É UM FEUDO INDEPENDENTE.
+          Cartório A exige X, Cartório B NÃO ACEITA X.
+          Essa incompatibilidade é a RAIZ do retrabalho.
+
+        exemplo_matriz: |
+          | Cartório | Reconh. Firma | Apostila | Cert. Casamento | ITBI Prévio |
+          |----------|---------------|----------|-----------------|-------------|
+          | 1º SP    | SIM           | NÃO      | SIM (< 90d)     | SIM         |
+          | 2º Guar  | NÃO           | SIM      | SIM (< 60d)     | NÃO         |
+          | Único SA | SIM           | SIM      | SIM (< 90d)     | SIM         |
+
+  - phase: 2
+    name: "Uniformização Documental"
+    duration_days: 15
+    objective: "Criar pacote documentos válido para TODOS cartórios"
+
+    steps:
+      - id: step_4
+        name: "Constituição Holding (Junta Comercial)"
+        responsible: junta-comercial-agent
+        duration_days: 5
+        actions:
+          - "Criar empresa holding (LTDA ou SA)"
+          - "Nome: '[Sobrenome] Holding Ltda' ou '[Nome] Participações'"
+          - "Objeto social: 'Participação em outras sociedades'"
+          - "Sócios: membros família (quotas por %)  "
+          - "Capital social: soma valor imóveis (ou simbólico R$ 10k)"
+          - "Registrar Junta Comercial → NIRE"
+        output: "Contrato social holding registrado + NIRE + CNPJ"
+        cost: "R$ 1.000 - R$ 3.000"
+
+      - id: step_5
+        name: "Coleta Certidões (Todas Necessárias)"
+        responsible: certidoes-compliance-agent
+        duration_days: 5
+        dependencies: [step_3]
+        actions:
+          - "Baseado na Matriz Requisitos (step_3), coletar:"
+          - "  - Certidões nascimento (todos sócios)"
+          - "  - Certidões casamento (se casados, validade < menor prazo matriz)"
+          - "  - Certidões óbito (se viúvos)"
+          - "  - Certidões matrícula imóveis (20 anos ônus)"
+          - "  - Certidões negativas (RFB, estadual, municipal)"
+          - "SE qualquer cartório exige apostila → apostilar TODAS certidões"
+          - "SE qualquer cartório exige reconhecimento → reconhecer TODOS docs"
+        output: "Dossiê certidões completo, válido para TODOS cartórios"
+        cost: "R$ 50-200 por certidão × N certidões (pode ser 15-30 certidões)"
+        strategy: |
+          UNIFORMIZAR PELO MAIS RESTRITIVO:
+          SE Cartório A exige validade < 60 dias E Cartório B aceita < 90 dias
+          ENTÃO emitir < 60 dias (atende ambos)
+
+      - id: step_6
+        name: "Cálculo ITBI (Imposto Transmissão)"
+        responsible: holding-familiar-agent
+        duration_days: 3
+        dependencies: [step_3, step_4]
+        actions:
+          - "Para CADA imóvel:"
+          - "  - Valor venal (IPTU) ou valor mercado (maior)"
+          - "  - Alíquota ITBI município (geralmente 2-3%)"
+          - "  - Cálculo: ITBI = valor × alíquota"
+          - "SE município exige cálculo prévio → protocolar antes transferência"
+          - "Somar ITBI todos imóveis = custo fiscal total"
+        output: "Planilha ITBI + guias pagamento (se prévio)"
+        alert: |
+          ITBI PODE SER SURPRESA CARA:
+          5 imóveis × R$ 500k cada × 3% ITBI = R$ 75.000
+          Cliente DEVE SABER custo fiscal ANTES prosseguir.
+
+      - id: step_7
+        name: "Preparação Documentos Uniformizados"
+        responsible: holding-familiar-agent
+        duration_days: 5
+        dependencies: [step_4, step_5, step_6]
+        actions:
+          - "Gerar escrituras transferência imóveis:"
+          - "  - Formato aceito por TODOS cartórios"
+          - "  - SE conflito (Cartório A quer X, B não aceita) → 2 versões"
+          - "Reconhecimento firma: aplicar ONDE exigido"
+          - "Apostilamento: aplicar se QUALQUER cartório exigir"
+          - "Anexar: contrato social holding, certidões, ITBI"
+        output: "Pacote docs POR CARTÓRIO, uniformizado"
+        example: |
+          Cartório 1º SP: Escritura v1 (com reconhecimento) + Certidões apostiladas + ITBI
+          Cartório 2º Guar: Escritura v2 (sem reconhecimento) + Certidões apostiladas
+          Cartório Único SA: Escritura v1 (com reconhecimento) + Certidões apostiladas + ITBI
+
+  - phase: 3
+    name: "Protocolo Simultâneo"
+    duration_days: 23
+    objective: "Protocolar TODOS cartórios no MESMO DIA + acompanhamento paralelo"
+
+    steps:
+      - id: step_8
+        name: "Agendamento Coordenado"
+        responsible: holding-familiar-agent
+        duration_days: 3
+        dependencies: [step_7]
+        actions:
+          - "Agendar protocolo em TODOS cartórios para MESMO DIA:"
+          - "  - Exemplo: Segunda 10h (horário fixo)"
+          - "  - Dividir equipe paralegal:"
+          - "    - Paralegal A → Cartório 1º SP"
+          - "    - Paralegal B → Cartório 2º Guarulhos"
+          - "    - Paralegal C → Cartório Único Santo André"
+          - "Protocolar simultaneamente (evita cartório saber que outro processou)"
+        output: "Todos cartórios protocolados MESMO DIA"
+        rationale: |
+          PROTOCOLO SIMULTÂNEO EVITA:
+          - Um cartório rejeitar porque outro já processou (?)
+          - Prazo = MAX(cartórios), não SOMA(cartórios)
+
+      - id: step_9
+        name: "Acompanhamento Paralelo"
+        responsible: holding-familiar-agent
+        duration_days: 30
+        dependencies: [step_8]
+        actions:
+          - "Cada cartório processa em paralelo (não sequencial)"
+          - "Acompanhar todos simultaneamente:"
+          - "  - Cartório 1: análise OK, prazo 20 dias"
+          - "  - Cartório 2: pendência doc X, resolver < 5 dias"
+          - "  - Cartório 3: análise OK, prazo 25 dias"
+          - "Resolver pendências POR CARTÓRIO individualmente"
+        output: "Todos cartórios processando em paralelo"
+        timeline: "Prazo total = MAX(prazos cartórios), não SOMA"
+
+      - id: step_10
+        name: "Registro Concluído (Todos Cartórios)"
+        responsible: holding-familiar-agent
+        duration_days: 0
+        dependencies: [step_9]
+        actions:
+          - "Validar TODOS cartórios concluíram registro"
+          - "Baixar matrículas atualizadas (proprietário = Holding)"
+          - "Arquivar documentação completa"
+        output: "Holding constituída + imóveis transferidos"
+        celebration: |
+          🎉 HOLDING FAMILIAR CONCLUÍDA!
+          Retrabalho: 0% (framework anti-retrabalho funcionou)
+
+results_framework_anti_retrabalho:
+  before:
+    retrabalho: "100% (todos casos tinham que refazer docs)"
+    motivo: "Cartórios não uniformizados, protocolo sequencial sem mapeamento"
+    prazo: "60-90 dias (com retrabalho adicional)"
+
+  after:
+    retrabalho: "20% (apenas casos edge com mudanças inesperadas)"
+    motivo: "Mapeamento prévio + uniformização + protocolo simultâneo"
+    prazo: "45-60 dias (sem retrabalho)"
+    comprovacao: "Validado em dezenas de holdings Grupo GROW"
+
+timeline_summary:
+  fase_1_mapeamento: "5-7 dias"
+  fase_2_uniformizacao: "10-15 dias"
+  fase_3_protocolo: "30-40 dias (cartórios processando)"
+  total: "45-62 dias (1,5-2 meses)"
+
+costs_summary:
+  holding_junta: "R$ 1.000 - R$ 3.000"
+  certidoes: "R$ 1.000 - R$ 6.000 (15-30 certidões × R$ 50-200)"
+  reconhecimentos: "R$ 300 - R$ 1.500 (varia quantidade)"
+  apostilamentos: "R$ 500 - R$ 2.000 (se necessário)"
+  itbi: "R$ 15.000 - R$ 150.000 (MUITO variável, 2-3% valor imóveis)"
+  taxas_cartorios: "R$ 3.000 - R$ 15.000 (varia cartório e valor imóveis)"
+  total_estimado: "R$ 20.800 - R$ 177.500 (ITBI = maior custo)"
+
+risks:
+  risk_1:
+    name: "Cartório muda requisitos após mapeamento"
+    probability: "10%"
+    impact: "MEDIUM (retrabalho parcial)"
+    mitigation: "Mapear < 30 dias antes protocolo (requisitos frescos)"
+
+  risk_2:
+    name: "ITBI surpresa alto (cliente desiste)"
+    probability: "15%"
+    impact: "CRITICAL (projeto cancela)"
+    mitigation: "Calcular ITBI step_6, validar com cliente ANTES prosseguir"
+
+  risk_3:
+    name: "Banco não autoriza transferência (imóvel financiado)"
+    probability: "20%"
+    impact: "CRITICAL (imóvel fica fora holding)"
+    mitigation: "Validar step_1 SE financiado, consultar banco ANTES"
+
+success_metrics:
+  - "Retrabalho < 20% (vs 100% antes framework)"
+  - "Protocolo simultâneo todos cartórios MESMO DIA"
+  - "Prazo total < 60 dias (target 45 dias)"
+  - "Cliente informado custo ITBI antes step_8"
+
+heuristics:
+  - id: "HF_HEU_001"
+    rule: |
+      SE holding familiar E múltiplos imóveis E múltiplos cartórios
+      ENTÃO → OBRIGATÓRIO executar Framework Anti-Retrabalho (3 fases)
+    rationale: "100% → 20% retrabalho comprovado Grupo GROW"
+
+  - id: "HF_HEU_002"
+    rule: |
+      SE Fase 1 identificou 5+ cartórios diferentes
+      ENTÃO → Alertar cliente: complexidade ALTA, prazo pode estender
+    rationale: "Mais cartórios = mais requisitos divergentes"
+
+  - id: "HF_HEU_003"
+    rule: |
+      SE ITBI > R$ 50.000
+      ENTÃO → PARAR step_7 + validar com cliente disposição pagar
+    rationale: "ITBI alto pode inviabilizar holding"
+
+integrations:
+  junta_comercial_agent:
+    task: "Constituir holding (step_4)"
+
+  certidoes_compliance_agent:
+    task: "Coletar todas certidões (step_5)"
+
+  gestta:
+    sync: "Tarefas holding aparecem no Gestta"
+
+  onvio:
+    comunicacao: "Updates semanais cliente (segundas 9h)"
+    template: |
+      🏠 Holding Familiar - Status
+      Fase: [1-Mapeamento / 2-Uniformização / 3-Protocolo]
+      Cartórios envolvidos: [N]
+      ITBI estimado: R$ [X]
+      Próxima ação: [descrição]
+
+  lexio:
+    assinatura: "Escrituras assinadas digitalmente"

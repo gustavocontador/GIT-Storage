@@ -1,0 +1,40 @@
+# wf-alvara-sanitario.yaml
+name: "Alvará Sanitário (VISA)"
+id: wf-alvara-sanitario
+owner: alvara-licencas-agent
+duration_days: 60
+complexity: medium
+
+description: "Alvará sanitário para alimentação, saúde, farmácias"
+
+steps:
+  - id: step_1
+    name: "Adequação Imóvel"
+    checklist:
+      - "Piso lavável, paredes lisas"
+      - "Iluminação/ventilação adequadas"
+      - "Sanitários separados"
+      - "Lixo tampa pedal"
+
+  - id: step_2
+    name: "Documentação"
+    items:
+      - "Contrato Social"
+      - "Manual Boas Práticas"
+      - "RRT Responsável Técnico"
+      - "Controle pragas"
+
+  - id: step_3
+    name: "Protocolo VISA"
+    action: "Protocolar + aguardar vistoria"
+
+  - id: step_4
+    name: "Vistoria VISA"
+    duration_days: 30
+    outcomes:
+      - "Aprovado → emite alvará"
+      - "Reprovado → 30-60d corrigir"
+
+costs: "R$ 300 - R$ 2.000"
+validade: "1 ano (renovação)"
+aplicavel: "Restaurantes, clínicas, farmácias"

@@ -1,0 +1,81 @@
+# wf-abertura-empresa.yaml
+# Workflow: Abertura de Empresa (LTDA, EIRELI, MEI)
+# Owner: junta-comercial-agent
+# Duration: 3-5 dias úteis
+# Complexity: LOW
+
+name: "Abertura de Empresa Completa"
+id: wf-abertura-empresa
+version: "1.0.0"
+owner: junta-comercial-agent
+type: paralegal-workflow
+duration_days: 5
+complexity: low
+
+description: |
+  Workflow completo para abertura de empresa (LTDA, EIRELI, MEI).
+  Processo rápido e bem definido: 3-5 dias úteis com sistema REI.
+
+phases:
+  - phase: 1
+    name: "Viabilidade"
+    duration_days: 1
+    steps:
+      - id: step_1
+        name: "Consulta Viabilidade (Nome + Endereço + CNAEs)"
+        actions:
+          - "Consultar nome empresarial (3 opções backup)"
+          - "Validar endereço zoneamento municipal"
+          - "Validar CNAEs permitidos no município"
+        output: "Certificado Viabilidade ou rejeição"
+
+  - phase: 2
+    name: "Documentação"
+    duration_days: 1
+    steps:
+      - id: step_2
+        name: "Coleta Documentos Sócios"
+        actions:
+          - "RG, CPF, comprovante residência"
+          - "Se casado: certidão casamento + RG/CPF cônjuge"
+          - "Gerar contrato social (template + IA)"
+        output: "Dossiê completo"
+
+  - phase: 3
+    name: "Registro"
+    duration_days: 2
+    steps:
+      - id: step_3
+        name: "Registro Junta Comercial (REI)"
+        actions:
+          - "Protocolar via REI (online)"
+          - "Pagar DARE"
+          - "Aguardar análise (1-2 dias)"
+        output: "NIRE emitido"
+
+      - id: step_4
+        name: "CNPJ Automático"
+        actions:
+          - "REI → Receita Federal (integração automática)"
+        output: "CNPJ ativo"
+
+  - phase: 4
+    name: "Inscrições"
+    duration_days: 1
+    steps:
+      - id: step_5
+        name: "Inscrições Complementares"
+        actions:
+          - "Inscrição Municipal (ISS)"
+          - "Inscrição Estadual (ICMS se necessário)"
+          - "GFIP (FGTS/INSS)"
+        output: "Empresa 100% operacional"
+
+timeline_summary:
+  optimistic: "3 dias úteis"
+  realistic: "5 dias úteis"
+
+costs_summary:
+  taxas_junta: "R$ 200 - R$ 500"
+  certificado_digital: "R$ 150 - R$ 250 (A1)"
+  total: "R$ 350 - R$ 750"

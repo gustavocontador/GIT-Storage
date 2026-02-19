@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "description": "Especificações técnicas integrações (Gestta, Lexio, Onvio)",
+    "version": "1.0.0",
+    "last_updated": "2026-02-19",
+    "owner": "system-architect"
+  },
+  "integracoes": {
+    "gestta": {
+      "nome": "Gestta",
+      "tipo": "Sistema Contábil Grupo GROW",
+      "api_base_url": "https://api.gestta.com.br/v1",
+      "autenticacao": {
+        "metodo": "OAuth2 + API Key",
+        "header": "Authorization: Bearer {token}",
+        "refresh_token": "Sim (renovar a cada 7 dias)"
+      },
+      "endpoints": {
+        "get_tasks": {
+          "method": "GET",
+          "path": "/tasks",
+          "params": {
+            "status": "optional: pending, in_progress, completed",
+            "client_id": "optional: filtrar por cliente",
+            "date_from": "optional: ISO 8601"
+          },
+          "response": {
+            "tasks": [
+              {
+                "id": "string",
+                "title": "string",
+                "client_id": "string",
+                "status": "string",
+                "deadline": "ISO 8601",
+                "created_at": "ISO 8601"
+              }
+            ]
+          }
+        },
+        "create_task": {
+          "method": "POST",
+          "path": "/tasks",
+          "body": {
+            "title": "string (required)",
+            "client_id": "string (required)",
+            "description": "string (optional)",
+            "deadline": "ISO 8601 (optional)"
+          },
+          "response": {
+            "id": "string",
+            "created_at": "ISO 8601"
+          }
+        },
+        "update_task": {
+          "method": "PATCH",
+          "path": "/tasks/{id}",
+          "body": {
+            "status": "pending | in_progress | completed",
+            "notes": "string (optional)"
+          }
+        }
+      },
+      "webhooks": {
+        "task_updated": {
+          "url": "https://paralegal-manager.com/api/webhooks/gestta",
+          "method": "POST",
+          "body": {
+            "event": "task.updated",
+            "task_id": "string",
+            "status": "string",
+            "timestamp": "ISO 8601"
+          },
+          "retry": "3x com backoff exponencial"
+        }
+      },
+      "sync": {
+        "direcao": "Bidirecional",
+        "frequencia": "Tempo real (webhooks) + polling backup (5 min)",
+        "mapping": {
+          "gestta_task_id": "paralegal_manager.process.gestta_task_id",
+          "status": {
+            "pending": "pending",
+            "in_progress": "in_progress",
+            "completed": "completed"
+          }
+        }
+      },
+      "rate_limits": "100 req/min",
+      "timeout": "30 segundos",
+      "error_handling": {
+        "401": "Token expirado → refresh",
+        "429": "Rate limit → backoff 60s",
+        "500": "Retry 3x com exponential backoff"
+      }
+    },
+    "lexio": {
+      "nome": "Lexio",
+      "tipo": "Assinatura Digital 64 bits",
+      "api_base_url": "https://api.lexio.com.br/v1",
+      "autenticacao": {
+        "metodo": "API Key",
+        "header": "X-API-Key: {key}"
+      },
+      "endpoints": {
+        "upload_document": {
+          "method": "POST",
+          "path": "/documents",
+          "content_type": "multipart/form-data",
+          "body": {
+            "file": "binary (PDF, DOC, DOCX)",
+            "signers": [
+              {
+                "name": "string",
+                "email": "string",
+                "cpf": "string",
+                "phone": "string (optional para SMS)"
+              }
+            ],
+            "message": "string (optional - mensagem aos signatários)"
+          },
+          "response": {
+            "document_id": "string",
+            "status": "pending",
+            "signers": [
+              {
+                "id": "string",
+                "name": "string",
+                "status": "pending"
+              }
+            ]
+          }
+        },
+        "get_document_status": {
+          "method": "GET",
+          "path": "/documents/{id}",
+          "response": {
+            "id": "string",
+            "status": "pending | partially_signed | signed | cancelled",
+            "signers": [
+              {
+                "name": "string",
+                "signed_at": "ISO 8601 (null se pendente)"
+              }
+            ],
+            "signed_document_url": "string (se status=signed)"
+          }
+        },
+        "download_signed_document": {
+          "method": "GET",
+          "path": "/documents/{id}/download",
+          "response": "binary (PDF assinado)"
+        }
+      },
+      "webhooks": {
+        "document_signed": {
+          "url": "https://paralegal-manager.com/api/webhooks/lexio",
+          "method": "POST",
+          "body": {
+            "event": "document.signed",
+            "document_id": "string",
+            "signed_at": "ISO 8601",
+            "signers": [
+              {
+                "name": "string",
+                "signed_at": "ISO 8601"
+              }
+            ]
+          }
+        }
+      },
+      "use_cases": [
+        "Contrato social",
+        "Alteração contratual",
+        "Procuração",
+        "Requerimentos",
+        "Escrituras (holding familiar)"
+      ],
+      "vantagem": "Elimina reconhecimento firma (economiza 1-2 dias)",
+      "custo": "R$ 2-5 por assinatura",
+      "rate_limits": "50 req/min"
+    },
+    "onvio": {
+      "nome": "Onvio Messenger",
+      "tipo": "WhatsApp integrado (comunicação cliente)",
+      "api_base_url": "https://api.onvio.com.br/v1",
+      "autenticacao": {
+        "metodo": "API Key",
+        "header": "Authorization: Bearer {token}"
+      },
+      "endpoints": {
+        "send_message": {
+          "method": "POST",
+          "path": "/messages",
+          "body": {
+            "to": "+5511999999999 (E.164 format)",
+            "text": "string (max 4096 caracteres)",
+            "media_url": "string (optional - imagem, PDF)"
+          },
+          "response": {
+            "message_id": "string",
+            "status": "queued",
+            "timestamp": "ISO 8601"
+          }
+        },
+        "get_message_status": {
+          "method": "GET",
+          "path": "/messages/{id}",
+          "response": {
+            "status": "queued | sent | delivered | read | failed",
+            "delivered_at": "ISO 8601 (null se não entregue)",
+            "read_at": "ISO 8601 (null se não lido)"
+          }
+        }
+      },
+      "webhooks": {
+        "incoming_message": {
+          "url": "https://paralegal-manager.com/api/webhooks/onvio",
+          "method": "POST",
+          "body": {
+            "event": "message.received",
+            "from": "+5511999999999",
+            "text": "string",
+            "timestamp": "ISO 8601"
+          },
+          "nota": "Cliente responde mensagem → webhook dispara"
+        }
+      },
+      "use_cases": {
+        "comunicacao_semanal": {
+          "trigger": "Cron: toda segunda 9h",
+          "workflow": "wf-comunicacao-semanal.yaml",
+          "template": "Status processo + pendências + próximas etapas"
+        },
+        "alertas_pendencias": {
+          "trigger": "Documento pendente < 3 dias",
+          "mensagem": "URGENTE: Doc X deve ser enviado em 3 dias"
+        },
+        "notificacoes_status": {
+          "trigger": "Processo mudou status",
+          "mensagem": "Seu processo avançou para etapa Y"
+        }
+      },
+      "rate_limits": {
+        "messages_per_day": 1000,
+        "messages_per_second": 1,
+        "nota": "Enviar 1 msg / 5 segundos (evitar block WhatsApp)"
+      },
+      "error_handling": {
+        "429": "Rate limit → aguardar 5s + retry",
+        "400": "Número inválido → log erro + skip",
+        "500": "Retry 3x"
+      }
+    }
+  },
+  "observabilidade": {
+    "logs": {
+      "todas_requests": "CloudWatch Logs (retention 30 dias)",
+      "erros": "Sentry (alertas Slack)"
+    },
+    "metrics": {
+      "gestta_sync_latency": "p95 < 500ms",
+      "lexio_upload_success_rate": "> 98%",
+      "onvio_delivery_rate": "> 95%"
+    }
+  }
+}
