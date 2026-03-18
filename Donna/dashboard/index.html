@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donna — Painel Executivo</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --card: #1a1a2e;
+      --accent: #4A154B;
+      --text: #e0e0e0;
+      --muted: #888;
+      --green: #4caf50;
+      --yellow: #ff9800;
+      --red: #f44336;
+      --blue: #2196f3;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #333;
+    }
+    header h1 { font-size: 1.5em; font-weight: 600; }
+    header h1 span { color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.85em; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #2a2a4a;
+    }
+    .card h2 {
+      font-size: 0.9em;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .stat {
+      font-size: 2.2em;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat.green { color: var(--green); }
+    .stat.yellow { color: var(--yellow); }
+    .stat.red { color: var(--red); }
+    .stat.blue { color: var(--blue); }
+    .list { list-style: none; }
+    .list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2a4a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .list li:last-child { border-bottom: none; }
+    .badge {
+      font-size: 0.75em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .badge.urgente { background: var(--red); color: white; }
+    .badge.pendente { background: var(--yellow); color: black; }
+    .badge.ok { background: var(--green); color: white; }
+    .badge.info { background: var(--blue); color: white; }
+    .section { margin-bottom: 24px; }
+    .section h2 {
+      font-size: 1.1em;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #333;
+    }
+    .loading { color: var(--muted); font-style: italic; }
+    .refresh-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .refresh-btn:hover { opacity: 0.8; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 8px 12px; }
+    th { color: var(--muted); font-size: 0.8em; text-transform: uppercase; }
+    tr { border-bottom: 1px solid #2a2a4a; }
+    .amount { font-family: 'SF Mono', monospace; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1><span>Donna</span> — Painel Executivo</h1>
+      <div class="meta" id="last-update">Carregando...</div>
+    </div>
+    <button class="refresh-btn" onclick="loadAll()">Atualizar</button>
+  </header>
+
+  <!-- KPI Cards -->
+  <div class="grid">
+    <div class="card">
+      <h2>Tarefas Abertas</h2>
+      <div class="stat blue" id="tasks-count">—</div>
+    </div>
+    <div class="card">
+      <h2>Follow-ups Pendentes</h2>
+      <div class="stat yellow" id="followups-count">—</div>
+    </div>
+    <div class="card">
+      <h2>Deals Ativos</h2>
+      <div class="stat green" id="deals-count">—</div>
+    </div>
+    <div class="card">
+      <h2>Sessoes Donna (7d)</h2>
+      <div class="stat blue" id="sessions-count">—</div>
+    </div>
+  </div>
+
+  <!-- Tarefas -->
+  <div class="section">
+    <div class="card">
+      <h2>Tarefas</h2>
+      <ul class="list" id="tasks-list">
+        <li class="loading">Carregando do Notion...</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Follow-ups -->
+  <div class="section">
+    <div class="card">
+      <h2>Follow-ups & Cobranças</h2>
+      <ul class="list" id="followups-list">
+        <li class="loading">Carregando do Notion...</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Financeiro -->
+  <div class="section">
+    <div class="card">
+      <h2>Deals & Pipeline</h2>
+      <table>
+        <thead>
+          <tr><th>Deal</th><th>Contato</th><th>Valor</th><th>Status</th></tr>
+        </thead>
+        <tbody id="deals-table">
+          <tr><td class="loading" colspan="4">Carregando do Notion...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Atividade Recente -->
+  <div class="section">
+    <div class="card">
+      <h2>Atividade Recente (Supabase)</h2>
+      <ul class="list" id="activity-list">
+        <li class="loading">Carregando do Supabase...</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Config
+    const SUPABASE_URL = 'https://zjhxvtdbwtfstcrkcwnt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_OAtMV-0eyr8kLDskhFCeVA_QCDzogi-';
+    const NOTION_TOKEN = ''; // Token handled by serve.js proxy — never expose client-side
+    const NOTION_DB_TAREFAS = '3247ae17-ffa7-8101-855c-ce7093dddd96';
+    const NOTION_DB_FOLLOWUPS = '3247ae17-ffa7-81bd-b204-f8923c398cb8';
+    const NOTION_DB_DEALS = '3247ae17-ffa7-8149-9612-e397c4bf4f08';
+
+    // Notion API (via local proxy at /notion/ to avoid CORS)
+    async function notionQuery(dbId, filter = {}) {
+      try {
+        // Try local proxy first (bun dashboard/serve.js)
+        const proxyUrl = `/notion/databases/${dbId}/query`;
+        const directUrl = `https://api.notion.com/v1/databases/${dbId}/query`;
+
+        const url = window.location.port === '3333' ? proxyUrl : directUrl;
+        const headers = window.location.port === '3333'
+          ? { 'Content-Type': 'application/json' }
+          : { 'Authorization': `Bearer ${NOTION_TOKEN}`, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json' };
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ ...filter, page_size: 20 })
+        });
+        if (!res.ok) throw new Error(`Notion ${res.status}`);
+        return res.json();
+      } catch (e) {
+        console.warn('Notion API error:', e.message);
+        return null;
+      }
+    }
+
+    // Supabase API
+    async function supabaseQuery(table, params = '') {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (!res.ok) throw new Error(`Supabase ${res.status}`);
+        return res.json();
+      } catch (e) {
+        console.warn('Supabase error:', e.message);
+        return null;
+      }
+    }
+
+    // Helpers
+    function getTitle(page, prop) {
+      const p = page.properties[prop];
+      if (!p) return '—';
+      if (p.title) return p.title.map(t => t.plain_text).join('') || '—';
+      if (p.rich_text) return p.rich_text.map(t => t.plain_text).join('') || '—';
+      if (p.select) return p.select?.name || '—';
+      if (p.status) return p.status?.name || '—';
+      if (p.number) return p.number?.toString() || '—';
+      if (p.date) return p.date?.start || '—';
+      return '—';
+    }
+
+    function statusBadge(status) {
+      const s = (status || '').toLowerCase();
+      if (s.includes('done') || s.includes('conclu')) return `<span class="badge ok">${status}</span>`;
+      if (s.includes('urgen') || s.includes('vencid')) return `<span class="badge urgente">${status}</span>`;
+      if (s.includes('pend') || s.includes('to do')) return `<span class="badge pendente">${status}</span>`;
+      return `<span class="badge info">${status}</span>`;
+    }
+
+    function formatCurrency(val) {
+      if (!val) return '—';
+      return `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`;
+    }
+
+    // Loaders
+    async function loadTasks() {
+      const data = await notionQuery(NOTION_DB_TAREFAS, {
+        filter: { property: 'Status', status: { does_not_equal: 'Done' } },
+        sorts: [{ property: 'Prazo', direction: 'ascending' }]
+      });
+      const el = document.getElementById('tasks-list');
+      const countEl = document.getElementById('tasks-count');
+
+      if (!data || !data.results) {
+        el.innerHTML = '<li class="loading">Notion API indisponivel via browser (use proxy ou terminal)</li>';
+        countEl.textContent = '?';
+        return;
+      }
+
+      countEl.textContent = data.results.length;
+      if (data.results.length === 0) {
+        el.innerHTML = '<li>Nenhuma tarefa aberta</li>';
+        return;
+      }
+
+      el.innerHTML = data.results.map(p => {
+        const title = getTitle(p, 'Tarefa');
+        const status = getTitle(p, 'Status');
+        const prazo = getTitle(p, 'Prazo');
+        return `<li><span>${title} ${prazo !== '—' ? `<span class="meta">— ${prazo}</span>` : ''}</span>${statusBadge(status)}</li>`;
+      }).join('');
+    }
+
+    async function loadFollowups() {
+      const data = await notionQuery(NOTION_DB_FOLLOWUPS, {
+        filter: { property: 'Status', status: { does_not_equal: 'Concluído' } },
+        sorts: [{ property: 'Prazo', direction: 'ascending' }]
+      });
+      const el = document.getElementById('followups-list');
+      const countEl = document.getElementById('followups-count');
+
+      if (!data || !data.results) {
+        el.innerHTML = '<li class="loading">Notion API indisponivel via browser</li>';
+        countEl.textContent = '?';
+        return;
+      }
+
+      countEl.textContent = data.results.length;
+      if (data.results.length === 0) {
+        el.innerHTML = '<li>Todos follow-ups em dia</li>';
+        return;
+      }
+
+      el.innerHTML = data.results.map(p => {
+        const quem = getTitle(p, 'Quem');
+        const assunto = getTitle(p, 'Assunto');
+        const prazo = getTitle(p, 'Prazo');
+        const status = getTitle(p, 'Status');
+        return `<li><span><strong>${quem}</strong> — ${assunto} ${prazo !== '—' ? `<span class="meta">| ${prazo}</span>` : ''}</span>${statusBadge(status)}</li>`;
+      }).join('');
+    }
+
+    async function loadDeals() {
+      const data = await notionQuery(NOTION_DB_DEALS, {
+        filter: { property: 'Status', status: { does_not_equal: 'Fechado' } },
+        sorts: [{ property: 'Valor', direction: 'descending' }]
+      });
+      const el = document.getElementById('deals-table');
+      const countEl = document.getElementById('deals-count');
+
+      if (!data || !data.results) {
+        el.innerHTML = '<tr><td class="loading" colspan="4">Notion API indisponivel via browser</td></tr>';
+        countEl.textContent = '?';
+        return;
+      }
+
+      countEl.textContent = data.results.length;
+      if (data.results.length === 0) {
+        el.innerHTML = '<tr><td colspan="4">Nenhum deal ativo</td></tr>';
+        return;
+      }
+
+      el.innerHTML = data.results.map(p => {
+        const deal = getTitle(p, 'Deal');
+        const contato = getTitle(p, 'Contato');
+        const valor = getTitle(p, 'Valor');
+        const status = getTitle(p, 'Status');
+        return `<tr><td>${deal}</td><td>${contato}</td><td class="amount">${formatCurrency(valor)}</td><td>${statusBadge(status)}</td></tr>`;
+      }).join('');
+    }
+
+    async function loadActivity() {
+      const data = await supabaseQuery('sessions',
+        'select=openclaw_session_id,model,started_at&order=started_at.desc&limit=10'
+      );
+      const el = document.getElementById('activity-list');
+      const countEl = document.getElementById('sessions-count');
+
+      if (!data) {
+        el.innerHTML = '<li class="loading">Supabase indisponivel (verificar ANON key)</li>';
+        countEl.textContent = '?';
+        return;
+      }
+
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const recent = data.filter(s => new Date(s.started_at) > weekAgo);
+      countEl.textContent = recent.length;
+
+      if (data.length === 0) {
+        el.innerHTML = '<li>Nenhuma sessao registrada</li>';
+        return;
+      }
+
+      el.innerHTML = data.map(s => {
+        const date = new Date(s.started_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        const model = (s.model || '').split('/').pop() || '?';
+        return `<li><span>${date} — <span class="meta">${model}</span></span><span class="meta">${s.openclaw_session_id?.slice(0, 8)}...</span></li>`;
+      }).join('');
+    }
+
+    async function loadAll() {
+      document.getElementById('last-update').textContent = `Atualizando...`;
+      await Promise.allSettled([loadTasks(), loadFollowups(), loadDeals(), loadActivity()]);
+      document.getElementById('last-update').textContent = `Atualizado: ${new Date().toLocaleString('pt-BR')}`;
+    }
+
+    // Auto-refresh every 5 min
+    loadAll();
+    setInterval(loadAll, 300000);
+  </script>
+</body>
+</html>

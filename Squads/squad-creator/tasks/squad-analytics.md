@@ -1,30 +1,10 @@
 # Task: Squad Analytics
 
 **Task ID:** squad-analytics
-**Version:** 3.1.0
+**Version:** 3.0.0
 **Purpose:** Generate metrics and quality analysis for squads
 **Orchestrator:** @squad-chief
 **Execution Type:** `Hybrid` (Script for metrics + Agent for analysis)
-**Worker Script:** `scripts/squad-analytics.py`
-**Model:** `Haiku` (QUALIFIED — script handles all metrics, LLM only interprets)
-**Haiku Eligible:** YES — deterministic metrics collection via script
-
----
-
-## ⛔ MANDATORY PREFLIGHT: Run Worker Script FIRST
-
-```
-EXECUTE FIRST — before ANY manual analysis:
-
-  python3 squads/squad-creator/scripts/squad-analytics.py --squad {squad_name} -l -q --json > /tmp/preflight-analytics.json
-
-IF the command fails → FIX the script error. Do NOT proceed manually.
-IF the command succeeds → READ /tmp/preflight-analytics.json. Use ONLY these metrics.
-
-VETO: If /tmp/preflight-analytics.json does not exist → BLOCK.
-      Do NOT count files manually. Do NOT calculate averages yourself.
-      The script computes all metrics faster and 100% consistently.
-```
 
 ---
 

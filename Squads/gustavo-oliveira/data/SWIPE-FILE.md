@@ -382,7 +382,84 @@ CLIENTES BEM ATENDIDOS SEGUEM ESSE CAMINHO:
 
 ---
 
+## Caso 12: LFK — Placas e Painéis (R$ 1,72M de economia)
+
+### Contexto
+LFK fabrica e instala placas e painéis de comunicação visual para grandes grupos
+(PETZ, Bradesco, BlueFit, Porto Seguro). Chegou com prejuízo de R$ 342k em 2025
+e carga tributária de 18,4%.
+
+### O que aconteceu
+- Faturamento: R$ 15,7M (2025)
+  - Produtos: R$ 10,3M → ICMS alto (spread R$ 1,2M)
+  - Serviços: R$ 5,4M → ISS mix
+- Prejuízo operacional: R$ 342k
+- Folha: R$ 5,4M/ano
+- CMV: R$ 4,3M
+- Despesas operacionais: R$ 8,9M
+
+### Framework aplicado
+- **Modelagem por B.U.s**: Identificação de 2 B.U.s claras (produto vs serviço)
+- **Inversão de mix**: Produto→Serviço para reduzir ICMS
+- **Lucro Real**: Aproveitar prejuízo + despesas altas (créditos PIS/COFINS não-cumulativo ZERAM tributo)
+- **Santana de Parnaíba**: ISS 2% universal (vs 5% SP Capital)
+- **2 Simples**: Puxar folha (16% vs 28% INSS patronal)
+
+### Estrutura proposta (2026)
+```
+HOLDING (nova)
+├─ LFK ORIGINAL (Lucro Real) — R$ 11M
+│  ├─ Produtos: R$ 5M (ICMS R$ 180k)
+│  ├─ Instalação: R$ 6M (ISS 2% = R$ 120k)
+│  ├─ IR/CSLL: R$ 0 (prejuízo)
+│  ├─ PIS/COFINS: R$ 0 (créditos > débitos)
+│  └─ Carga: 2,7% 🔥
+│
+├─ LFK SERVIÇOS (Presumido) — R$ 5M
+│  ├─ Design/Projeto: R$ 5M
+│  ├─ Sede: Santana de Parnaíba (ISS 2%)
+│  └─ Carga: 16%
+│
+└─ 2 SIMPLES (Anexo III) — R$ 400k
+   ├─ Folha: R$ 360k (Fator R 90%)
+   └─ Carga: 16%
+```
+
+### Resultado
+- **Faturamento 2026**: R$ 16,4M (+4,5%)
+- **Carga tributária**: 18,4% → 7,1% (-11,3pp)
+- **Economia anual**: R$ 1,72 MILHÕES
+- **De prejuízo para lucro**: -R$ 342k → +R$ 1,38M
+
+### Breakdown da Economia
+| Tributo | 2025 | 2026 | Delta |
+|---------|------|------|-------|
+| ICMS | R$ 1,2M | R$ 180k | -R$ 1,02M 🔥 |
+| IR/CSLL | R$ 850k | R$ 520k | -R$ 330k |
+| PIS/COFINS | R$ 573k | R$ 183k | -R$ 390k |
+| ISS | R$ 270k | R$ 320k | +R$ 50k |
+| **TOTAL** | **R$ 2,89M** | **R$ 1,17M** | **-R$ 1,72M** |
+
+### Números-chave
+- **ICMS**: 59% da economia total (inversão mix produto→serviço)
+- **Lucro Real**: IR/CSLL + PIS/COFINS = ZERO (créditos sobre despesas R$ 8,5M)
+- **Santana de Parnaíba**: ISS 2% (economia adicional R$ 150k)
+- **Carga 2,7%**: Lucro Real com despesas > 70% receita
+
+### Lições aprendidas
+1. **Obsessão por zero imposto lícito**: Não aceitar 10% quando dá pra chegar em 2,7%
+2. **Créditos PIS/COFINS não-cumulativo**: Se despesas > 70% receita → créditos ZERAM débito
+3. **Lucro Real ≠ carga alta**: Com prejuízo + despesas, Real pode ter carga MENOR que Presumido
+4. **Jurisdições favoráveis**: Santana de Parnaíba ISS 2% universal
+5. **Inversão de mix**: Menos produto (ICMS) + mais serviço (ISS 2%) = economia massiva
+
+### Frase-chave
+> "De 18,4% para 7,1%. De prejuízo de R$ 342k para lucro de R$ 1,38M.
+> Isso é o que acontece quando você é OBCECADO por redução lícita de impostos."
+
+---
+
 _Squad: gustavo-oliveira v2.0.0_
-_Swipe File v2.0_
+_Swipe File v2.1_
 _Created: 2026-02-17_
-_Updated: 2026-02-17 — 4 novos casos + perguntas semanais_
+_Updated: 2026-02-26 — Adicionado Caso #12 LFK (R$ 1,72M economia)_

@@ -1,13 +1,11 @@
 # Task: Create Squad Workflow
 
 **Task ID:** create-workflow
-**Version:** 2.0.1
-**Execution Type:** Hybrid (Agent for design + elicitation, deterministic for validation)
+**Version:** 2.0
+**Execution Type:** Worker
 **Purpose:** Create multi-phase workflows that orchestrate complex operations across agents
 **Orchestrator:** @squad-chief
 **Mode:** Elicitation-based (interactive)
-**Model:** `Sonnet` (requires creative synthesis for phase/checkpoint design)
-**Haiku Eligible:** NO — creative design decisions, not deterministic
 **Quality Standard:** AIOS Level (500+ lines, 3+ phases, checkpoints)
 
 **Frameworks Used:**
@@ -718,6 +716,6 @@ This task creates workflows that:
 
 ---
 
-_Task Version: 2.0.1_
-_Last Updated: 2026-02-11_
+_Task Version: 2.0_
+_Last Updated: 2026-02-01_
 _Lines: 550+_

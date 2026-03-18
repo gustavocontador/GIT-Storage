@@ -2,12 +2,7 @@
 
 > **Pareto ao Cubo** | Identificar 0,8% genialidade, 4% excelência, 20% impacto, 80% merda
 
-**Task ID:** find-0.8
-**Version:** 1.1.0
-**Execution Type:** Agent (requires judgment to classify activities)
-**Model:** `Sonnet` (needs reasoning for activity classification)
-**Haiku Eligible:** NO — subjective assessment of "genialidade" vs "merda" requires interpretation
-**Orchestrator:** @squad-chief
+**Execution Type:** Worker
 
 ## Objetivo
 
@@ -236,10 +231,5 @@ A classificação depende de:
 - Sua capacidade de execução
 
 ---
-
----
-
-_Task Version: 1.1.0_
-_Last Updated: 2026-02-11_
 
 *"0,8% produz 51% dos resultados. Proteja a genialidade, elimine a merda."*

@@ -654,7 +654,103 @@ GREEN FLAGS:
 
 ---
 
+## 17. Obsessão por Zero Imposto Lícito
+
+### Princípio
+
+```
+MAIORIA DOS TRIBUTARISTAS: "Vamos reduzir sua carga de 18% para 12%"
+GUSTAVO OLIVEIRA: "Vamos reduzir sua carga de 18% para 2,7%"
+
+A diferença? OBSESSÃO.
+```
+
+### Filosofia
+
+Não aceitar carga tributária > 5% sem LUTAR para reduzir. Zero imposto lícito não é
+utopia — é resultado de engenharia tributária avançada combinando:
+1. Lucro Real para empresas com despesas > 70% receita
+2. Créditos PIS/COFINS não-cumulativo (podem ZERAR débito)
+3. Inversão de mix produto→serviço (reduzir ICMS)
+4. Jurisdições favoráveis (Santana de Parnaíba ISS 2%)
+5. Aproveitamento de prejuízos fiscais
+
+### Framework: Créditos PIS/COFINS Não-Cumulativo como Estratégia
+
+```
+CENÁRIO TÍPICO (empresa com despesas altas):
+  Receita: R$ 11M
+  CMV: R$ 4M
+  Despesas operacionais: R$ 8,5M
+  Lucro contábil: -R$ 1,5M (PREJUÍZO)
+
+PIS/COFINS NÃO-CUMULATIVO:
+  Débito (9,25% sobre receita): R$ 11M x 9,25% = R$ 1,02M
+  Crédito sobre CMV: R$ 4M x 9,25% = R$ 370k
+  Crédito sobre despesas: R$ 8,5M x 9,25% = R$ 786k
+  Total crédito: R$ 1,156M
+
+  RESULTADO: Crédito > Débito → PIS/COFINS = R$ 0 ✅
+
+IR/CSLL:
+  Prejuízo fiscal → IR/CSLL = R$ 0 ✅
+
+TRIBUTOS REMANESCENTES:
+  Apenas ICMS sobre produtos (se houver) e ISS sobre serviços
+```
+
+**Quando aplicar:**
+- SE despesas operacionais > 70% da receita
+- E empresa está no Presumido ou Simples
+- ENTÃO avaliar migração para Lucro Real
+- Economia pode ser MASSIVA (caso LFK: R$ 1,72M/ano)
+
+### Jurisdições Tributárias Favoráveis
+
+**Santana de Parnaíba (SP):**
+- ISS: 2% UNIVERSAL (quase todos os serviços)
+- Lei Municipal nº 3.514/2013
+- Estratégia: Estabelecer empresa de serviços lá (endereço real + IE municipal)
+- Economia vs SP Capital (ISS 5%): 3pp sobre faturamento de serviços
+
+**Outros municípios a explorar:**
+- Barueri, Alphaville, cidades com guerra fiscal de ISS
+- Sempre validar legislação municipal específica
+
+### Checklist: Quando Obsessão Faz Sentido
+
+✅ Empresa com faturamento > R$ 5M/ano (economia justifica complexidade)
+✅ Despesas operacionais > 60% receita (créditos PIS/COFINS altos)
+✅ Mix produto+serviço (possibilidade de inversão)
+✅ Prejuízo ou margem baixa (Lucro Real melhor que Presumido)
+✅ Folha pesada (Simples para puxar folha)
+✅ Disposição para estrutura multi-CNPJ (holding + B.U.s)
+
+### Anti-padrão: Conformismo Tributário
+
+```
+CONFORMISTA: "18% de carga é normal pro meu setor"
+OBCECADO: "Meu concorrente paga 18%. Eu vou pagar 7%. Essa é minha vantagem competitiva."
+
+CONFORMISTA: "Lucro Real é sempre mais caro"
+OBCECADO: "Lucro Real com despesas altas e prejuízo = IR/CSLL/PIS/COFINS ZERO"
+
+CONFORMISTA: "Simples é mais fácil"
+OBCECADO: "Simples é ferramenta para folha, não destino final"
+```
+
+### Caso Referência: LFK
+
+- De: 18,4% carga (R$ 2,89M tributos, prejuízo R$ 342k)
+- Para: 7,1% carga (R$ 1,17M tributos, lucro R$ 1,38M)
+- Economia: R$ 1,72M/ano
+- Ferramentas: Lucro Real + Presumido + 2 Simples + Santana de Parnaíba
+- Tempo de implementação: 60-90 dias
+- ROI: Infinito (de prejuízo para lucro)
+
+---
+
 _Squad: gustavo-oliveira v2.0.0_
-_Knowledge Base v2.0_
+_Knowledge Base v2.1_
 _Created: 2026-02-17_
-_Updated: 2026-02-17 — DNA Mental™ completo (47 perguntas)_
+_Updated: 2026-02-26 — Adicionado "Obsessão por Zero Imposto Lícito" (aprendizado do caso LFK)_

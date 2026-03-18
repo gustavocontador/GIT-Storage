@@ -2,27 +2,25 @@
 
 **Task ID:** `migrate-workflows-to-yaml`
 **Pattern:** HO-TP-001 (Task Anatomy Standard)
-**Version:** 1.1.0
-**Last Updated:** 2026-02-11
-**Execution Type:** Hybrid (parsing/validation scripts + Agent for semantic conversion)
-**Model:** `Sonnet` (requires understanding workflow semantics for proper conversion)
-**Haiku Eligible:** NO — semantic understanding needed for accurate conversion
+**Version:** 1.0.0
+**Last Updated:** 2026-02-05
+**Deprecated:** true
+**Deprecation Note:** One-time migration task - completed 2026-02-05. Kept for reference only.
 
 ## Task Anatomy
 
 | Field | Value |
 |-------|-------|
 | **task_name** | Migrate Workflows to YAML |
-| **status** | `active` |
+| **status** | `completed` |
 | **responsible_executor** | @squad-chief |
-| **execution_type** | `Hybrid` |
-| **input** | Workflow .md files in any squad's workflows/ folder |
+| **execution_type** | `Agent` |
+| **input** | Workflow .md files in workflows/ folder |
 | **output** | Migrated .yaml files + archived .md files |
 | **action_items** | 4 steps |
 | **acceptance_criteria** | 3 criteria |
 
-**Estimated Time:** 30min per workflow
-**Note:** Reusable task for any squad with legacy .md workflows
+**Estimated Time:** 30min
 
 ## Overview
 
@@ -34,10 +32,9 @@ Migrar workflows em formato `.md` (legacy/narrativo) para o formato `.yaml` padr
 - Suporte a tooling (templates, linters, geradores)
 - Validação por schema
 
-**Exemplo de arquivos a migrar:**
-```
-squads/{squad-name}/workflows/*.md → squads/{squad-name}/workflows/wf-*.yaml
-```
+**Arquivos a migrar:**
+1. `workflows/mind-research-loop.md` → `workflows/wf-mind-research-loop.yaml`
+2. `workflows/research-then-create-agent.md` → `workflows/wf-research-then-create-agent.yaml`
 
 ## Input
 
@@ -258,7 +255,7 @@ phases:
 
 ---
 
-_Task Version: 1.1.0_
+_Task Version: 1.0.0_
 _Pattern: HO-TP-001 (Task Anatomy Standard)_
-_Last Updated: 2026-02-11_
+_Last Updated: 2026-02-05_
 _Compliant: Yes_

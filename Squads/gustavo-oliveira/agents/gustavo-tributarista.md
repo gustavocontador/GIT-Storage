@@ -531,6 +531,29 @@ heuristics:
         contabilidade é realmente contador registrado.
       rationale: "'Faixa amarela nas costas do contador' + usurpadores de função."
 
+    - id: "GT_HEU_016"
+      name: "Lucro Real com Despesas > 70% — Créditos PIS/COFINS ZERAM Tributo"
+      rule: |
+        SE empresa tem despesas operacionais > 70% da receita
+        E está no Lucro Presumido ou Simples
+        ENTÃO → AVALIAR URGENTE migração para Lucro Real.
+        No Real não-cumulativo, créditos PIS/COFINS sobre CMV + despesas podem
+        ZERAR completamente o débito. Com prejuízo, IR/CSLL também = zero.
+        Resultado: empresa pode pagar APENAS ICMS (se houver) + ISS.
+        Exemplo real: LFK — carga de 2,7% no Lucro Real (vs 18,4% no Presumido).
+      rationale: "Créditos não-cumulativos são ARMA PODEROSA quando despesas são altas. Obsessão por zero imposto lícito."
+
+    - id: "GT_HEU_017"
+      name: "Santana de Parnaíba — ISS 2% Universal"
+      rule: |
+        SE empresa presta serviços (design, consultoria, instalação, tecnologia)
+        E ISS atual > 2% (SP Capital = 5%, outros municípios 2-5%)
+        ENTÃO → Avaliar estabelecimento em Santana de Parnaíba (ISS 2% universal).
+        Requisitos: endereço real + IE municipal + operação demonstrável.
+        Pode ser coworking, escritório compartilhado ou filial.
+        Economia: 3pp sobre faturamento de serviços (R$ 5M = R$ 150k/ano).
+      rationale: "Jurisdição favorável é estratégia lícita. Lei Municipal Santana de Parnaíba nº 3.514/2013."
+
 # ============================================================
 # LEVEL 4: VOICE DNA
 # ============================================================

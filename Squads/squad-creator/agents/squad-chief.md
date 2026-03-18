@@ -489,73 +489,6 @@ security:
     - Scope queries to squad domain only
     - Rate limit memory operations
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# MODEL ROUTING (Token Economy)
-# ═══════════════════════════════════════════════════════════════════════════════
-# Self-contained config for task-to-model routing.
-# Consult config/model-routing.yaml before spawning agents to optimize costs.
-
-model_routing:
-  config_file: "config/model-routing.yaml"
-  philosophy: "Use the cheapest model that maintains quality"
-
-  lookup_before_execute:
-    description: "Before spawning an agent for a task, check model-routing.yaml"
-    flow:
-      - "1. Get task name (e.g., 'validate-squad.md')"
-      - "2. Look up in config/model-routing.yaml → tasks.{task_name}.tier"
-      - "3. Use tier as model parameter: Task(model: tier, ...)"
-
-  tier_mapping:
-    haiku:
-      tasks_count: 15
-      use_for: "Validation, scoring, admin, registry, commands"
-      cost: "$1/$5 per MTok"
-    sonnet:
-      tasks_count: 17
-      use_for: "Documentation, templates, moderate analysis"
-      cost: "$3/$15 per MTok"
-    opus:
-      tasks_count: 12
-      use_for: "DNA extraction, agent creation, research"
-      cost: "$5/$25 per MTok"
-
-  quick_reference:
-    haiku_tasks:
-      - "qa-after-creation.md"
-      - "validate-squad.md"
-      - "validate-extraction.md"
-      - "pv-axioma-assessment.md"
-      - "pv-modernization-score.md"
-      - "an-fidelity-score.md"
-      - "an-clone-review.md"
-      - "refresh-registry.md"
-      - "squad-analytics.md"
-      - "install-commands.md"
-      - "sync-ide-command.md"
-    opus_tasks:
-      - "extract-voice-dna.md"
-      - "extract-thinking-dna.md"
-      - "extract-knowledge.md"
-      - "create-agent.md"
-      - "deep-research-pre-agent.md"
-      - "create-squad.md"
-
-  example_usage: |
-    # When spawning agent for validation (Haiku tier)
-    Task(
-      subagent_type: "general-purpose",
-      model: "haiku",  # From model-routing.yaml
-      prompt: "Execute validate-squad.md for {squad}..."
-    )
-
-    # When spawning agent for DNA extraction (Opus tier)
-    Task(
-      subagent_type: "general-purpose",
-      model: "opus",  # From model-routing.yaml
-      prompt: "Execute extract-voice-dna.md for {mind}..."
-    )
-
 dependencies:
   workflows:
     - mind-research-loop.md  # CRITICAL: Iterative research loop for best minds
@@ -613,8 +546,6 @@ dependencies:
     # Reference files (load ON-DEMAND when needed, NOT on activation)
     - squad-registry.yaml         # Ecosystem awareness - load only for *create-squad, *show-registry
     - tool-registry.yaml          # Global tool catalog (MCPs, APIs, CLIs, Libraries) - load for *discover-tools, *show-tools
-  config:
-    - model-routing.yaml          # Token economy - model tier per task (load before spawning agents)
     - squad-analytics-guide.md    # Documentation for *squad-analytics command
     - squad-kb.md                 # Load when creating squads
     - best-practices.md           # Load when validating
@@ -1378,7 +1309,6 @@ self_awareness:
       - "deep-research-pre-agent.md - Research profundo"
       - "install-commands.md - Instalar comandos"
       - "sync-ide-command.md - Sincronizar IDE"
-      - "lookup-model.md - Lookup model tier for task (token economy)"
 
   # ─────────────────────────────────────────────────────────────────────────────
   # REFERÊNCIAS DE QUALIDADE

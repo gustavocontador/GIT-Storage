@@ -2,32 +2,11 @@
 
 > Pedro Valério | Loaded on-demand when `*modernization-score {workflow}` is invoked
 
-**Execution Type:** Worker (Script-Only)
-**Worker Script:** `scripts/modernization-score.sh`
-**Model:** `Haiku` (QUALIFIED — 100% deterministic via script)
-**Haiku Eligible:** YES — script handles all 12 checks, LLM only formats summary
+**Execution Type:** Agent
 
 ## Purpose
 
 Aplicar 12-point checklist para avaliar se workflow segue padrões modernos AIOS
-
----
-
-## MANDATORY PREFLIGHT: Run Worker Script FIRST
-
-```
-EXECUTE FIRST — before ANY manual checking:
-
-  bash squads/squad-creator/scripts/modernization-score.sh <workflow-path>
-
-IF the command fails → FIX the script error. Do NOT proceed manually.
-IF the command succeeds → Use ONLY these results.
-
-VETO: Do NOT grep patterns yourself. The script checks all 12 patterns in <1s.
-      Your job is SUMMARY ONLY — add context about which patterns matter most.
-```
-
----
 
 ## Pre-requisite
 
@@ -39,17 +18,15 @@ Load `squads/squad-creator/data/pv-workflow-validation.yaml` for the complete 12
 
 ## Steps
 
-### 1. Execute Script
+### 1. Load Framework
 
-```bash
-bash squads/squad-creator/scripts/modernization-score.sh <workflow-path> > /tmp/preflight-modernization-score.yaml
-```
+Read `squads/squad-creator/data/pv-workflow-validation.yaml`
 
-### 2. Read Script Output
+### 2. Read Workflow
 
-Read `/tmp/preflight-modernization-score.yaml` and use as the authoritative score.
+Read the complete workflow file to be evaluated
 
-### 3. Check Each Pattern (REFERENCE ONLY)
+### 3. Check Each Pattern
 
 | # | Pattern | Check For | Legacy If |
 |---|---------|-----------|-----------|

@@ -309,8 +309,8 @@ check_security() {
 
   log_subsection "2.1 API Keys & Tokens"
 
-  # API Keys (excluding placeholders, examples, documentation, fake values, test fixtures)
-  local api_keys=$(grep -rE "(api[_-]?key|apikey)[[:space:]]*[:=][[:space:]]*['\"][^'\"\$\{]{8,}" "$SQUAD_DIR" 2>/dev/null | grep -vE "(\{\{|\\\$\{|process\.env|[Ee]xample|placeholder|grep|pattern|EXAMPLE|sk-1234|your-key|#.*api|/tests/|test_|_test\.)" || true)
+  # API Keys (excluding placeholders, examples, documentation, fake values)
+  local api_keys=$(grep -rE "(api[_-]?key|apikey)[[:space:]]*[:=][[:space:]]*['\"][^'\"\$\{]{8,}" "$SQUAD_DIR" 2>/dev/null | grep -vE "(\{\{|\\\$\{|process\.env|[Ee]xample|placeholder|grep|pattern|EXAMPLE|sk-1234|your-key|#.*api)" || true)
   if [[ -n "$api_keys" ]]; then
     log_fail "SEC-001: Potential API keys found"
     sec_fail=$((sec_fail + 1))
@@ -318,8 +318,8 @@ check_security() {
     log_pass "SEC-001: No hardcoded API keys"
   fi
 
-  # Secrets (excluding examples, documentation, fake values, test fixtures)
-  local secrets=$(grep -rE "(secret|password)[[:space:]]*[:=][[:space:]]*['\"][^'\"\$\{]{8,}" "$SQUAD_DIR" 2>/dev/null | grep -vE "(\{\{|\\\$\{|process\.env|[Ee]xample|placeholder|grep|pattern|EXAMPLE|secret_key|your-secret|#.*secret|#.*password|mySecret|super-secret|-secret-|-here|/tests/|test_|_test\.)" || true)
+  # Secrets (excluding examples, documentation, fake values, obvious test secrets)
+  local secrets=$(grep -rE "(secret|password)[[:space:]]*[:=][[:space:]]*['\"][^'\"\$\{]{8,}" "$SQUAD_DIR" 2>/dev/null | grep -vE "(\{\{|\\\$\{|process\.env|[Ee]xample|placeholder|grep|pattern|EXAMPLE|secret_key|your-secret|#.*secret|#.*password|mySecret|super-secret|-secret-|-here)" || true)
   if [[ -n "$secrets" ]]; then
     log_fail "SEC-002: Potential secrets found"
     sec_fail=$((sec_fail + 1))
