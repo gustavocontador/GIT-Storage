@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donna — Arquitetura Completa</title>
+<style>
+  :root {
+    --bg: #0a0a12;
+    --card: #12121e;
+    --border: #1e1e3a;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --pink: #ec4899;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 30px; }
+
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 2.2em; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header p { color: var(--muted); margin-top: 8px; font-size: 1.1em; }
+  .header .version { color: var(--accent); font-size: 0.85em; margin-top: 4px; }
+
+  /* Core Engine */
+  .core { background: linear-gradient(135deg, #1a1040, #0d1025); border: 2px solid var(--accent); border-radius: 20px; padding: 30px; margin-bottom: 30px; position: relative; }
+  .core::before { content: "ENGINE"; position: absolute; top: -12px; left: 30px; background: var(--accent); color: white; font-size: 0.7em; font-weight: 700; padding: 2px 12px; border-radius: 6px; letter-spacing: 1px; }
+  .core-inner { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+
+  /* Sections */
+  .section { margin-bottom: 30px; }
+  .section-title { font-size: 0.75em; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 14px; padding-left: 4px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card .icon { font-size: 1.8em; margin-bottom: 8px; }
+  .card .title { font-weight: 600; font-size: 0.95em; margin-bottom: 4px; }
+  .card .desc { color: var(--muted); font-size: 0.8em; line-height: 1.4; }
+  .card .badge { display: inline-block; font-size: 0.65em; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-top: 6px; }
+
+  .badge-green { background: #16a34a22; color: var(--green); border: 1px solid #16a34a44; }
+  .badge-yellow { background: #ca8a0422; color: var(--yellow); border: 1px solid #ca8a0444; }
+  .badge-blue { background: #2563eb22; color: var(--blue); border: 1px solid #2563eb44; }
+  .badge-pink { background: #db277722; color: var(--pink); border: 1px solid #db277744; }
+  .badge-orange { background: #ea580c22; color: var(--orange); border: 1px solid #ea580c44; }
+  .badge-red { background: #dc262622; color: var(--red); border: 1px solid #dc262644; }
+  .badge-accent { background: #7c3aed22; color: var(--accent); border: 1px solid #7c3aed44; }
+
+  /* Persona */
+  .persona { background: linear-gradient(135deg, #1a0a2e, #0d1025); border: 2px solid var(--pink); border-radius: 16px; padding: 20px; text-align: center; min-width: 220px; }
+  .persona .emoji { font-size: 3em; }
+  .persona .name { font-size: 1.3em; font-weight: 700; margin-top: 6px; }
+  .persona .role { color: var(--pink); font-size: 0.85em; }
+  .persona .quote { color: var(--muted); font-style: italic; font-size: 0.8em; margin-top: 8px; }
+
+  /* Stats */
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; text-align: center; min-width: 120px; }
+  .stat-card .num { font-size: 1.8em; font-weight: 700; }
+  .stat-card .label { color: var(--muted); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Flow */
+  .flow { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 20px 0; }
+  .flow-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 0.85em; text-align: center; }
+  .flow-arrow { color: var(--accent); font-size: 1.2em; }
+
+  /* Categories */
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  .cat { border-radius: 10px; padding: 10px 14px; font-size: 0.8em; border: 1px solid; }
+  .cat .cat-name { font-weight: 600; }
+  .cat .cat-rule { font-size: 0.75em; opacity: 0.7; }
+
+  /* Cron timeline */
+  .timeline { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cron { background: #1a1a2e; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 0.75em; }
+  .cron .time { color: var(--accent2); font-weight: 700; }
+
+  /* Footer */
+  .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .footer p { color: var(--muted); font-size: 0.8em; }
+
+  /* Connection lines visual */
+  .connector { text-align: center; padding: 10px 0; color: var(--accent); font-size: 1.5em; letter-spacing: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>DONNA</h1>
+  <p>Chefe de Gabinete Executiva de IA</p>
+  <div class="version">OpenClaw v2026.3.13 | Inspiração: Donna Paulsen (Suits)</div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat-card"><div class="num" style="color:var(--accent)">32</div><div class="label">Skills Ready</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--accent2)">13</div><div class="label">Cron Jobs</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--green)">12</div><div class="label">Integrações</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--yellow)">8</div><div class="label">Categorias</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--pink)">35</div><div class="label">Squads</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--blue)">8</div><div class="label">DBs Supabase</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--orange)">6</div><div class="label">DBs Notion</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--accent2)">8</div><div class="label">CLIs Novos</div></div>
+</div>
+
+<!-- Core Engine -->
+<div class="core">
+  <div class="core-inner">
+    <div class="persona">
+      <div class="emoji">👩‍💼</div>
+      <div class="name">Donna</div>
+      <div class="role">Chefe de Gabinete Executiva</div>
+      <div class="quote">"Eu não espero. Eu antecipo."</div>
+      <div style="margin-top:10px;">
+        <span class="badge badge-pink">TDAH-Optimized</span>
+        <span class="badge badge-accent">Proativa</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:280px;">
+      <div class="card">
+        <div class="title">🧠 AI Models</div>
+        <div class="desc">
+          <strong>Primary:</strong> Claude Sonnet 4.5<br>
+          <strong>Fallback:</strong> Opus 4.6 → OpenRouter → GPT-4.1 → Auto<br>
+          <strong>Heartbeat:</strong> Llama 3.2:3b (Ollama local, 30min)
+        </div>
+      </div>
+      <div class="card">
+        <div class="title">📋 Regras Core</div>
+        <div class="desc">
+          Max 3 itens por lista | Default em toda pergunta | Countdown (nunca horário)<br>
+          Info contábil: OK para todos | Info bancária: BLOQUEADA para todos<br>
+          Interage com contatos + resume pro Gustavo via message tool
+        </div>
+      </div>
+      <div class="card">
+        <div class="title">🔐 Segurança</div>
+        <div class="desc">
+          Confirma antes: propostas, reagendamentos, cobranças duras<br>
+          Auto-execute: tarefas, calendário, resumos, lembretes<br>
+          Autoridade única: só Gustavo altera a Donna
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="connector">▼ ▼ ▼</div>
+
+<!-- Canais -->
+<div class="section">
+  <div class="section-title">📡 Canais de Comunicação</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">📱</div>
+      <div class="title">WhatsApp</div>
+      <div class="desc">Canal principal. Baileys (migrando → Cloud API via Chakra Chat)</div>
+      <span class="badge badge-yellow">Migrando</span>
+    </div>
+    <div class="card">
+      <div class="icon">💼</div>
+      <div class="title">Microsoft Teams</div>
+      <div class="desc">Canal corporativo. Extension msteams instalada. Bot em localhost:3978</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">📧</div>
+      <div class="title">Email (Graph API)</div>
+      <div class="desc">Microsoft Graph OAuth 2.0. gustavo@oacontabil.com.br</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">📅</div>
+      <div class="title">Google Calendar</div>
+      <div class="desc">OAuth 2.0 com refresh token. Detecção de conflitos.</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+  </div>
+</div>
+
+<div class="connector">▼ ▼ ▼</div>
+
+<!-- Skills T1 -->
+<div class="section">
+  <div class="section-title">⚡ Skills — Tier 1 (Alto Impacto, Rápidos)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🔍</div>
+      <div class="title">Web Search</div>
+      <div class="desc">EXA + Apify + Brave (Docker MCP)</div>
+      <span class="badge badge-yellow">Needs API Keys</span>
+    </div>
+    <div class="card">
+      <div class="icon">📢</div>
+      <div class="title">Broadcast Grupos</div>
+      <div class="desc">Envio para múltiplos grupos WhatsApp</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <div class="title">Resumo Grupos</div>
+      <div class="desc">Resumo diário automático (seg-sex 20:00)</div>
+      <span class="badge badge-green">Cron Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">☁️</div>
+      <div class="title">Cloud API</div>
+      <div class="desc">Meta oficial via Chakra Chat (Coexistence)</div>
+      <span class="badge badge-yellow">Sincronizando</span>
+    </div>
+  </div>
+</div>
+
+<!-- Skills T2 -->
+<div class="section">
+  <div class="section-title">🔧 Skills — Tier 2 (Médio Impacto, Configuráveis)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🗄️</div>
+      <div class="title">Supabase Bridge</div>
+      <div class="desc">Memória persistente. 50+ sessões, 38K+ msgs, daemon ativo</div>
+      <span class="badge badge-green">Daemon Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <div class="title">N8N Automações</div>
+      <div class="desc">2 workflows: webhook-receiver + notion-sync. Docker :5678</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">📝</div>
+      <div class="title">Notion Integration</div>
+      <div class="desc">6 databases: Tarefas, Follow-ups, Deals, Notas, Biblioteca, Root</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">🎤</div>
+      <div class="title">Voice-to-Action</div>
+      <div class="desc">Áudio → Whisper → Claude → Notion + Cron + Calendar</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+  </div>
+</div>
+
+<!-- Skills T3 -->
+<div class="section">
+  <div class="section-title">🚀 Skills — Tier 3 (Transformacional)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <div class="title">Multi-Agent</div>
+      <div class="desc">35 squads: tributário, contábil, paralegal, copy, zona genialidade</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">🧠</div>
+      <div class="title">Proactive Intelligence</div>
+      <div class="desc">Conflitos agenda 07:00, follow-ups 09:00, email triage 08:30</div>
+      <span class="badge badge-green">3 Crons</span>
+    </div>
+    <div class="card">
+      <div class="icon">💰</div>
+      <div class="title">Financial Tracking</div>
+      <div class="desc">Detecção automática de cobranças/pagamentos em conversas</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">📱</div>
+      <div class="title">Teams App</div>
+      <div class="desc">Donna no celular via Teams. Manifest pronto, sideload pendente.</div>
+      <span class="badge badge-blue">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- Voz, Media & Geração -->
+<div class="section">
+  <div class="section-title">🎙️ Voz, Media & Geração</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🗣️</div>
+      <div class="title">ElevenLabs TTS (sag)</div>
+      <div class="desc">Text-to-Speech com voz personalizada. API key ativa. CLI: sag v0.2.2</div>
+      <span class="badge badge-green">CLI Instalado</span>
+    </div>
+    <div class="card">
+      <div class="icon">🎤</div>
+      <div class="title">OpenAI Whisper (Local)</div>
+      <div class="desc">Transcrição de áudio local sem API key.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🌐</div>
+      <div class="title">OpenAI Whisper API</div>
+      <div class="desc">Transcrição via API (whisper-1, pt-BR).</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🎨</div>
+      <div class="title">OpenAI Image Gen</div>
+      <div class="desc">Geração de imagens via DALL-E API.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🍌</div>
+      <div class="title">Gemini 3 Image (Nano Banana)</div>
+      <div class="desc">Gerar e editar imagens via Gemini 3 Pro Image.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🎬</div>
+      <div class="title">Video Frames</div>
+      <div class="desc">Extração de frames e clips de vídeos via ffmpeg.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🧾</div>
+      <div class="title">Summarize</div>
+      <div class="desc">Resumir URLs, podcasts, vídeos, transcrições.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📄</div>
+      <div class="title">PDF Toolkit</div>
+      <div class="desc">Ler, extrair texto, manipular PDFs com linguagem natural.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- YouTube & Browser -->
+<div class="section">
+  <div class="section-title">🌐 YouTube, Browser & Pesquisa</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">▶️</div>
+      <div class="title">YouTube Watcher</div>
+      <div class="desc">Buscar, assistir e analisar vídeos do YouTube.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📜</div>
+      <div class="title">YouTube Transcript</div>
+      <div class="desc">Extrair e resumir transcrições de vídeos.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🌍</div>
+      <div class="title">Agent Browser</div>
+      <div class="desc">Navegar na web, preencher forms, tirar screenshots, automação.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📍</div>
+      <div class="title">Google Places</div>
+      <div class="desc">Buscar restaurantes, locais, reviews. CLI: goplaces.</div>
+      <span class="badge badge-green">CLI Instalado</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔍</div>
+      <div class="title">Web Search (EXA/Apify/Brave)</div>
+      <div class="desc">Busca web via Docker MCP. 3 providers ativados.</div>
+      <span class="badge badge-yellow">Needs API Keys</span>
+    </div>
+  </div>
+</div>
+
+<!-- Apple Ecosystem -->
+<div class="section">
+  <div class="section-title">🍎 Apple Ecosystem & Comunicação</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">⏰</div>
+      <div class="title">Apple Reminders</div>
+      <div class="desc">Criar, editar, completar lembretes no iPhone/Mac. CLI: remindctl.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📨</div>
+      <div class="title">iMessage/SMS</div>
+      <div class="desc">Enviar mensagens via Messages.app. CLI: imsg.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🎵</div>
+      <div class="title">Spotify Player</div>
+      <div class="desc">Buscar e tocar músicas via terminal. CLI: spogo.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">👀</div>
+      <div class="title">Peekaboo (Screen)</div>
+      <div class="desc">Capturar e automatizar a interface do macOS.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📞</div>
+      <div class="title">Voice Call</div>
+      <div class="desc">Iniciar chamadas de voz via OpenClaw plugin.</div>
+      <span class="badge badge-orange">Pendente</span>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <div class="title">Model Usage</div>
+      <div class="desc">Custos de IA por modelo (Claude, GPT). CLI: codexbar.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- Google Suite + Outlook -->
+<div class="section">
+  <div class="section-title">☁️ Google Suite & Microsoft</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">📧</div>
+      <div class="title">Gmail</div>
+      <div class="desc">Ler, enviar, gerenciar emails, threads, labels, drafts.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+    <div class="card">
+      <div class="icon">📅</div>
+      <div class="title">Google Calendar</div>
+      <div class="desc">Listar, criar, atualizar, deletar eventos.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+    <div class="card">
+      <div class="icon">👥</div>
+      <div class="title">Google Contacts</div>
+      <div class="desc">Gerenciar contatos, grupos, buscar pessoas.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+    <div class="card">
+      <div class="icon">📁</div>
+      <div class="title">Google Drive</div>
+      <div class="desc">Listar, buscar, criar, gerenciar arquivos e pastas.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+    <div class="card">
+      <div class="icon">📬</div>
+      <div class="title">Outlook Graph</div>
+      <div class="desc">Email, calendário, contatos via Microsoft Graph API.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+    <div class="card">
+      <div class="icon">📝</div>
+      <div class="title">Notion</div>
+      <div class="desc">Pages, databases, blocks via Notion API.</div>
+      <span class="badge badge-green">Workspace Skill</span>
+    </div>
+  </div>
+</div>
+
+<!-- DevTools & CLI -->
+<div class="section">
+  <div class="section-title">🛠️ Developer Tools & CLIs</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">📱</div>
+      <div class="title">wacli</div>
+      <div class="desc">WhatsApp CLI — buscar contatos, histórico, enviar msgs. Instalado (auth pendente).</div>
+      <span class="badge badge-yellow">Auth Pendente</span>
+    </div>
+    <div class="card">
+      <div class="icon">🧩</div>
+      <div class="title">Coding Agent</div>
+      <div class="desc">Delegar tarefas de código para Codex, Claude Code ou Pi.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🐙</div>
+      <div class="title">GitHub + GH-Issues</div>
+      <div class="desc">PRs, issues, CI runs, code review via gh CLI.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">📦</div>
+      <div class="title">ClawHub</div>
+      <div class="desc">Marketplace de skills — search, install, publish.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔧</div>
+      <div class="title">Skill Creator</div>
+      <div class="desc">Criar, editar, auditar AgentSkills.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔌</div>
+      <div class="title">MCPorter</div>
+      <div class="desc">Gerenciar MCP servers/tools diretamente.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- Network & Security -->
+<div class="section">
+  <div class="section-title">🌐 Rede & Segurança</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🔒</div>
+      <div class="title">Tailscale</div>
+      <div class="desc">Rede privada. VPS Hetzner, remote access. Funnel para expor serviços.</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">🛡️</div>
+      <div class="title">Healthcheck</div>
+      <div class="desc">Auditoria de segurança, hardening, firewall, SSH.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">☔</div>
+      <div class="title">Weather</div>
+      <div class="desc">Previsão do tempo via wttr.in / Open-Meteo. Sem API key.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔗</div>
+      <div class="title">Node Connect</div>
+      <div class="desc">Diagnóstico de conexão e pairing para companion apps.</div>
+      <span class="badge badge-green">Ready</span>
+    </div>
+  </div>
+</div>
+
+<div class="connector">▼ ▼ ▼</div>
+
+<!-- Categorias -->
+<div class="section">
+  <div class="section-title">🏷️ Categorias de Contato (WhatsApp Business Labels)</div>
+  <div class="cat-grid">
+    <div class="cat" style="border-color:#22c55e;background:#22c55e11"><div class="cat-name">🟢 Time OA</div><div class="cat-rule">Interage livre</div></div>
+    <div class="cat" style="border-color:#3b82f6;background:#3b82f611"><div class="cat-name">🔵 Cliente Ativo</div><div class="cat-rule">Profissional, confirma</div></div>
+    <div class="cat" style="border-color:#eab308;background:#eab30811"><div class="cat-name">🟡 Prospect</div><div class="cat-rule">Cordial, cautelosa</div></div>
+    <div class="cat" style="border-color:#ef4444;background:#ef444411"><div class="cat-name">🔴 Família</div><div class="cat-rule">Não interage</div></div>
+    <div class="cat" style="border-color:#94a3b8;background:#94a3b811"><div class="cat-name">⚪ Fornecedor</div><div class="cat-rule">Objetivo, operacional</div></div>
+    <div class="cat" style="border-color:#a855f7;background:#a855f711"><div class="cat-name">🟣 VIP/Parceiro</div><div class="cat-rule">Prioridade máxima</div></div>
+    <div class="cat" style="border-color:#78716c;background:#78716c11"><div class="cat-name">🟤 Sócios</div><div class="cat-rule">Alta prioridade</div></div>
+    <div class="cat" style="border-color:#475569;background:#47556911"><div class="cat-name">⚫ Maçonaria</div><div class="cat-rule">Respeitoso, pessoal</div></div>
+  </div>
+</div>
+
+<div class="connector">▼ ▼ ▼</div>
+
+<!-- Automações -->
+<div class="section">
+  <div class="section-title">⏰ Automações Diárias (13 Cron Jobs)</div>
+  <div class="timeline">
+    <div class="cron"><span class="time">07:00</span> Conflitos agenda</div>
+    <div class="cron"><span class="time">07:30</span> Briefing manhã</div>
+    <div class="cron"><span class="time">08:00</span> Água 💧</div>
+    <div class="cron"><span class="time">08:30</span> Email triage</div>
+    <div class="cron"><span class="time">09:00</span> Follow-ups vencidos</div>
+    <div class="cron"><span class="time">10:00</span> Água 💧</div>
+    <div class="cron"><span class="time">12:00</span> Água 💧</div>
+    <div class="cron"><span class="time">13:00</span> Update meio-dia</div>
+    <div class="cron"><span class="time">14:00</span> Água 💧</div>
+    <div class="cron"><span class="time">16:00</span> Água 💧</div>
+    <div class="cron"><span class="time">18:00</span> Água 💧</div>
+    <div class="cron"><span class="time">18:30</span> Fechamento dia</div>
+    <div class="cron"><span class="time">20:00</span> Resumo grupos</div>
+  </div>
+</div>
+
+<div class="connector">▼ ▼ ▼</div>
+
+<!-- Infraestrutura -->
+<div class="section">
+  <div class="section-title">🏗️ Infraestrutura</div>
+  <div class="grid-3 grid">
+    <div class="card">
+      <div class="title">🗃️ Supabase</div>
+      <div class="desc">
+        <strong>Projeto:</strong> zjhxvtdbwtfstcrkcwnt<br>
+        <strong>Tabelas:</strong> sessions, messages, events, sync_log, financial_records, financial_monthly_summary, openclaw_fleet, openclaw_skills<br>
+        <strong>Bridge:</strong> Daemon sync em tempo real
+      </div>
+      <span class="badge badge-green">8 tabelas</span>
+    </div>
+    <div class="card">
+      <div class="title">📝 Notion</div>
+      <div class="desc">
+        <strong>Databases:</strong><br>
+        Tarefas | Follow-ups & Cobranças | Deals & Pipeline | Notas | Biblioteca | Root<br>
+        <strong>Sync:</strong> N8N a cada 30min
+      </div>
+      <span class="badge badge-green">6 databases</span>
+    </div>
+    <div class="card">
+      <div class="title">🐳 Docker</div>
+      <div class="desc">
+        <strong>N8N:</strong> localhost:5678 (2 workflows)<br>
+        <strong>Portainer:</strong> localhost:9443<br>
+        <strong>MCP:</strong> EXA + Apify + Brave
+      </div>
+      <span class="badge badge-green">3 containers</span>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline Voice -->
+<div class="section">
+  <div class="section-title">🎤 Pipeline Voice-to-Action</div>
+  <div class="flow">
+    <div class="flow-item">📱 Áudio<br><small>WhatsApp</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">🎙️ Whisper<br><small>Transcrição pt-BR</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">🧠 Claude<br><small>Interpreta + Extrai</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">📝 Notion<br><small>Tarefas + Follow-ups</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">⏰ Cron<br><small>Lembretes</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">📱 Resposta<br><small>Resumo executivo</small></div>
+  </div>
+</div>
+
+<!-- Fleet Management -->
+<div class="section">
+  <div class="section-title">🦞 OpenClaw Manager — Fleet Orchestrator</div>
+  <div class="grid-2 grid">
+    <div class="card">
+      <div class="title">🎯 Donna (Claw #1)</div>
+      <div class="desc">
+        <strong>Status:</strong> Active | <strong>Health:</strong> Healthy<br>
+        <strong>Skills:</strong> 13 | <strong>Integrações:</strong> 10<br>
+        <strong>Fleet ID:</strong> 2e48046c-2486-43d5-a2d1-bc30ae665672
+      </div>
+      <span class="badge badge-green">Registered</span>
+    </div>
+    <div class="card">
+      <div class="title">🔧 Fleet Management</div>
+      <div class="desc">
+        <strong>Agents:</strong> openclaw-chief, claw-provisioner, fleet-monitor, skill-ops<br>
+        <strong>Workflows:</strong> provision, brownfield-upgrade, daily-fleet<br>
+        <strong>Capacity:</strong> Pronto para N claws
+      </div>
+      <span class="badge badge-accent">Orchestrator</span>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="section">
+  <div class="section-title">📊 Dashboard & Monitoramento</div>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">📊</div>
+      <div class="title">Painel Executivo</div>
+      <div class="desc">localhost:3333 — KPIs, tarefas, follow-ups, deals, atividade</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">🐳</div>
+      <div class="title">Portainer</div>
+      <div class="desc">localhost:9443 — Gestão de containers Docker</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <div class="title">N8N</div>
+      <div class="desc">localhost:5678 — Automações visuais</div>
+      <span class="badge badge-green">Ativo</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔍</div>
+      <div class="title">Chakra Chat</div>
+      <div class="desc">app.chakrahq.com — BSP WhatsApp Cloud API</div>
+      <span class="badge badge-yellow">Sincronizando</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p><strong>Donna v0.2.0</strong> — OpenClaw v2026.3.13 | Gustavo Oliveira — OA Contábil</p>
+  <p style="margin-top:4px;">32 skills ready | 8 CLIs novos | safeBinTrustedDirs: /opt/homebrew/bin</p>
+  <p style="margin-top:4px;">Patch globalThis ativo (Issue #14406) | session.dmScope: per-channel-peer | agentToAgent: enabled</p>
+  <p style="margin-top:8px;color:var(--accent);">Migração em andamento: Baileys → Meta Cloud API (Coexistence via Chakra Chat)</p>
+  <p style="margin-top:4px;color:var(--muted);">Atualizado: 2026-03-20</p>
+</div>
+
+</body>
+</html>
