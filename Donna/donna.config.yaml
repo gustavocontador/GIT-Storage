@@ -1,0 +1,170 @@
+# ============================================
+# Donna — AI Executive Chief of Staff
+# ============================================
+# Configuração principal do projeto
+# ============================================
+
+project:
+  name: donna
+  version: 0.1.0
+  description: "Chefe de Gabinete Executiva de IA"
+  inspiration: "Donna Paulsen — Suits (2011-2019)"
+  language: pt-BR
+
+# Principal
+principal:
+  name: Gustavo
+  email: gustavo@oacontabil.com.br
+  profile: adhd-optimized
+  timezone: America/Sao_Paulo
+
+# Engine
+engine:
+  platform: openclaw
+  ai_model: claude
+  ai_provider: anthropic
+  fallback_model: gpt-4o
+  transcription: whisper-1
+  transcription_language: pt
+
+# Canais
+channels:
+  whatsapp:
+    enabled: true
+    provider: openclaw  # via WhatsApp Web protocol
+    personal_inbox: "Eu, eu mesmo e Irene"  # grupo pessoal para inputs
+    group_monitoring: true
+    mention_alerts: true
+    summary_schedule: "08:00,12:00,18:00"
+
+  teams:
+    enabled: true
+    provider: microsoft-graph
+    tenant_id: "${MS_TENANT_ID}"
+    client_id: "${MS_CLIENT_ID}"
+    scope: "Mail.Read Mail.Send Calendars.ReadWrite Chat.Read Chat.ReadWrite Presence.Read"
+
+  outlook:
+    enabled: true
+    provider: microsoft-graph
+    email: gustavo@oacontabil.com.br
+    folders_watch: ["Inbox", "Sent"]
+    auto_categorize: true
+
+  google_calendar:
+    enabled: true
+    provider: google-calendar-api
+    calendar_id: primary
+    conflict_detection: true
+
+# Persona
+persona:
+  source: docs/research/donna-dna.md
+  design_constraints: docs/research/adhd-design-guide.md
+  tone: warm-authoritative
+  humor: sharp-but-kind
+  verbosity: minimal
+  proactivity: extreme
+
+  # ADHD-specific settings
+  adhd:
+    max_steps_visible: 3
+    max_options: 3
+    always_default: true
+    celebrate_wins: true
+    time_as_countdown: true
+    never_shame: true
+    fresh_start_daily: true
+
+# Painel Executivo
+executive_panel:
+  columns:
+    - inbox_captured
+    - today
+    - this_week
+    - waiting_response
+    - delegated
+    - in_progress
+    - completed
+    - cancelled
+
+  priority_logic:
+    - commitments_with_time     # 1. Compromissos com horário
+    - deadlines_48h             # 2. Prazos em até 48h
+    - promises_made             # 3. Promessas feitas a terceiros
+    - blocking_dependencies     # 4. Pendências que bloqueiam outras
+    - unanswered_followups      # 5. Cobranças sem resposta
+    - strategic_no_deadline     # 6. Tarefas estratégicas sem prazo
+    - admin_low_urgency         # 7. Itens administrativos baixa urgência
+
+# Follow-up Detection
+followup:
+  trigger_phrases:
+    - "te retorno"
+    - "vou ver isso"
+    - "te mando"
+    - "falamos amanhã"
+    - "me lembra"
+    - "cobra fulano"
+    - "marca isso"
+    - "depois alinhamos"
+    - "vou resolver"
+    - "fico de mandar"
+    - "semana que vem"
+    - "assim que puder"
+
+  collection_tones:
+    - cordial
+    - firme
+    - executivo
+    - urgente
+
+  escalation:
+    first_reminder: 24h
+    second_reminder: 72h
+    escalation: 7d
+
+# Alertas de Agenda
+calendar_alerts:
+  - trigger: 24h_before
+    message: "Amanhã: {event}. Preparação necessária?"
+  - trigger: start_of_day
+    message: "Briefing do dia"
+  - trigger: 1h_before
+    message: "{event} em 1 hora"
+  - trigger: 15min_before
+    message: "{event} em 15 minutos"
+  - trigger: conflict_detected
+    message: "CONFLITO: {event1} vs {event2}"
+
+# Relatórios
+reports:
+  daily_briefing:
+    time: "07:30"
+    includes: [meetings, priorities, followups, people_to_chase, risks]
+
+  weekly_report:
+    day: monday
+    time: "08:00"
+    includes: [deliveries, open_items, overdue, unanswered, bottlenecks, next_week]
+
+  post_audio:
+    auto: true
+    includes: [understood, tasks_created, meetings, followups, questions]
+
+# Segurança
+security:
+  confirm_before:
+    - send_external_message
+    - reschedule_meeting
+    - cancel_commitment
+    - share_sensitive_info
+    - harsh_collection_tone
+    - change_third_party_deadlines
+
+  auto_execute:
+    - internal_task_creation
+    - calendar_check
+    - email_categorization
+    - summary_generation
+    - reminder_creation

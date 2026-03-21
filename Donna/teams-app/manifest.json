@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "id": "65260b5c-ec87-43eb-a889-6be55cdc61af",
+  "developer": {
+    "name": "OA Contabil",
+    "websiteUrl": "https://oacontabil.com.br",
+    "privacyUrl": "https://oacontabil.com.br",
+    "termsOfUseUrl": "https://oacontabil.com.br"
+  },
+  "name": {
+    "short": "Donna",
+    "full": "Donna - Chefe de Gabinete Executiva de IA"
+  },
+  "description": {
+    "short": "Sua Chefe de Gabinete Executiva de IA",
+    "full": "Donna é sua assistente executiva de IA inspirada na Donna Paulsen de Suits. Ela antecipa, organiza, cobra e resolve. Monitora mensagens, gerencia agenda, rastreia follow-ups e mantém você no controle."
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#4A154B",
+  "bots": [
+    {
+      "botId": "65260b5c-ec87-43eb-a889-6be55cdc61af",
+      "scopes": ["personal", "team", "groupChat"],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": ["personal"],
+          "commands": [
+            {
+              "title": "status",
+              "description": "Painel executivo do dia"
+            },
+            {
+              "title": "agenda",
+              "description": "Agenda de hoje e próximos compromissos"
+            },
+            {
+              "title": "followups",
+              "description": "Follow-ups pendentes e cobranças"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": [
+    "macbook-pro-de-gustavo.tail2e92a6.ts.net"
+  ]
+}
