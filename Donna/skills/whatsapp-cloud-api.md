@@ -1,75 +1,71 @@
 # WhatsApp Cloud API — Skill Donna
 
-> Conexão oficial da Meta via Chakra Chat (BSP). Substitui o Baileys (WhatsApp Web) por API oficial — zero desconexões, zero risco de ban.
+> Migração para API oficial da Meta. Planejada para quando a Donna migrar para AWS.
 
 ---
 
-## Arquitetura
+## Status Atual
 
-```
-WhatsApp (celular) ←→ Meta Cloud API ←→ Chakra Chat (BSP) ←→ Webhook → OpenClaw → Donna
-                                                                          ↓
-                                                              message tool (Cloud API)
-                                                                          ↓
-                                                              WhatsApp (resposta)
-```
+| Componente | Status | Notas |
+|------------|--------|-------|
+| Baileys (WhatsApp Web) | **ATIVO** — em uso no Mac local | OpenClaw v2026.3.13 só suporta Baileys |
+| Chakra Chat (BSP) | **CONFIGURADO** — Coexistence ativo | App celular + Baileys coexistem |
+| Credenciais Cloud API | **PRONTAS** — salvas no `.env` | Token permanente (System User) |
+| Webhook Cloud API | **PENDENTE** — migração AWS | Precisa de IP público / domínio |
 
-## Credenciais Necessárias (preencher após Chakra sync)
+## Credenciais (prontas no .env)
 
 ```bash
-# No Meta Developer Portal → App "Donna" → WhatsApp → API Setup
-WHATSAPP_API_TOKEN=       # System User token (permanente)
-WHATSAPP_PHONE_ID=        # Phone Number ID do seu número
-WHATSAPP_BUSINESS_ID=     # WhatsApp Business Account ID
-
-# Webhook (OpenClaw recebe mensagens por aqui)
-WHATSAPP_WEBHOOK_URL=     # https://macbook-pro-de-gustavo.tail2e92a6.ts.net/api/channels/whatsapp/webhook
-WHATSAPP_VERIFY_TOKEN=    # Token customizado para validar webhook
+WHATSAPP_API_TOKEN=EAA...   # System User token (permanente, nunca expira)
+WHATSAPP_PHONE_ID=1079076681945716
+WHATSAPP_BUSINESS_ID=939693555132610
 ```
 
-## Configuração OpenClaw (rodar após obter credenciais)
+## Plano de Migração: Mac Local → AWS
 
-### Passo 1: Configurar provider como Meta Cloud API
-```bash
-openclaw config set channels.whatsapp.provider "meta-cloud-api"
-openclaw config set channels.whatsapp.api.token "$WHATSAPP_API_TOKEN"
-openclaw config set channels.whatsapp.api.phoneNumberId "$WHATSAPP_PHONE_ID"
-openclaw config set channels.whatsapp.api.businessAccountId "$WHATSAPP_BUSINESS_ID"
+### Fase 1: Mac Local (AGORA)
+- WhatsApp via **Baileys** (OpenClaw nativo)
+- Chakra Chat com **Coexistence** ativo (protege contra ban)
+- Credenciais Cloud API salvas, aguardando
+
+### Fase 2: AWS (FUTURO)
+Quando a Donna for para a AWS, a arquitetura muda para:
+
+```
+WhatsApp (celular)
+    ↕
+Meta Cloud API
+    ↕
+Chakra Chat (BSP)
+    ↓
+Webhook (HTTPS) → AWS (Donna) → Processa mensagem → Responde via Cloud API
+    ↑
+    IP público / domínio com SSL
 ```
 
-### Passo 2: Configurar webhook (para receber mensagens)
-```bash
-openclaw config set channels.whatsapp.webhook.verifyToken "$WHATSAPP_VERIFY_TOKEN"
-```
+#### O que precisa na AWS:
+1. **Endpoint HTTPS** — domínio com SSL (ex: `donna.seudominio.com/webhook/whatsapp`)
+2. **Webhook receiver** — recebe POST do Meta, valida signature, extrai mensagem
+3. **Cloud API sender** — envia respostas via `POST graph.facebook.com/v21.0/{phone_id}/messages`
+4. **Verify endpoint** — GET que responde o `hub.verify_token` para o Meta validar
 
-### Passo 3: Desativar Baileys (WhatsApp Web)
-```bash
-# Só fazer DEPOIS de confirmar que Cloud API funciona
-openclaw channels logout --channel whatsapp --account default
-```
+#### Configuração no Meta Developer Portal:
+1. App "Donna" → WhatsApp → Configuration
+2. Callback URL: `https://donna.seudominio.com/webhook/whatsapp`
+3. Verify Token: token customizado (gerar na hora)
+4. Webhooks fields: `messages`, `message_status`
 
-### Passo 4: Reiniciar gateway
-```bash
-openclaw gateway restart
-```
+## Vantagens da Migração
 
-### Passo 5: Testar
-```bash
-# Enviar mensagem de teste
-openclaw message send --channel whatsapp --target "+5511991461629" --message "🔧 Teste Cloud API — se receber, migração concluída!"
-```
-
-## Vantagens vs Baileys
-
-| | Baileys (antes) | Cloud API (agora) |
+| | Baileys (Mac local) | Cloud API (AWS) |
 |---|---|---|
-| Conexão | Desconecta frequentemente | Permanente |
-| Ban risk | Alto (protocolo não-oficial) | Zero (oficial Meta) |
-| Dispositivos | Máx 4 | Ilimitado |
-| message tool | Bug globalThis (patch manual) | Nativo, sem patch |
-| Contatos | Sem acesso API | API completa |
-| Rate limit | Agressivo | 250→1K→10K→100K msg/dia |
-| Coexistence | N/A | App + API no mesmo número |
+| Conexão | Desconecta se Mac dorme/reinicia | Permanente (webhook) |
+| Ban risk | Baixo (com Coexistence) | Zero (oficial Meta) |
+| Dispositivos | Máx 4 linked devices | Ilimitado |
+| Escalabilidade | Single machine | Auto-scaling AWS |
+| IP/SSL | Tailscale (NAT traversal) | IP público + SSL nativo |
+| Rate limit | Web session limits | 250→1K→10K→100K msg/dia |
+| Coexistence | Baileys + app celular | API + app celular |
 
 ## Chakra Chat (BSP)
 
@@ -77,23 +73,20 @@ openclaw message send --channel whatsapp --target "+5511991461629" --message "�
 - **Plano:** Free (1000 conversas/mês, 3 users)
 - **Markup:** Zero sobre Meta fees
 - **Coexistence:** Ativo — app no celular + API em paralelo
+- **Business Account:** 939693555132610 (Test WhatsApp Business Account)
 
-## Onde obter as credenciais
+## Referência: Como foram obtidas as credenciais
 
-### Token permanente:
+### Token permanente (System User):
 1. https://business.facebook.com → Business Settings → Users → System Users
-2. Criar system user "OpenClaw Agent" (Admin)
-3. Gerar token → selecionar app "Donna" → copiar
+2. System user "OpenClaw Agent" (Admin)
+3. Token com permissão `whatsapp_business_messaging`
 
 ### Phone Number ID + Business Account ID:
 1. https://developers.facebook.com → App "Donna" → WhatsApp → API Setup
-2. Copiar "Phone number ID" e "WhatsApp Business Account ID"
-
-### Webhook:
-1. https://developers.facebook.com → App "Donna" → WhatsApp → Configuration
-2. Callback URL: URL do OpenClaw + /api/channels/whatsapp/webhook
-3. Verify token: mesmo valor configurado no OpenClaw
+2. Phone Number ID: `1079076681945716`
+3. Business Account ID: `939693555132610`
 
 ---
 
-*Donna WhatsApp Cloud API Skill v0.1.0*
+*Donna WhatsApp Cloud API Skill v0.2.0 — atualizado 2026-03-20*
