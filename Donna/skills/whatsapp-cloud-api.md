@@ -1,6 +1,6 @@
 # WhatsApp Cloud API — Skill Donna
 
-> Migração para API oficial da Meta. Planejada para quando a Donna migrar para AWS.
+> Migração para API oficial da Meta via Tailscale Funnel no Mac local.
 
 ---
 
@@ -8,64 +8,76 @@
 
 | Componente | Status | Notas |
 |------------|--------|-------|
-| Baileys (WhatsApp Web) | **ATIVO** — em uso no Mac local | OpenClaw v2026.3.13 só suporta Baileys |
-| Chakra Chat (BSP) | **CONFIGURADO** — Coexistence ativo | App celular + Baileys coexistem |
-| Credenciais Cloud API | **PRONTAS** — salvas no `.env` | Token permanente (System User) |
-| Webhook Cloud API | **PENDENTE** — migração AWS | Precisa de IP público / domínio |
+| Baileys (WhatsApp Web) | **ATIVO** — desativar após validação | `openclaw channels logout --channel whatsapp --account default` |
+| Chakra Chat (BSP) | **CONFIGURADO** — Coexistence ativo | App celular + API coexistem |
+| Credenciais Cloud API | **PRONTAS** — salvas no `webhook/.env` | Token permanente (System User) |
+| Webhook Cloud API | **IMPLEMENTADO** — `webhook/server.ts` | Bun server em :3001 |
+| Tailscale Funnel | **PENDENTE** — precisa habilitar ACL + funnel on | URL: `https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook` |
+| App Secret Meta | **PENDENTE** — Gustavo precisa copiar do portal | Settings → Basic → Show |
+| Meta Webhook Config | **PENDENTE** — Gustavo configura no portal | Callback URL + Verify Token |
+| LaunchAgent (auto-start) | **CRIADO** — `com.donna.webhook.plist` | `launchctl load` após validação |
 
-## Credenciais (prontas no .env)
+## Arquitetura
+
+```
+Celular (usuario envia msg WhatsApp)
+         |
+    Meta Cloud API
+         |
+    Tailscale Funnel (HTTPS publico)
+    https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook
+         |
+    Mac local :3001
+         |
+    webhook/server.ts (Bun)
+    ├── GET  /webhook → Meta verification
+    ├── POST /webhook → Recebe msg, valida HMAC, forwarda
+    |       └── POST localhost:18789/api/v1/agent/message
+    └── Cloud API sender → graph.facebook.com/v21.0/{phone_id}/messages
+```
+
+## Credenciais
 
 ```bash
-WHATSAPP_API_TOKEN=EAA...   # System User token (permanente, nunca expira)
+# webhook/.env (NÃO commitado)
+WHATSAPP_API_TOKEN=EAA...         # System User token (permanente)
 WHATSAPP_PHONE_ID=1079076681945716
 WHATSAPP_BUSINESS_ID=939693555132610
+WHATSAPP_VERIFY_TOKEN=94caaea4...  # Token gerado para Meta handshake
+WHATSAPP_APP_SECRET=               # PENDENTE — pegar no Meta Developer Portal
 ```
 
-## Plano de Migração: Mac Local → AWS
+## Comandos
 
-### Fase 1: Mac Local (AGORA)
-- WhatsApp via **Baileys** (OpenClaw nativo)
-- Chakra Chat com **Coexistence** ativo (protege contra ban)
-- Credenciais Cloud API salvas, aguardando
+```bash
+# Iniciar manualmente
+bun run webhook/server.ts
 
-### Fase 2: AWS (FUTURO)
-Quando a Donna for para a AWS, a arquitetura muda para:
+# Iniciar com Funnel
+scripts/start-webhook.sh
 
+# Testar health
+curl http://localhost:3001/health
+
+# Testar verificação Meta
+curl "http://localhost:3001/webhook?hub.mode=subscribe&hub.verify_token=TOKEN&hub.challenge=test123"
+
+# LaunchAgent (auto-start no boot)
+launchctl load ~/Library/LaunchAgents/com.donna.webhook.plist
+launchctl unload ~/Library/LaunchAgents/com.donna.webhook.plist
+
+# Desativar Baileys (após validação completa)
+openclaw channels logout --channel whatsapp --account default
 ```
-WhatsApp (celular)
-    ↕
-Meta Cloud API
-    ↕
-Chakra Chat (BSP)
-    ↓
-Webhook (HTTPS) → AWS (Donna) → Processa mensagem → Responde via Cloud API
-    ↑
-    IP público / domínio com SSL
-```
 
-#### O que precisa na AWS:
-1. **Endpoint HTTPS** — domínio com SSL (ex: `donna.seudominio.com/webhook/whatsapp`)
-2. **Webhook receiver** — recebe POST do Meta, valida signature, extrai mensagem
-3. **Cloud API sender** — envia respostas via `POST graph.facebook.com/v21.0/{phone_id}/messages`
-4. **Verify endpoint** — GET que responde o `hub.verify_token` para o Meta validar
+## Passos Pendentes (Gustavo no browser)
 
-#### Configuração no Meta Developer Portal:
-1. App "Donna" → WhatsApp → Configuration
-2. Callback URL: `https://donna.seudominio.com/webhook/whatsapp`
-3. Verify Token: token customizado (gerar na hora)
-4. Webhooks fields: `messages`, `message_status`
-
-## Vantagens da Migração
-
-| | Baileys (Mac local) | Cloud API (AWS) |
-|---|---|---|
-| Conexão | Desconecta se Mac dorme/reinicia | Permanente (webhook) |
-| Ban risk | Baixo (com Coexistence) | Zero (oficial Meta) |
-| Dispositivos | Máx 4 linked devices | Ilimitado |
-| Escalabilidade | Single machine | Auto-scaling AWS |
-| IP/SSL | Tailscale (NAT traversal) | IP público + SSL nativo |
-| Rate limit | Web session limits | 250→1K→10K→100K msg/dia |
-| Coexistence | Baileys + app celular | API + app celular |
+1. **App Secret:** https://developers.facebook.com → App "Donna" → Settings → Basic → Show
+2. **Tailscale Funnel:** Habilitar na ACL ou `tailscale funnel 3001`
+3. **Meta Webhook:** App "Donna" → WhatsApp → Configuration → Edit
+   - Callback URL: `https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook`
+   - Verify Token: `94caaea4181639d466d4261fc56aac98a433a902cc9d37b79489d5afdc84027c`
+   - Webhook fields: `messages`
 
 ## Chakra Chat (BSP)
 
@@ -75,18 +87,16 @@ Webhook (HTTPS) → AWS (Donna) → Processa mensagem → Responde via Cloud API
 - **Coexistence:** Ativo — app no celular + API em paralelo
 - **Business Account:** 939693555132610 (Test WhatsApp Business Account)
 
-## Referência: Como foram obtidas as credenciais
+## Vantagens da Migração
 
-### Token permanente (System User):
-1. https://business.facebook.com → Business Settings → Users → System Users
-2. System user "OpenClaw Agent" (Admin)
-3. Token com permissão `whatsapp_business_messaging`
-
-### Phone Number ID + Business Account ID:
-1. https://developers.facebook.com → App "Donna" → WhatsApp → API Setup
-2. Phone Number ID: `1079076681945716`
-3. Business Account ID: `939693555132610`
+| | Baileys (Mac local) | Cloud API (Tailscale Funnel) |
+|---|---|---|
+| Conexão | Desconecta se Mac dorme/reinicia | Permanente (webhook + launchd) |
+| Ban risk | Baixo (com Coexistence) | Zero (oficial Meta) |
+| Dispositivos | Máx 4 linked devices | Ilimitado |
+| IP/SSL | Tailscale (NAT traversal) | Funnel (HTTPS público automático) |
+| Rate limit | Web session limits | 250→1K→10K→100K msg/dia |
 
 ---
 
-*Donna WhatsApp Cloud API Skill v0.2.0 — atualizado 2026-03-20*
+*Donna WhatsApp Cloud API Skill v1.0.0 — atualizado 2026-03-22*
