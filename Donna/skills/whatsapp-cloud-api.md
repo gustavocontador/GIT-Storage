@@ -1,6 +1,6 @@
 # WhatsApp Cloud API — Skill Donna
 
-> Migração para API oficial da Meta via Tailscale Funnel no Mac local.
+> WhatsApp via API oficial da Meta + Tailscale Funnel no Mac local.
 
 ---
 
@@ -8,14 +8,14 @@
 
 | Componente | Status | Notas |
 |------------|--------|-------|
-| Baileys (WhatsApp Web) | **ATIVO** — desativar após validação | `openclaw channels logout --channel whatsapp --account default` |
+| Baileys (WhatsApp Web) | **DESATIVADO** | Substituído por Cloud API |
 | Chakra Chat (BSP) | **CONFIGURADO** — Coexistence ativo | App celular + API coexistem |
 | Credenciais Cloud API | **PRONTAS** — salvas no `webhook/.env` | Token permanente (System User) |
-| Webhook Cloud API | **IMPLEMENTADO** — `webhook/server.ts` | Bun server em :3001 |
-| Tailscale Funnel | **PENDENTE** — precisa habilitar ACL + funnel on | URL: `https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook` |
-| App Secret Meta | **PENDENTE** — Gustavo precisa copiar do portal | Settings → Basic → Show |
-| Meta Webhook Config | **PENDENTE** — Gustavo configura no portal | Callback URL + Verify Token |
-| LaunchAgent (auto-start) | **CRIADO** — `com.donna.webhook.plist` | `launchctl load` após validação |
+| Webhook Cloud API | **ATIVO** — `webhook/server.ts` | Bun server em :3001 |
+| Tailscale Funnel | **ATIVO** | `https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook` |
+| App Secret Meta | **CONFIGURADO** | HMAC validation ativo |
+| Meta Webhook Config | **CONFIGURADO** | Callback URL + Verify Token + messages field |
+| LaunchAgent (auto-start) | **ATIVO** — `com.donna.webhook.plist` | Reinicia com o Mac |
 
 ## Arquitetura
 
@@ -43,8 +43,8 @@ Celular (usuario envia msg WhatsApp)
 WHATSAPP_API_TOKEN=EAA...         # System User token (permanente)
 WHATSAPP_PHONE_ID=1079076681945716
 WHATSAPP_BUSINESS_ID=939693555132610
-WHATSAPP_VERIFY_TOKEN=94caaea4...  # Token gerado para Meta handshake
-WHATSAPP_APP_SECRET=               # PENDENTE — pegar no Meta Developer Portal
+WHATSAPP_VERIFY_TOKEN=94caaea4...  # Token para Meta handshake
+WHATSAPP_APP_SECRET=9f44...        # HMAC validation
 ```
 
 ## Comandos
@@ -59,25 +59,17 @@ scripts/start-webhook.sh
 # Testar health
 curl http://localhost:3001/health
 
-# Testar verificação Meta
-curl "http://localhost:3001/webhook?hub.mode=subscribe&hub.verify_token=TOKEN&hub.challenge=test123"
-
 # LaunchAgent (auto-start no boot)
 launchctl load ~/Library/LaunchAgents/com.donna.webhook.plist
 launchctl unload ~/Library/LaunchAgents/com.donna.webhook.plist
 
-# Desativar Baileys (após validação completa)
-openclaw channels logout --channel whatsapp --account default
+# Logs
+tail -f ~/Library/Logs/donna-webhook.log
+tail -f ~/Library/Logs/donna-webhook.err
+
+# Tailscale Funnel status
+tailscale funnel status
 ```
-
-## Passos Pendentes (Gustavo no browser)
-
-1. **App Secret:** https://developers.facebook.com → App "Donna" → Settings → Basic → Show
-2. **Tailscale Funnel:** Habilitar na ACL ou `tailscale funnel 3001`
-3. **Meta Webhook:** App "Donna" → WhatsApp → Configuration → Edit
-   - Callback URL: `https://macbook-pro-de-gustavo.tail2e92a6.ts.net/webhook`
-   - Verify Token: `94caaea4181639d466d4261fc56aac98a433a902cc9d37b79489d5afdc84027c`
-   - Webhook fields: `messages`
 
 ## Chakra Chat (BSP)
 
@@ -87,9 +79,9 @@ openclaw channels logout --channel whatsapp --account default
 - **Coexistence:** Ativo — app no celular + API em paralelo
 - **Business Account:** 939693555132610 (Test WhatsApp Business Account)
 
-## Vantagens da Migração
+## Vantagens vs Baileys
 
-| | Baileys (Mac local) | Cloud API (Tailscale Funnel) |
+| | Baileys (antigo) | Cloud API (atual) |
 |---|---|---|
 | Conexão | Desconecta se Mac dorme/reinicia | Permanente (webhook + launchd) |
 | Ban risk | Baixo (com Coexistence) | Zero (oficial Meta) |
@@ -99,4 +91,4 @@ openclaw channels logout --channel whatsapp --account default
 
 ---
 
-*Donna WhatsApp Cloud API Skill v1.0.0 — atualizado 2026-03-22*
+*Donna WhatsApp Cloud API Skill v1.1.0 — atualizado 2026-03-22*
