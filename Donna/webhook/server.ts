@@ -20,7 +20,7 @@ const GRAPH_API = CHAKRA_PLUGIN_ID
   ? `https://app.chakrahq.com/api/public/v1/whatsapp/${CHAKRA_PLUGIN_ID}/messages`
   : `https://graph.facebook.com/v21.0/${PHONE_ID}/messages`;
 const AGENT_TIMEOUT = Number(Bun.env.AGENT_TIMEOUT) || 120;
-const DEBOUNCE_MS = Number(Bun.env.DEBOUNCE_MS) || 45_000;
+const DEBOUNCE_MS = Number(Bun.env.DEBOUNCE_MS) || 60_000;
 
 // --- Helpers ---
 
