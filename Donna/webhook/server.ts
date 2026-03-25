@@ -2,8 +2,9 @@
  * Donna WhatsApp Cloud API Webhook Server
  *
  * Bun-native server — zero external dependencies.
- * Receives WhatsApp messages via Meta Cloud API webhook,
- * validates HMAC signatures, and forwards to OpenClaw.
+ * Receives WhatsApp messages via Meta Cloud API or ChakraHQ webhook,
+ * validates HMAC signatures, processes via OpenClaw agent CLI,
+ * and sends responses back via ChakraHQ pass-through API.
  */
 
 // --- Config ---
@@ -13,9 +14,13 @@ const VERIFY_TOKEN = Bun.env.WHATSAPP_VERIFY_TOKEN ?? "";
 const APP_SECRET = Bun.env.WHATSAPP_APP_SECRET ?? "";
 const API_TOKEN = Bun.env.WHATSAPP_API_TOKEN ?? "";
 const PHONE_ID = Bun.env.WHATSAPP_PHONE_ID ?? "";
-const OPENCLAW_URL = Bun.env.OPENCLAW_API_URL ?? "http://localhost:18789/api/v1/agent/message";
-const OPENCLAW_AUTH = Bun.env.OPENCLAW_AUTH_TOKEN ?? "";
-const GRAPH_API = `https://graph.facebook.com/v21.0/${PHONE_ID}/messages`;
+const CHAKRA_API_KEY = Bun.env.CHAKRA_API_KEY ?? "";
+const CHAKRA_PLUGIN_ID = Bun.env.CHAKRA_PLUGIN_ID ?? "";
+const GRAPH_API = CHAKRA_PLUGIN_ID
+  ? `https://app.chakrahq.com/api/public/v1/whatsapp/${CHAKRA_PLUGIN_ID}/messages`
+  : `https://graph.facebook.com/v21.0/${PHONE_ID}/messages`;
+const AGENT_TIMEOUT = Number(Bun.env.AGENT_TIMEOUT) || 120;
+const DEBOUNCE_MS = Number(Bun.env.DEBOUNCE_MS) || 45_000;
 
 // --- Helpers ---
 
@@ -114,44 +119,86 @@ function extractMessage(body: any): ExtractedMessage | null {
   }
 }
 
-// --- Forward to OpenClaw ---
+// --- Debounce per sender ---
 
-async function forwardToOpenClaw(msg: ExtractedMessage): Promise<void> {
-  const payload = {
-    message: msg.text,
-    metadata: {
-      channel: "whatsapp",
-      from: msg.from,
-      name: msg.name,
-      type: msg.type,
-      messageId: msg.messageId,
-      timestamp: msg.timestamp,
-      ...(msg.mediaId && { mediaId: msg.mediaId }),
-      ...(msg.mimeType && { mimeType: msg.mimeType }),
-      ...(msg.latitude != null && { latitude: msg.latitude }),
-      ...(msg.longitude != null && { longitude: msg.longitude }),
-    },
+interface PendingBuffer {
+  messages: ExtractedMessage[];
+  timer: ReturnType<typeof setTimeout>;
+}
+
+const pendingByContact = new Map<string, PendingBuffer>();
+
+function enqueueMessage(msg: ExtractedMessage): void {
+  const key = msg.from;
+  const existing = pendingByContact.get(key);
+
+  if (existing) {
+    clearTimeout(existing.timer);
+    existing.messages.push(msg);
+    console.log(`[debounce] +1 from ${msg.name} (${key}), buffer=${existing.messages.length}, resetting ${DEBOUNCE_MS}ms timer`);
+  } else {
+    const buf: PendingBuffer = { messages: [msg], timer: null as any };
+    pendingByContact.set(key, buf);
+    console.log(`[debounce] new from ${msg.name} (${key}), waiting ${DEBOUNCE_MS}ms`);
+  }
+
+  const buf = pendingByContact.get(key)!;
+  buf.timer = setTimeout(() => flushContact(key), DEBOUNCE_MS);
+}
+
+function flushContact(key: string): void {
+  const buf = pendingByContact.get(key);
+  if (!buf) return;
+  pendingByContact.delete(key);
+
+  const msgs = buf.messages;
+  console.log(`[debounce] flushing ${msgs.length} message(s) from ${msgs[0].name} (${key})`);
+
+  const combined: ExtractedMessage = {
+    ...msgs[0],
+    text: msgs.map(m => m.text).join("\n"),
+    messageId: msgs[msgs.length - 1].messageId,
   };
 
-  try {
-    const resp = await fetch(OPENCLAW_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(OPENCLAW_AUTH && { Authorization: `Bearer ${OPENCLAW_AUTH}` }),
-      },
-      body: JSON.stringify(payload),
-    });
+  handleIncomingMessage(combined);
+}
 
-    if (!resp.ok) {
-      console.error(`[openclaw] ${resp.status} ${resp.statusText}`);
-      const text = await resp.text().catch(() => "");
-      if (text) console.error(`[openclaw] body: ${text}`);
-    } else {
-      console.log(`[openclaw] forwarded msg from ${msg.name} (${msg.from})`);
+// --- Process via OpenClaw Agent CLI ---
+
+async function processWithAgent(msg: ExtractedMessage): Promise<string | null> {
+  const from = msg.from.startsWith("+") ? msg.from : `+${msg.from}`;
+
+  try {
+    const proc = Bun.spawn(
+      ["openclaw", "agent", "--to", from, "--message", msg.text, "--json", "--timeout", String(AGENT_TIMEOUT)],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
+    const exitCode = await proc.exited;
+
+    if (exitCode !== 0) {
+      console.error(`[agent] exit ${exitCode}: ${stderr.substring(0, 200)}`);
+      return null;
     }
+
+    const result = JSON.parse(stdout);
+    const payloads = result?.result?.payloads;
+    if (!payloads?.length) {
+      console.warn("[agent] no payloads in response");
+      return null;
+    }
+
+    // Concatenate all text payloads
+    const texts = payloads
+      .map((p: any) => p.text)
+      .filter(Boolean);
+
+    return texts.join("\n\n") || null;
   } catch (e) {
-    console.error("[openclaw] fetch failed:", e);
+    console.error("[agent] failed:", e);
+    return null;
   }
 }
 
@@ -159,12 +206,17 @@ async function forwardToOpenClaw(msg: ExtractedMessage): Promise<void> {
 
 export async function sendWhatsApp(to: string, text: string): Promise<boolean> {
   try {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+
+    if (CHAKRA_API_KEY) {
+      headers["x-api-key"] = CHAKRA_API_KEY;
+    } else {
+      headers["Authorization"] = `Bearer ${API_TOKEN}`;
+    }
+
     const resp = await fetch(GRAPH_API, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({
         messaging_product: "whatsapp",
         recipient_type: "individual",
@@ -180,7 +232,7 @@ export async function sendWhatsApp(to: string, text: string): Promise<boolean> {
       return false;
     }
 
-    console.log(`[send] message sent to ${to}`);
+    console.log(`[send] message sent to ${to} via ${CHAKRA_API_KEY ? "ChakraHQ" : "Meta"}`);
     return true;
   } catch (e) {
     console.error("[send] fetch failed:", e);
@@ -206,6 +258,27 @@ async function markAsRead(messageId: string): Promise<void> {
     });
   } catch {
     // best-effort, don't log errors for read receipts
+  }
+}
+
+// --- Bridge: receive → agent → reply ---
+
+async function handleIncomingMessage(msg: ExtractedMessage): Promise<void> {
+  console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
+
+  // Process through OpenClaw agent
+  const reply = await processWithAgent(msg);
+
+  if (reply) {
+    // Send reply via Cloud API
+    const sent = await sendWhatsApp(msg.from, reply);
+    if (sent) {
+      console.log(`[bridge] ${msg.name} → agent → reply sent (${reply.length} chars)`);
+    } else {
+      console.error(`[bridge] failed to send reply to ${msg.from}`);
+    }
+  } else {
+    console.warn(`[bridge] no reply from agent for ${msg.from}`);
   }
 }
 
@@ -241,28 +314,64 @@ const server = Bun.serve({
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Webhook messages (Meta POST)
+    // Webhook messages (Meta or ChakraHQ POST)
     if (req.method === "POST" && (url.pathname === "/webhook" || url.pathname === "/")) {
       const rawBody = await req.text();
 
-      // Validate HMAC signature
-      const signature = req.headers.get("x-hub-signature-256");
-      const valid = await validateSignature(rawBody, signature);
-      if (!valid) {
-        console.warn("[hmac] invalid signature — rejecting");
-        return new Response("Unauthorized", { status: 401 });
+      // Validate HMAC signature — accept Meta (x-hub-signature-256) or ChakraHQ (x-chakra-signature-256)
+      const metaSig = req.headers.get("x-hub-signature-256");
+      const chakraSig = req.headers.get("x-chakra-signature-256");
+
+      if (metaSig) {
+        const valid = await validateSignature(rawBody, metaSig);
+        if (!valid) {
+          console.warn("[hmac] invalid Meta signature — rejecting");
+          return new Response("Unauthorized", { status: 401 });
+        }
+      } else if (chakraSig) {
+        // ChakraHQ HMAC: no "sha256=" prefix, uses API key as secret
+        const secret = CHAKRA_API_KEY || APP_SECRET;
+        if (secret) {
+          const expected = await hmacSHA256(secret, rawBody);
+          if (!timingSafeEqual(expected, chakraSig)) {
+            console.warn("[hmac] invalid ChakraHQ signature — rejecting");
+            return new Response("Unauthorized", { status: 401 });
+          }
+        }
+        console.log("[chakra] valid ChakraHQ webhook received");
+      } else if (APP_SECRET) {
+        // No signature at all but APP_SECRET is set — accept from ChakraHQ (they may not always sign)
+        console.log("[webhook] no signature — accepting (ChakraHQ mode)");
       }
 
-      // Respond 200 immediately (Meta requires < 5s)
-      // Process asynchronously
+      // Respond 200 immediately
       const body = JSON.parse(rawBody);
-      const msg = extractMessage(body);
+
+      // Try Meta format first (entry[].changes[].value.messages[])
+      let msg = extractMessage(body);
+
+      // Try ChakraHQ Chakra-format (event-based)
+      if (!msg && body?.event === "inbound_message") {
+        try {
+          const data = body.data || body;
+          msg = {
+            from: data.from || data.phone_number || "",
+            name: data.contact_name || data.from || "",
+            type: data.type || "text",
+            text: data.text?.body || data.message || data.text || "",
+            timestamp: data.timestamp || String(Date.now() / 1000),
+            messageId: data.message_id || data.id || `chakra_${Date.now()}`,
+          };
+          if (!msg.from || !msg.text) msg = null;
+        } catch {
+          msg = null;
+        }
+      }
 
       if (msg) {
         console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
-        // Fire-and-forget: forward + mark as read
-        forwardToOpenClaw(msg);
         markAsRead(msg.messageId);
+        enqueueMessage(msg);
       }
 
       return new Response("OK", { status: 200 });
@@ -274,5 +383,7 @@ const server = Bun.serve({
 
 console.log(`[donna-webhook] running on http://localhost:${server.port}`);
 console.log(`[donna-webhook] PHONE_ID: ${PHONE_ID}`);
-console.log(`[donna-webhook] OPENCLAW: ${OPENCLAW_URL}`);
+console.log(`[donna-webhook] Bridge: Meta → OpenClaw Agent CLI → Cloud API`);
 console.log(`[donna-webhook] HMAC validation: ${APP_SECRET ? "enabled" : "DISABLED (no APP_SECRET)"}`);
+console.log(`[donna-webhook] Agent timeout: ${AGENT_TIMEOUT}s`);
+console.log(`[donna-webhook] Debounce: ${DEBOUNCE_MS}ms (${DEBOUNCE_MS / 1000}s)`);
