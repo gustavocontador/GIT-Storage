@@ -593,11 +593,57 @@ async function enrichMessage(msg: ExtractedMessage): Promise<string> {
     parts.push(`[CONTACT_NAME: ${contact.name}]`);
   }
 
+  // Feature 12: PDF detection — download and pass to agent
+  if (msg.type === "document" && msg.mimeType?.includes("pdf") && msg.mediaId) {
+    const filePath = await downloadMediaToFile(msg.mediaId, msg.mimeType, "pdf");
+    if (filePath) {
+      parts.push(`[PDF_FILE: ${filePath}] O usuario enviou um PDF. Use o skill pdf para ler e faca um resumo executivo com os 5 pontos principais.`);
+    }
+  }
+
+  // Feature 13: Audio detection — download for transcription
+  if (msg.type === "audio" && msg.mediaId) {
+    const filePath = await downloadMediaToFile(msg.mediaId, msg.mimeType || "audio/ogg", "ogg");
+    if (filePath) {
+      parts.push(`[AUDIO_FILE: ${filePath}] O usuario enviou um audio. Use o skill openai-whisper-api para transcrever em pt-BR. Depois interprete: extraia tarefas, follow-ups, compromissos, lembretes. Crie no Notion e confirme.`);
+    }
+  }
+
+  // Feature 12b: Image detection — download for analysis
+  if (msg.type === "image" && msg.mediaId) {
+    const filePath = await downloadMediaToFile(msg.mediaId, msg.mimeType || "image/jpeg", "jpg");
+    if (filePath) {
+      parts.push(`[IMAGE_FILE: ${filePath}] O usuario enviou uma imagem. Descreva o conteudo e interprete no contexto da conversa.`);
+    }
+  }
+
   if (parts.length > 0) {
     enriched = parts.join(" ") + " " + enriched;
   }
 
   return enriched;
+}
+
+// --- Media download helper ---
+
+async function downloadMediaToFile(messageId: string, mimetype: string, ext: string): Promise<string | null> {
+  try {
+    const media = await wahaApi.downloadMedia(messageId);
+    if (!media?.data) return null;
+
+    const tmpPath = `/tmp/donna-media-${Date.now()}.${ext}`;
+    const buffer = Buffer.from(media.data, "base64");
+    await Bun.write(tmpPath, buffer);
+    console.log(`[media] downloaded ${ext} to ${tmpPath} (${buffer.length} bytes)`);
+
+    // Cleanup after 5 min
+    setTimeout(() => { try { require("fs").unlinkSync(tmpPath); } catch {} }, 300_000);
+
+    return tmpPath;
+  } catch (e) {
+    console.error(`[media] download failed:`, e);
+    return null;
+  }
 }
 
 // =====================================================================
