@@ -1,9 +1,12 @@
 /**
- * Donna WhatsApp Webhook Server
+ * Donna WhatsApp Webhook Server v2
  *
  * Bun-native server — zero external dependencies.
  * Primary: WAHA (WhatsApp Web API) for send/receive.
  * Fallback: Meta Cloud API + ChakraHQ for receiving from third parties.
+ *
+ * Features: typing indicator, reactions, forwarding, contact lookup,
+ * polls, label enrichment, YouTube detection, chat history.
  */
 
 // --- Config ---
@@ -79,7 +82,270 @@ function jidToNumber(jid: string): string {
   return jid.replace(/@.*$/, "");
 }
 
-// --- Common message interface ---
+// =====================================================================
+// FASE 0A: WAHA API Helpers
+// =====================================================================
+
+const wahaHeaders = {
+  "Content-Type": "application/json",
+  "X-Api-Key": WAHA_API_KEY,
+};
+
+const wahaApi = {
+  async sendPresence(chatId: string, presence: "composing" | "paused" | "available"): Promise<void> {
+    try {
+      await fetch(`${WAHA_API_URL}/api/sendPresence`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({ session: WAHA_SESSION, chatId, presence }),
+      });
+    } catch { /* best-effort */ }
+  },
+
+  async sendReaction(chatId: string, messageId: string, reaction: string): Promise<boolean> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/sendSeen`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({ session: WAHA_SESSION, chatId }),
+      });
+      const resp2 = await fetch(`${WAHA_API_URL}/api/reaction`, {
+        method: "PUT",
+        headers: wahaHeaders,
+        body: JSON.stringify({ session: WAHA_SESSION, messageId, reaction }),
+      });
+      return resp2.ok;
+    } catch (e) {
+      console.error("[waha:reaction] failed:", e);
+      return false;
+    }
+  },
+
+  async forwardMessage(fromChatId: string, messageId: string, toChatId: string): Promise<boolean> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/sendText`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({
+          session: WAHA_SESSION,
+          chatId: toChatId,
+          text: `[Encaminhado]`,
+          // WAHA NOWEB doesn't have native forward — use quote/reply
+        }),
+      });
+      return resp.ok;
+    } catch (e) {
+      console.error("[waha:forward] failed:", e);
+      return false;
+    }
+  },
+
+  async sendPoll(chatId: string, title: string, options: string[], multipleAnswers = false): Promise<boolean> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/sendPoll`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({ session: WAHA_SESSION, chatId, poll: { name: title, options, multipleAnswers } }),
+      });
+      return resp.ok;
+    } catch (e) {
+      console.error("[waha:poll] failed:", e);
+      return false;
+    }
+  },
+
+  async getContacts(): Promise<any[]> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/contacts/all?session=${WAHA_SESSION}`, {
+        headers: { "X-Api-Key": WAHA_API_KEY },
+      });
+      if (!resp.ok) return [];
+      return await resp.json();
+    } catch { return []; }
+  },
+
+  async getLabels(): Promise<any[]> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/${WAHA_SESSION}/labels`, {
+        headers: { "X-Api-Key": WAHA_API_KEY },
+      });
+      if (!resp.ok) return [];
+      return await resp.json();
+    } catch { return []; }
+  },
+
+  async getChatLabels(chatId: string): Promise<string[]> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/${WAHA_SESSION}/labels/chat/${chatId}`, {
+        headers: { "X-Api-Key": WAHA_API_KEY },
+      });
+      if (!resp.ok) return [];
+      const labels = await resp.json();
+      return labels.map((l: any) => l.name || l.label || "").filter(Boolean);
+    } catch { return []; }
+  },
+
+  async getChatMessages(chatId: string, limit = 20): Promise<any[]> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/${WAHA_SESSION}/chats/${chatId}/messages?limit=${limit}`, {
+        headers: { "X-Api-Key": WAHA_API_KEY },
+      });
+      if (!resp.ok) return [];
+      return await resp.json();
+    } catch { return []; }
+  },
+
+  async downloadMedia(messageId: string, session = WAHA_SESSION): Promise<{ mimetype: string; data: string } | null> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/${session}/media?messageId=${messageId}`, {
+        headers: { "X-Api-Key": WAHA_API_KEY },
+      });
+      if (!resp.ok) return null;
+      return await resp.json();
+    } catch { return null; }
+  },
+
+  async sendFile(chatId: string, base64: string, mimetype: string, filename: string, caption?: string): Promise<boolean> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/sendFile`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({
+          session: WAHA_SESSION,
+          chatId,
+          file: { mimetype, data: base64, filename },
+          caption,
+        }),
+      });
+      return resp.ok;
+    } catch { return false; }
+  },
+
+  async sendImage(chatId: string, base64: string, caption?: string): Promise<boolean> {
+    try {
+      const resp = await fetch(`${WAHA_API_URL}/api/sendImage`, {
+        method: "POST",
+        headers: wahaHeaders,
+        body: JSON.stringify({
+          session: WAHA_SESSION,
+          chatId,
+          file: { mimetype: "image/png", data: base64 },
+          caption,
+        }),
+      });
+      return resp.ok;
+    } catch { return false; }
+  },
+};
+
+// =====================================================================
+// FASE 0C: Contact Cache with Fuzzy Lookup
+// =====================================================================
+
+interface CachedContact {
+  name: string;
+  number: string;
+  jid: string;
+}
+
+let contactsCache: CachedContact[] = [];
+let contactsCacheTime = 0;
+const CONTACTS_CACHE_TTL = 300_000; // 5 min
+
+async function refreshContacts(): Promise<void> {
+  try {
+    const raw = await wahaApi.getContacts();
+    contactsCache = raw.map((c: any) => ({
+      name: c.name || c.pushName || c.shortName || "",
+      number: jidToNumber(c.id || ""),
+      jid: c.id || "",
+    })).filter((c: CachedContact) => c.number && c.name);
+    contactsCacheTime = Date.now();
+    console.log(`[contacts] cached ${contactsCache.length} contacts`);
+  } catch (e) {
+    console.error("[contacts] refresh failed:", e);
+  }
+}
+
+function lookupContact(query: string): CachedContact | null {
+  if (Date.now() - contactsCacheTime > CONTACTS_CACHE_TTL) {
+    refreshContacts(); // async, use stale cache
+  }
+  const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  // Exact number match
+  const byNumber = contactsCache.find(c => c.number === query);
+  if (byNumber) return byNumber;
+  // Fuzzy name match
+  return contactsCache.find(c => {
+    const n = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return n.includes(q) || q.includes(n);
+  }) || null;
+}
+
+// Init contacts on startup (async, non-blocking)
+setTimeout(refreshContacts, 3000);
+
+// =====================================================================
+// FASE 0B: Agent Action Protocol
+// =====================================================================
+
+interface AgentAction {
+  type: "text" | "reaction" | "forward" | "poll";
+  text?: string;
+  reaction?: string;
+  forwardTo?: string;
+  forwardText?: string;
+  pollTitle?: string;
+  pollOptions?: string[];
+}
+
+function parseAgentActions(rawText: string, originalMessageId: string): AgentAction[] {
+  const actions: AgentAction[] = [];
+  let text = rawText;
+
+  // [REACTION:emoji]
+  const reactionMatch = text.match(/\[REACTION:([^\]]+)\]/);
+  if (reactionMatch) {
+    actions.push({ type: "reaction", reaction: reactionMatch[1].trim() });
+    text = text.replace(/\[REACTION:[^\]]+\]\s*/g, "").trim();
+  }
+
+  // [FORWARD:name_or_number:text_to_send]
+  const forwardMatch = text.match(/\[FORWARD:([^:]+):([^\]]+)\]/);
+  if (forwardMatch) {
+    const target = forwardMatch[1].trim();
+    const fwdText = forwardMatch[2].trim();
+    const contact = lookupContact(target);
+    if (contact) {
+      actions.push({ type: "forward", forwardTo: `${contact.number}@c.us`, forwardText: fwdText });
+    } else {
+      actions.push({ type: "text", text: `Nao encontrei o contato "${target}" na sua lista.` });
+    }
+    text = text.replace(/\[FORWARD:[^\]]+\]\s*/g, "").trim();
+  }
+
+  // [POLL:titulo:opt1,opt2,opt3]
+  const pollMatch = text.match(/\[POLL:([^:]+):([^\]]+)\]/);
+  if (pollMatch) {
+    actions.push({
+      type: "poll",
+      pollTitle: pollMatch[1].trim(),
+      pollOptions: pollMatch[2].split(",").map(s => s.trim()),
+    });
+    text = text.replace(/\[POLL:[^\]]+\]\s*/g, "").trim();
+  }
+
+  // Remaining text
+  if (text) {
+    actions.push({ type: "text", text });
+  }
+
+  return actions.length > 0 ? actions : [{ type: "text", text: rawText }];
+}
+
+// =====================================================================
+// Common message interface
+// =====================================================================
 
 interface ExtractedMessage {
   from: string;
@@ -87,6 +353,7 @@ interface ExtractedMessage {
   type: string;
   text: string;
   chatId: string;
+  labels?: string[];
   mediaId?: string;
   mimeType?: string;
   latitude?: number;
@@ -96,7 +363,9 @@ interface ExtractedMessage {
   source: "waha" | "meta" | "chakra";
 }
 
-// --- Extract from WAHA webhook ---
+// =====================================================================
+// Extract from WAHA webhook
+// =====================================================================
 
 function extractWahaMessage(body: any): ExtractedMessage | null {
   try {
@@ -120,13 +389,9 @@ function extractWahaMessage(body: any): ExtractedMessage | null {
     }
 
     if (fromMe) {
-      // Message sent by the phone owner — only process if self-chat
       const isSelfChat = fromNumber === me || jidToNumber(chatId) === me;
-      if (!isSelfChat) {
-        return null; // Gustavo chatting with someone else
-      }
+      if (!isSelfChat) return null;
 
-      // Anti-loop: check if the text matches something we recently sent
       const msgText = payload.body
         || payload.message?.conversation
         || payload.message?.extendedTextMessage?.text
@@ -139,7 +404,6 @@ function extractWahaMessage(body: any): ExtractedMessage | null {
       console.log(`[waha] self-chat from owner: ${msgText.substring(0, 40)}`);
     }
 
-    // Extract text from various WAHA message formats
     const msg = payload.message || payload;
     let text = "";
     let type = "text";
@@ -156,27 +420,31 @@ function extractWahaMessage(body: any): ExtractedMessage | null {
       type = "image";
       text = msg.imageMessage.caption || "[imagem]";
       mimeType = msg.imageMessage.mimetype;
+      mediaId = msgId;
     } else if (msg.audioMessage) {
       type = "audio";
       text = "[audio]";
       mimeType = msg.audioMessage.mimetype;
+      mediaId = msgId;
     } else if (msg.videoMessage) {
       type = "video";
       text = msg.videoMessage.caption || "[video]";
       mimeType = msg.videoMessage.mimetype;
+      mediaId = msgId;
     } else if (msg.documentMessage) {
       type = "document";
       text = msg.documentMessage.caption || `[documento: ${msg.documentMessage.fileName}]`;
       mimeType = msg.documentMessage.mimetype;
+      mediaId = msgId;
     } else if (msg.stickerMessage) {
       type = "sticker";
       text = "[sticker]";
     } else if (msg.reactionMessage) {
       type = "reaction";
-      text = `[reação: ${msg.reactionMessage.text}]`;
+      text = `[reacao: ${msg.reactionMessage.text}]`;
     } else if (msg.locationMessage) {
       type = "location";
-      text = `[localização: ${msg.locationMessage.degreesLatitude}, ${msg.locationMessage.degreesLongitude}]`;
+      text = `[localizacao: ${msg.locationMessage.degreesLatitude}, ${msg.locationMessage.degreesLongitude}]`;
     }
 
     if (!text) return null;
@@ -201,7 +469,9 @@ function extractWahaMessage(body: any): ExtractedMessage | null {
   }
 }
 
-// --- Extract from Meta Cloud API webhook ---
+// =====================================================================
+// Extract from Meta Cloud API webhook
+// =====================================================================
 
 function extractMetaMessage(body: any): ExtractedMessage | null {
   try {
@@ -235,7 +505,7 @@ function extractMetaMessage(body: any): ExtractedMessage | null {
       case "document":
         return { ...base, type: "document", text: msg.document?.caption ?? `[documento: ${msg.document?.filename}]`, mediaId: msg.document?.id, mimeType: msg.document?.mime_type };
       case "location":
-        return { ...base, type: "location", text: `[localização: ${msg.location?.latitude}, ${msg.location?.longitude}]`, latitude: msg.location?.latitude, longitude: msg.location?.longitude };
+        return { ...base, type: "location", text: `[localizacao: ${msg.location?.latitude}, ${msg.location?.longitude}]`, latitude: msg.location?.latitude, longitude: msg.location?.longitude };
       default:
         return { ...base, type: msg.type, text: `[${msg.type}]` };
     }
@@ -245,12 +515,13 @@ function extractMetaMessage(body: any): ExtractedMessage | null {
   }
 }
 
-// --- Extract from ChakraHQ webhook ---
+// =====================================================================
+// Extract from ChakraHQ webhook
+// =====================================================================
 
 function extractChakraMessage(body: any): ExtractedMessage | null {
   try {
     if (!body?.event || !body?.payload?.message) return null;
-    // Ignore echo events from business owner
     if (body.event === "smb_message_echo") return null;
 
     const m = body.payload.message;
@@ -277,7 +548,61 @@ function extractChakraMessage(body: any): ExtractedMessage | null {
   }
 }
 
-// --- Debounce per sender ---
+// =====================================================================
+// Message Enrichment (labels, YouTube detection, history)
+// =====================================================================
+
+async function enrichMessage(msg: ExtractedMessage): Promise<string> {
+  let enriched = msg.text;
+  const parts: string[] = [];
+
+  // Label enrichment (Feature 10)
+  try {
+    const labels = await wahaApi.getChatLabels(msg.chatId);
+    if (labels.length > 0) {
+      msg.labels = labels;
+      parts.push(`[CONTACT_LABELS: ${labels.join(", ")}]`);
+    }
+  } catch { /* ignore */ }
+
+  // YouTube URL detection (Feature 9)
+  const ytMatch = msg.text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    parts.push(`[YOUTUBE_URL: ${ytMatch[0]}] Use o skill youtube-transcript para transcrever e resuma em 5 pontos.`);
+  }
+
+  // Chat history request detection (Feature 11)
+  const historyMatch = msg.text.match(/o que .+ (?:me )?mandou|historico|ultimas mensagens|mensagens recentes/i);
+  if (historyMatch) {
+    try {
+      const messages = await wahaApi.getChatMessages(msg.chatId, 30);
+      if (messages.length > 0) {
+        const history = messages.slice(-20).map((m: any) => {
+          const sender = m.key?.fromMe ? "Gustavo" : (m.pushName || "Contato");
+          const txt = m.message?.conversation || m.message?.extendedTextMessage?.text || "[media]";
+          return `${sender}: ${txt}`;
+        }).join("\n");
+        parts.push(`[CHAT_HISTORY:\n${history}\n]`);
+      }
+    } catch { /* ignore */ }
+  }
+
+  // Contact info for forwarding context
+  const contact = lookupContact(msg.from);
+  if (contact && contact.name) {
+    parts.push(`[CONTACT_NAME: ${contact.name}]`);
+  }
+
+  if (parts.length > 0) {
+    enriched = parts.join(" ") + " " + enriched;
+  }
+
+  return enriched;
+}
+
+// =====================================================================
+// Debounce per sender
+// =====================================================================
 
 interface PendingBuffer {
   messages: ExtractedMessage[];
@@ -321,14 +646,19 @@ function flushContact(key: string): void {
   handleIncomingMessage(combined);
 }
 
-// --- Process via OpenClaw Agent CLI ---
+// =====================================================================
+// Process via OpenClaw Agent CLI
+// =====================================================================
 
-async function processWithAgent(msg: ExtractedMessage): Promise<string | null> {
+async function processWithAgent(msg: ExtractedMessage): Promise<AgentAction[]> {
   const from = msg.from.startsWith("+") ? msg.from : `+${msg.from}`;
+
+  // Enrich message with labels, YouTube, history, contact info
+  const enrichedText = await enrichMessage(msg);
 
   try {
     const proc = Bun.spawn(
-      ["openclaw", "agent", "--to", from, "--message", msg.text, "--json", "--timeout", String(AGENT_TIMEOUT)],
+      ["openclaw", "agent", "--to", from, "--message", enrichedText, "--json", "--timeout", String(AGENT_TIMEOUT)],
       { stdout: "pipe", stderr: "pipe" },
     );
 
@@ -338,42 +668,40 @@ async function processWithAgent(msg: ExtractedMessage): Promise<string | null> {
 
     if (exitCode !== 0) {
       console.error(`[agent] exit ${exitCode}: ${stderr.substring(0, 200)}`);
-      return null;
+      return [];
     }
 
     const result = JSON.parse(stdout);
     const payloads = result?.result?.payloads;
     if (!payloads?.length) {
       console.warn("[agent] no payloads in response");
-      return null;
+      return [];
     }
 
-    const texts = payloads
+    const fullText = payloads
       .map((p: any) => p.text)
-      .filter(Boolean);
+      .filter(Boolean)
+      .join("\n\n");
 
-    return texts.join("\n\n") || null;
+    if (!fullText) return [];
+
+    return parseAgentActions(fullText, msg.messageId);
   } catch (e) {
     console.error("[agent] failed:", e);
-    return null;
+    return [];
   }
 }
 
-// --- Send via WAHA (primary) ---
+// =====================================================================
+// Send via WAHA (primary)
+// =====================================================================
 
 async function sendViaWAHA(chatId: string, text: string): Promise<boolean> {
   try {
     const resp = await fetch(`${WAHA_API_URL}/api/sendText`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": WAHA_API_KEY,
-      },
-      body: JSON.stringify({
-        session: WAHA_SESSION,
-        chatId,
-        text,
-      }),
+      headers: wahaHeaders,
+      body: JSON.stringify({ session: WAHA_SESSION, chatId, text }),
     });
 
     if (!resp.ok) {
@@ -395,7 +723,9 @@ async function sendViaWAHA(chatId: string, text: string): Promise<boolean> {
   }
 }
 
-// --- Send via Cloud API (fallback) ---
+// =====================================================================
+// Send via Cloud API (fallback)
+// =====================================================================
 
 async function sendViaGraphAPI(to: string, text: string): Promise<boolean> {
   if (!API_TOKEN || !PHONE_ID) return false;
@@ -430,41 +760,73 @@ async function sendViaGraphAPI(to: string, text: string): Promise<boolean> {
   }
 }
 
-// --- Smart send: WAHA primary, Graph API fallback ---
+// =====================================================================
+// Smart send: WAHA primary, Graph API fallback
+// =====================================================================
 
-export async function sendWhatsApp(to: string, text: string, chatId?: string): Promise<boolean> {
-  // Normalize chatId for WAHA
+async function sendWhatsApp(to: string, text: string, chatId?: string): Promise<boolean> {
   const wahaChatId = chatId || `${to}@c.us`;
-
-  // Try WAHA first
   const wahaSent = await sendViaWAHA(wahaChatId, text);
   if (wahaSent) return true;
 
-  // Fallback to Graph API (won't work for self-messaging, but works for others)
   console.warn(`[send] WAHA failed for ${to} — trying Graph API fallback`);
   return sendViaGraphAPI(to, text);
 }
 
-// --- Bridge: receive → agent → reply ---
+// =====================================================================
+// Bridge: receive → typing → agent → dispatch actions
+// =====================================================================
 
 async function handleIncomingMessage(msg: ExtractedMessage): Promise<void> {
   console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}) via ${msg.source}: ${msg.text.substring(0, 80)}`);
 
-  const reply = await processWithAgent(msg);
+  // Feature 1: Show typing indicator
+  await wahaApi.sendPresence(msg.chatId, "composing");
 
-  if (reply) {
-    const sent = await sendWhatsApp(msg.from, reply, msg.chatId);
-    if (sent) {
-      console.log(`[bridge] ${msg.name} → agent → reply sent (${reply.length} chars)`);
-    } else {
-      console.error(`[bridge] failed to send reply to ${msg.from}`);
+  const actions = await processWithAgent(msg);
+
+  if (actions.length === 0) {
+    await wahaApi.sendPresence(msg.chatId, "available");
+    console.warn(`[bridge] no actions from agent for ${msg.from}`);
+    return;
+  }
+
+  for (const action of actions) {
+    switch (action.type) {
+      case "text":
+        const sent = await sendWhatsApp(msg.from, action.text!, msg.chatId);
+        if (sent) {
+          console.log(`[bridge] ${msg.name} → text reply (${action.text!.length} chars)`);
+        } else {
+          console.error(`[bridge] failed to send text to ${msg.from}`);
+        }
+        break;
+
+      case "reaction":
+        const reacted = await wahaApi.sendReaction(msg.chatId, msg.messageId, action.reaction!);
+        console.log(`[bridge] ${msg.name} → reaction ${action.reaction} (${reacted ? "ok" : "failed"})`);
+        break;
+
+      case "forward":
+        if (action.forwardText && action.forwardTo) {
+          const fwdSent = await sendViaWAHA(action.forwardTo, action.forwardText);
+          console.log(`[bridge] forward to ${action.forwardTo} (${fwdSent ? "ok" : "failed"})`);
+        }
+        break;
+
+      case "poll":
+        if (action.pollTitle && action.pollOptions) {
+          const pollSent = await wahaApi.sendPoll(msg.chatId, action.pollTitle, action.pollOptions);
+          console.log(`[bridge] poll "${action.pollTitle}" (${pollSent ? "ok" : "failed"})`);
+        }
+        break;
     }
-  } else {
-    console.warn(`[bridge] no reply from agent for ${msg.from}`);
   }
 }
 
-// --- HTTP Server ---
+// =====================================================================
+// HTTP Server
+// =====================================================================
 
 const server = Bun.serve({
   port: PORT,
@@ -477,6 +839,7 @@ const server = Bun.serve({
         status: "ok",
         uptime: process.uptime(),
         waha: WAHA_API_URL,
+        contacts: contactsCache.length,
         timestamp: new Date().toISOString(),
       });
     }
@@ -525,7 +888,6 @@ const server = Bun.serve({
     if (req.method === "POST" && (url.pathname === "/webhook" || url.pathname === "/")) {
       const rawBody = await req.text();
 
-      // HMAC validation
       const metaSig = req.headers.get("x-hub-signature-256");
       if (metaSig && APP_SECRET) {
         const expected = await hmacSHA256(APP_SECRET, rawBody);
@@ -536,11 +898,7 @@ const server = Bun.serve({
       }
 
       const body = JSON.parse(rawBody);
-
-      // Try Meta format
       let msg = extractMetaMessage(body);
-
-      // Try ChakraHQ format
       if (!msg) msg = extractChakraMessage(body);
 
       if (msg) {
@@ -555,10 +913,10 @@ const server = Bun.serve({
   },
 });
 
-console.log(`[donna-webhook] running on http://localhost:${server.port}`);
+console.log(`[donna-webhook] v2 running on http://localhost:${server.port}`);
 console.log(`[donna-webhook] WAHA: ${WAHA_API_URL} (session: ${WAHA_SESSION})`);
 console.log(`[donna-webhook] Send: WAHA primary → Graph API fallback`);
 console.log(`[donna-webhook] Receive: /waha (WAHA) + /webhook (Meta/ChakraHQ)`);
-console.log(`[donna-webhook] Owner: ${OWNER_NUMBER}`);
-console.log(`[donna-webhook] Agent timeout: ${AGENT_TIMEOUT}s`);
-console.log(`[donna-webhook] Debounce: ${DEBOUNCE_MS}ms (${DEBOUNCE_MS / 1000}s)`);
+console.log(`[donna-webhook] Features: typing, reactions, forward, polls, labels, YouTube, history`);
+console.log(`[donna-webhook] Owner: ${OWNER_NUMBER} (no debounce)`);
+console.log(`[donna-webhook] Agent timeout: ${AGENT_TIMEOUT}s | Debounce: ${DEBOUNCE_MS}ms`);
