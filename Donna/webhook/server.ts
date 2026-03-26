@@ -1,26 +1,52 @@
 /**
- * Donna WhatsApp Cloud API Webhook Server
+ * Donna WhatsApp Webhook Server
  *
  * Bun-native server — zero external dependencies.
- * Receives WhatsApp messages via Meta Cloud API or ChakraHQ webhook,
- * validates HMAC signatures, processes via OpenClaw agent CLI,
- * and sends responses back via ChakraHQ pass-through API.
+ * Primary: WAHA (WhatsApp Web API) for send/receive.
+ * Fallback: Meta Cloud API + ChakraHQ for receiving from third parties.
  */
 
 // --- Config ---
 
 const PORT = Number(Bun.env.WEBHOOK_PORT) || 3001;
+const AGENT_TIMEOUT = Number(Bun.env.AGENT_TIMEOUT) || 120;
+const DEBOUNCE_MS = Number(Bun.env.DEBOUNCE_MS) || 5_000;
+const OWNER_NUMBER = Bun.env.OWNER_NUMBER ?? "5511991461629";
+
+// WAHA config (primary)
+const WAHA_API_URL = Bun.env.WAHA_API_URL ?? "http://localhost:3002";
+const WAHA_API_KEY = Bun.env.WAHA_API_KEY ?? "donna-waha-2026";
+const WAHA_SESSION = Bun.env.WAHA_SESSION ?? "donna";
+
+// Cloud API config (fallback for receiving)
 const VERIFY_TOKEN = Bun.env.WHATSAPP_VERIFY_TOKEN ?? "";
 const APP_SECRET = Bun.env.WHATSAPP_APP_SECRET ?? "";
 const API_TOKEN = Bun.env.WHATSAPP_API_TOKEN ?? "";
 const PHONE_ID = Bun.env.WHATSAPP_PHONE_ID ?? "";
 const CHAKRA_API_KEY = Bun.env.CHAKRA_API_KEY ?? "";
-const CHAKRA_PLUGIN_ID = Bun.env.CHAKRA_PLUGIN_ID ?? "";
-const GRAPH_API = CHAKRA_PLUGIN_ID
-  ? `https://app.chakrahq.com/api/public/v1/whatsapp/${CHAKRA_PLUGIN_ID}/messages`
-  : `https://graph.facebook.com/v21.0/${PHONE_ID}/messages`;
-const AGENT_TIMEOUT = Number(Bun.env.AGENT_TIMEOUT) || 120;
-const DEBOUNCE_MS = Number(Bun.env.DEBOUNCE_MS) || 60_000;
+const GRAPH_API = `https://graph.facebook.com/v21.0/${PHONE_ID}/messages`;
+
+// --- Anti-loop: track messages WE sent ---
+
+const sentMessageIds = new Set<string>();
+const sentTexts = new Set<string>();
+const SENT_ID_TTL = 60_000;
+
+function trackSentMessage(id: string, text: string): void {
+  sentMessageIds.add(id);
+  sentTexts.add(text);
+  setTimeout(() => sentMessageIds.delete(id), SENT_ID_TTL);
+  setTimeout(() => sentTexts.delete(text), SENT_ID_TTL);
+}
+
+const processedWebhookIds = new Set<string>();
+function dedupeWebhook(eventId: string): boolean {
+  if (!eventId) return false;
+  if (processedWebhookIds.has(eventId)) return true;
+  processedWebhookIds.add(eventId);
+  setTimeout(() => processedWebhookIds.delete(eventId), 10_000);
+  return false;
+}
 
 // --- Helpers ---
 
@@ -49,33 +75,135 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-async function validateSignature(body: string, signature: string | null): Promise<boolean> {
-  if (!APP_SECRET) {
-    console.warn("[HMAC] APP_SECRET not set — skipping validation");
-    return true;
-  }
-  if (!signature) return false;
-  const expected = await hmacSHA256(APP_SECRET, body);
-  const received = signature.replace("sha256=", "");
-  return timingSafeEqual(expected, received);
+function jidToNumber(jid: string): string {
+  return jid.replace(/@.*$/, "");
 }
 
-// --- Extract message from webhook payload ---
+// --- Common message interface ---
 
 interface ExtractedMessage {
   from: string;
   name: string;
   type: string;
   text: string;
+  chatId: string;
   mediaId?: string;
   mimeType?: string;
   latitude?: number;
   longitude?: number;
   timestamp: string;
   messageId: string;
+  source: "waha" | "meta" | "chakra";
 }
 
-function extractMessage(body: any): ExtractedMessage | null {
+// --- Extract from WAHA webhook ---
+
+function extractWahaMessage(body: any): ExtractedMessage | null {
+  try {
+    if (body?.event !== "message" && body?.event !== "message.any") return null;
+
+    const payload = body.payload;
+    if (!payload) return null;
+
+    const key = payload.key || payload;
+    const msgId = key.id || payload.id;
+    const fromMe = key.fromMe ?? payload.fromMe ?? false;
+    const remoteJid = key.remoteJid || payload.from || "";
+    const chatId = key.remoteJid || payload.chatId || remoteJid;
+    const fromNumber = jidToNumber(remoteJid);
+    const me = body.me?.id ? jidToNumber(body.me.id) : OWNER_NUMBER;
+
+    // Anti-loop: ignore messages we sent via API (by ID)
+    if (sentMessageIds.has(msgId)) {
+      console.log(`[waha:anti-loop] ignoring sent message (id match) ${msgId}`);
+      return null;
+    }
+
+    if (fromMe) {
+      // Message sent by the phone owner — only process if self-chat
+      const isSelfChat = fromNumber === me || jidToNumber(chatId) === me;
+      if (!isSelfChat) {
+        return null; // Gustavo chatting with someone else
+      }
+
+      // Anti-loop: check if the text matches something we recently sent
+      const msgText = payload.body
+        || payload.message?.conversation
+        || payload.message?.extendedTextMessage?.text
+        || "";
+      if (sentTexts.has(msgText)) {
+        console.log(`[waha:anti-loop] ignoring sent message (text match): ${msgText.substring(0, 40)}`);
+        return null;
+      }
+
+      console.log(`[waha] self-chat from owner: ${msgText.substring(0, 40)}`);
+    }
+
+    // Extract text from various WAHA message formats
+    const msg = payload.message || payload;
+    let text = "";
+    let type = "text";
+    let mediaId: string | undefined;
+    let mimeType: string | undefined;
+
+    if (payload.body) {
+      text = payload.body;
+    } else if (msg.conversation) {
+      text = msg.conversation;
+    } else if (msg.extendedTextMessage?.text) {
+      text = msg.extendedTextMessage.text;
+    } else if (msg.imageMessage) {
+      type = "image";
+      text = msg.imageMessage.caption || "[imagem]";
+      mimeType = msg.imageMessage.mimetype;
+    } else if (msg.audioMessage) {
+      type = "audio";
+      text = "[audio]";
+      mimeType = msg.audioMessage.mimetype;
+    } else if (msg.videoMessage) {
+      type = "video";
+      text = msg.videoMessage.caption || "[video]";
+      mimeType = msg.videoMessage.mimetype;
+    } else if (msg.documentMessage) {
+      type = "document";
+      text = msg.documentMessage.caption || `[documento: ${msg.documentMessage.fileName}]`;
+      mimeType = msg.documentMessage.mimetype;
+    } else if (msg.stickerMessage) {
+      type = "sticker";
+      text = "[sticker]";
+    } else if (msg.reactionMessage) {
+      type = "reaction";
+      text = `[reação: ${msg.reactionMessage.text}]`;
+    } else if (msg.locationMessage) {
+      type = "location";
+      text = `[localização: ${msg.locationMessage.degreesLatitude}, ${msg.locationMessage.degreesLongitude}]`;
+    }
+
+    if (!text) return null;
+
+    const pushName = payload.pushName || body.me?.pushName || fromNumber;
+
+    return {
+      from: fromNumber,
+      name: fromMe ? "Gustavo (self)" : pushName,
+      type,
+      text,
+      chatId,
+      mediaId,
+      mimeType,
+      timestamp: String(payload.messageTimestamp || Math.floor(Date.now() / 1000)),
+      messageId: msgId,
+      source: "waha",
+    };
+  } catch (e) {
+    console.error("[waha:extract] failed:", e);
+    return null;
+  }
+}
+
+// --- Extract from Meta Cloud API webhook ---
+
+function extractMetaMessage(body: any): ExtractedMessage | null {
   try {
     const entry = body?.entry?.[0];
     const change = entry?.changes?.[0];
@@ -84,37 +212,67 @@ function extractMessage(body: any): ExtractedMessage | null {
 
     const msg = value.messages[0];
     const contact = value.contacts?.[0];
+    const from = msg.from;
 
     const base = {
-      from: msg.from,
-      name: contact?.profile?.name ?? msg.from,
-      type: msg.type,
+      from,
+      name: contact?.profile?.name ?? from,
+      chatId: `${from}@c.us`,
       timestamp: msg.timestamp,
       messageId: msg.id,
+      source: "meta" as const,
     };
 
     switch (msg.type) {
       case "text":
-        return { ...base, text: msg.text.body };
+        return { ...base, type: "text", text: msg.text.body };
       case "image":
-        return { ...base, text: msg.image?.caption ?? "[imagem]", mediaId: msg.image?.id, mimeType: msg.image?.mime_type };
+        return { ...base, type: "image", text: msg.image?.caption ?? "[imagem]", mediaId: msg.image?.id, mimeType: msg.image?.mime_type };
       case "audio":
-        return { ...base, text: "[audio]", mediaId: msg.audio?.id, mimeType: msg.audio?.mime_type };
+        return { ...base, type: "audio", text: "[audio]", mediaId: msg.audio?.id, mimeType: msg.audio?.mime_type };
       case "video":
-        return { ...base, text: msg.video?.caption ?? "[video]", mediaId: msg.video?.id, mimeType: msg.video?.mime_type };
+        return { ...base, type: "video", text: msg.video?.caption ?? "[video]", mediaId: msg.video?.id, mimeType: msg.video?.mime_type };
       case "document":
-        return { ...base, text: msg.document?.caption ?? `[documento: ${msg.document?.filename}]`, mediaId: msg.document?.id, mimeType: msg.document?.mime_type };
+        return { ...base, type: "document", text: msg.document?.caption ?? `[documento: ${msg.document?.filename}]`, mediaId: msg.document?.id, mimeType: msg.document?.mime_type };
       case "location":
-        return { ...base, text: `[localização: ${msg.location?.latitude}, ${msg.location?.longitude}]`, latitude: msg.location?.latitude, longitude: msg.location?.longitude };
-      case "sticker":
-        return { ...base, text: "[sticker]", mediaId: msg.sticker?.id, mimeType: msg.sticker?.mime_type };
-      case "reaction":
-        return { ...base, text: `[reação: ${msg.reaction?.emoji}]` };
+        return { ...base, type: "location", text: `[localização: ${msg.location?.latitude}, ${msg.location?.longitude}]`, latitude: msg.location?.latitude, longitude: msg.location?.longitude };
       default:
-        return { ...base, text: `[${msg.type}]` };
+        return { ...base, type: msg.type, text: `[${msg.type}]` };
     }
   } catch (e) {
-    console.error("[extract] Failed to extract message:", e);
+    console.error("[meta:extract] failed:", e);
+    return null;
+  }
+}
+
+// --- Extract from ChakraHQ webhook ---
+
+function extractChakraMessage(body: any): ExtractedMessage | null {
+  try {
+    if (!body?.event || !body?.payload?.message) return null;
+    // Ignore echo events from business owner
+    if (body.event === "smb_message_echo") return null;
+
+    const m = body.payload.message;
+    const contacts = body.payload.contacts || [];
+    const from = m.from || "";
+    if (!from) return null;
+
+    const text = m.text?.body || m.caption || "";
+    if (!text) return null;
+
+    return {
+      from,
+      name: contacts[0]?.profile?.name || from,
+      type: m.type || "text",
+      text,
+      chatId: `${from}@c.us`,
+      timestamp: m.timestamp || String(Date.now() / 1000),
+      messageId: m.id || `chakra_${Date.now()}`,
+      source: "chakra",
+    };
+  } catch (e) {
+    console.error("[chakra:extract] failed:", e);
     return null;
   }
 }
@@ -190,7 +348,6 @@ async function processWithAgent(msg: ExtractedMessage): Promise<string | null> {
       return null;
     }
 
-    // Concatenate all text payloads
     const texts = payloads
       .map((p: any) => p.text)
       .filter(Boolean);
@@ -202,21 +359,54 @@ async function processWithAgent(msg: ExtractedMessage): Promise<string | null> {
   }
 }
 
-// --- Send WhatsApp message via Cloud API ---
+// --- Send via WAHA (primary) ---
 
-export async function sendWhatsApp(to: string, text: string): Promise<boolean> {
+async function sendViaWAHA(chatId: string, text: string): Promise<boolean> {
   try {
-    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    const resp = await fetch(`${WAHA_API_URL}/api/sendText`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": WAHA_API_KEY,
+      },
+      body: JSON.stringify({
+        session: WAHA_SESSION,
+        chatId,
+        text,
+      }),
+    });
 
-    if (CHAKRA_API_KEY) {
-      headers["x-api-key"] = CHAKRA_API_KEY;
-    } else {
-      headers["Authorization"] = `Bearer ${API_TOKEN}`;
+    if (!resp.ok) {
+      const err = await resp.text().catch(() => "");
+      console.error(`[send:waha] ${resp.status}: ${err}`);
+      return false;
     }
 
+    const result = await resp.json().catch(() => null);
+    if (result?.key?.id) {
+      trackSentMessage(result.key.id, text);
+    }
+
+    console.log(`[send:waha] message sent to ${chatId}`);
+    return true;
+  } catch (e) {
+    console.error("[send:waha] fetch failed:", e);
+    return false;
+  }
+}
+
+// --- Send via Cloud API (fallback) ---
+
+async function sendViaGraphAPI(to: string, text: string): Promise<boolean> {
+  if (!API_TOKEN || !PHONE_ID) return false;
+
+  try {
     const resp = await fetch(GRAPH_API, {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
       body: JSON.stringify({
         messaging_product: "whatsapp",
         recipient_type: "individual",
@@ -228,50 +418,42 @@ export async function sendWhatsApp(to: string, text: string): Promise<boolean> {
 
     if (!resp.ok) {
       const err = await resp.text().catch(() => "");
-      console.error(`[send] ${resp.status}: ${err}`);
+      console.error(`[send:graph] ${resp.status}: ${err}`);
       return false;
     }
 
-    console.log(`[send] message sent to ${to} via ${CHAKRA_API_KEY ? "ChakraHQ" : "Meta"}`);
+    console.log(`[send:graph] message sent to ${to}`);
     return true;
   } catch (e) {
-    console.error("[send] fetch failed:", e);
+    console.error("[send:graph] fetch failed:", e);
     return false;
   }
 }
 
-// --- Mark message as read ---
+// --- Smart send: WAHA primary, Graph API fallback ---
 
-async function markAsRead(messageId: string): Promise<void> {
-  try {
-    await fetch(GRAPH_API, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        status: "read",
-        message_id: messageId,
-      }),
-    });
-  } catch {
-    // best-effort, don't log errors for read receipts
-  }
+export async function sendWhatsApp(to: string, text: string, chatId?: string): Promise<boolean> {
+  // Normalize chatId for WAHA
+  const wahaChatId = chatId || `${to}@c.us`;
+
+  // Try WAHA first
+  const wahaSent = await sendViaWAHA(wahaChatId, text);
+  if (wahaSent) return true;
+
+  // Fallback to Graph API (won't work for self-messaging, but works for others)
+  console.warn(`[send] WAHA failed for ${to} — trying Graph API fallback`);
+  return sendViaGraphAPI(to, text);
 }
 
 // --- Bridge: receive → agent → reply ---
 
 async function handleIncomingMessage(msg: ExtractedMessage): Promise<void> {
-  console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
+  console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}) via ${msg.source}: ${msg.text.substring(0, 80)}`);
 
-  // Process through OpenClaw agent
   const reply = await processWithAgent(msg);
 
   if (reply) {
-    // Send reply via Cloud API
-    const sent = await sendWhatsApp(msg.from, reply);
+    const sent = await sendWhatsApp(msg.from, reply, msg.chatId);
     if (sent) {
       console.log(`[bridge] ${msg.name} → agent → reply sent (${reply.length} chars)`);
     } else {
@@ -294,12 +476,39 @@ const server = Bun.serve({
       return Response.json({
         status: "ok",
         uptime: process.uptime(),
+        waha: WAHA_API_URL,
         timestamp: new Date().toISOString(),
       });
     }
 
-    // Webhook verification (Meta one-time check)
-    // Accepts both /webhook and / (Tailscale --set-path strips prefix)
+    // --- WAHA webhook (primary) ---
+    if (req.method === "POST" && url.pathname === "/waha") {
+      const rawBody = await req.text();
+      const body = JSON.parse(rawBody);
+
+      // Dedupe: WAHA sends both 'message' and 'message.any' for same event
+      const eventId = body?.payload?.key?.id || body?.payload?.id || "";
+      if (eventId && dedupeWebhook(eventId)) {
+        return new Response("OK", { status: 200 });
+      }
+
+      const msg = extractWahaMessage(body);
+      if (msg) {
+        console.log(`[waha] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
+
+        // Self-chat: no debounce, process immediately
+        const isOwner = msg.from === OWNER_NUMBER;
+        if (isOwner && msg.source === "waha") {
+          handleIncomingMessage(msg);
+        } else {
+          enqueueMessage(msg);
+        }
+      }
+
+      return new Response("OK", { status: 200 });
+    }
+
+    // --- Meta webhook verification ---
     if (req.method === "GET" && (url.pathname === "/webhook" || url.pathname === "/")) {
       const mode = url.searchParams.get("hub.mode");
       const token = url.searchParams.get("hub.verify_token");
@@ -309,68 +518,33 @@ const server = Bun.serve({
         console.log("[verify] webhook verified successfully");
         return new Response(challenge, { status: 200 });
       }
-
-      console.warn("[verify] failed — token mismatch");
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Webhook messages (Meta or ChakraHQ POST)
+    // --- Meta / ChakraHQ webhook (fallback receiving) ---
     if (req.method === "POST" && (url.pathname === "/webhook" || url.pathname === "/")) {
       const rawBody = await req.text();
 
-      // Validate HMAC signature — accept Meta (x-hub-signature-256) or ChakraHQ (x-chakra-signature-256)
+      // HMAC validation
       const metaSig = req.headers.get("x-hub-signature-256");
-      const chakraSig = req.headers.get("x-chakra-signature-256");
-
-      if (metaSig) {
-        const valid = await validateSignature(rawBody, metaSig);
-        if (!valid) {
-          console.warn("[hmac] invalid Meta signature — rejecting");
+      if (metaSig && APP_SECRET) {
+        const expected = await hmacSHA256(APP_SECRET, rawBody);
+        const received = metaSig.replace("sha256=", "");
+        if (!timingSafeEqual(expected, received)) {
           return new Response("Unauthorized", { status: 401 });
         }
-      } else if (chakraSig) {
-        // ChakraHQ HMAC: no "sha256=" prefix, uses API key as secret
-        const secret = CHAKRA_API_KEY || APP_SECRET;
-        if (secret) {
-          const expected = await hmacSHA256(secret, rawBody);
-          if (!timingSafeEqual(expected, chakraSig)) {
-            console.warn("[hmac] invalid ChakraHQ signature — rejecting");
-            return new Response("Unauthorized", { status: 401 });
-          }
-        }
-        console.log("[chakra] valid ChakraHQ webhook received");
-      } else if (APP_SECRET) {
-        // No signature at all but APP_SECRET is set — accept from ChakraHQ (they may not always sign)
-        console.log("[webhook] no signature — accepting (ChakraHQ mode)");
       }
 
-      // Respond 200 immediately
       const body = JSON.parse(rawBody);
 
-      // Try Meta format first (entry[].changes[].value.messages[])
-      let msg = extractMessage(body);
+      // Try Meta format
+      let msg = extractMetaMessage(body);
 
-      // Try ChakraHQ Chakra-format (event-based)
-      if (!msg && body?.event === "inbound_message") {
-        try {
-          const data = body.data || body;
-          msg = {
-            from: data.from || data.phone_number || "",
-            name: data.contact_name || data.from || "",
-            type: data.type || "text",
-            text: data.text?.body || data.message || data.text || "",
-            timestamp: data.timestamp || String(Date.now() / 1000),
-            messageId: data.message_id || data.id || `chakra_${Date.now()}`,
-          };
-          if (!msg.from || !msg.text) msg = null;
-        } catch {
-          msg = null;
-        }
-      }
+      // Try ChakraHQ format
+      if (!msg) msg = extractChakraMessage(body);
 
       if (msg) {
-        console.log(`[recv] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
-        markAsRead(msg.messageId);
+        console.log(`[${msg.source}] ${msg.type} from ${msg.name} (${msg.from}): ${msg.text.substring(0, 80)}`);
         enqueueMessage(msg);
       }
 
@@ -382,8 +556,9 @@ const server = Bun.serve({
 });
 
 console.log(`[donna-webhook] running on http://localhost:${server.port}`);
-console.log(`[donna-webhook] PHONE_ID: ${PHONE_ID}`);
-console.log(`[donna-webhook] Bridge: Meta → OpenClaw Agent CLI → Cloud API`);
-console.log(`[donna-webhook] HMAC validation: ${APP_SECRET ? "enabled" : "DISABLED (no APP_SECRET)"}`);
+console.log(`[donna-webhook] WAHA: ${WAHA_API_URL} (session: ${WAHA_SESSION})`);
+console.log(`[donna-webhook] Send: WAHA primary → Graph API fallback`);
+console.log(`[donna-webhook] Receive: /waha (WAHA) + /webhook (Meta/ChakraHQ)`);
+console.log(`[donna-webhook] Owner: ${OWNER_NUMBER}`);
 console.log(`[donna-webhook] Agent timeout: ${AGENT_TIMEOUT}s`);
 console.log(`[donna-webhook] Debounce: ${DEBOUNCE_MS}ms (${DEBOUNCE_MS / 1000}s)`);
